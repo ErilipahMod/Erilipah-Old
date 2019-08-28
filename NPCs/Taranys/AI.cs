@@ -77,6 +77,8 @@ namespace Erilipah.NPCs.Taranys
             if (distance == 0 || distance == speed)
                 Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 0, 1f, -0.2f);
 
+            npc.alpha = (int)MathHelper.SmoothStep(270, 0, distance / (90 * speed));
+
             for (int i = 0; i < distance * 0.2f; i++)
             {
                 // Create dusts in an even ring around the NPC
@@ -167,28 +169,27 @@ namespace Erilipah.NPCs.Taranys
                 npc.alpha = 255;
                 SpawnMinions(Main.expertMode ? 16 : 12);
             }
-
-            if (Timer > 0)
+           
+            if (Timer >= 0)
+            {
                 Timer++;
-            if (Timer < 0)
+                if (Timer < 100)
+                {
+                    Hover();
+                    npc.velocity *= (Timer / 100f);
+                    npc.alpha -= 10;
+                    Timer++;
+                    return;
+                }
+                npc.alpha = (int)MathHelper.SmoothStep(270, 0, npc.life / (float)npc.lifeMax);
+            }
+            else
             {
                 Timer--;
+                npc.alpha = 100;
                 npc.velocity = Vector2.Zero;
                 return;
             }
-
-            if (Timer < 100)
-            {
-                Hover();
-                npc.velocity *= (Timer / 100f);
-                npc.alpha -= 10;
-                return;
-            }
-
-            if (Timer > 0)
-                npc.alpha = (int)MathHelper.SmoothStep(270, 0, (float)npc.life / npc.lifeMax);
-            else
-                npc.alpha = 0;
 
             switch (Phase)
             {
