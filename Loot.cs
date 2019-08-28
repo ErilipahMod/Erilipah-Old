@@ -23,7 +23,7 @@ namespace Erilipah
                 else if (Main.netMode == 2)
                     NetMessage.BroadcastChatMessage(NetworkText.FromLiteral(text), new Color(255, 20, 00));
 
-                mod.GetModWorld<ErilipahWorld>().SanguineOre();
+
             }
 
             Player player = Main.player.First(p => p.active && p.whoAmI == Main.myPlayer);
