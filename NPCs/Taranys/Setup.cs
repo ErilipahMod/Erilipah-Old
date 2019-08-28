@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace Erilipah.NPCs.Taranys
 {
-    //[AutoloadBossHead]
+    [AutoloadBossHead]
     public partial class Taranys : ModNPC
     {
         private const float dashSpeed = 13f;
