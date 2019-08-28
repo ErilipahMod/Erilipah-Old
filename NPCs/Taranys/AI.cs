@@ -617,7 +617,7 @@ namespace Erilipah.NPCs.Taranys
 
                 case 4:
                     Hover();
-                    npc.velocity /= 2f;
+                    npc.velocity /= 3f;
 
                     if (Timer % 350 == 0)
                     {
