@@ -589,7 +589,6 @@ namespace Erilipah.NPCs.Taranys
                         {
                             npc.Teleport(vector, 1);
                         }
-                        npc.velocity = Vector2.Zero;
 
                         for (int i = 0; i < 255; i++)
                         {
@@ -598,15 +597,35 @@ namespace Erilipah.NPCs.Taranys
                             float speed = MathHelper.SmoothStep(10, 0, distance / 1000f);
                             p.position += p.Center.To(npc.Center, speed);
                         }
+
+                        for (int i = 0; i < 30; i++)
+                        {
+                            float radius = 500 - Timer % 500f;
+                            Dust.NewDustPerfect(npc.Center + Vector2.UnitX.RotatedBy(i / 30f * MathHelper.TwoPi) * radius, 
+                                mod.DustType<CrystallineDust>(), Vector2.Zero)
+                                .noGravity = true;
+                        }
+                        npc.velocity = Vector2.Zero;
                     }
                     else
                     {
+                        Roar();
                         IncrementPhase();
                         goto case 4;
                     }
                     break;
 
                 case 4:
+                    Hover();
+                    npc.velocity /= 2f;
+
+                    if (Timer % 350 == 0)
+                    {
+                        SpawnMinions(Main.expertMode ? 5 : 3);
+                        Roar();
+                    }
+
+                    Pulse(Timer % 100 * 15, 15, true);
                     break;
             }
         }
