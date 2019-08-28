@@ -1,0 +1,27 @@
+﻿        public override void SetStaticDefaults()
+        {
+            //DisplayName.SetDefault("Name");
+        }
+        public override void SetDefaults()
+        {
+            projectile.width = 32;
+            projectile.height = 32;
+
+            projectile.tileCollide = true;
+            projectile.aiStyle = 0;
+            projectile.timeLeft = 3600;
+
+            projectile.melee = true;
+            projectile.maxPenetrate = 1;
+            projectile.hostile = !
+                (projectile.friendly = true);
+        }
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        {
+            int offSetX = 0;
+            int offSetY = 0;
+
+            hitbox.Offset(offSetX, offSetY);
+            hitbox.Width -= offSetX;
+            hitbox.Height -= offSetY;
+        }

@@ -1,0 +1,12 @@
+The [c/ae78ff:Erilipah] Mod!
+Stuff to highlight:
+ - QoL editions, like conversion tokens
+ - challenging bosses and item tradeoffs, like Veritas ability
+ - thematic content and enhancing mechanics to endulge in
+ - dynamic Town NPCs and UI
+ - unique Item Buffs and Curses
+ - a new Shadow Class fit for those more skilled and strategic
+Overall intended to be an adaptable experience for different players, mod and multiplayer compatible, and an extension of Terraria.
+
+[c/ff0000:BETA]
+#undef BETA before release

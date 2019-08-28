@@ -1,0 +1,39 @@
+﻿		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("");
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 32;
+            item.knockBack = 1;
+            item.crit = 0;
+            item.melee = true;
+            item.noMelee = false;
+
+            item.maxStack = 1;
+            item.useTime =
+            item.useAnimation = 20;
+            item.useStyle = 1;
+            item.autoReuse = true;
+            item.UseSound = SoundID.Item1;
+
+            item.width  = 32;
+			item.height = 32;
+
+			item.value = item.AutoValue();
+			item.rare = ItemRarityID.Blue;
+
+            item.shoot = 0;
+            item.shootSpeed = 0f;
+		}
+
+        public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+
+			recipe.AddIngredient(ItemID.DirtBlock, 10);
+			recipe.AddTile(TileID.WorkBenches);
+
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
