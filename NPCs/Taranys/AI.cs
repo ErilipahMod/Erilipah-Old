@@ -14,9 +14,9 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah.NPCs.TaintedSkull
+namespace Erilipah.NPCs.Taranys
 {
-    public partial class TaintedSkull : ModNPC
+    public partial class Taranys : ModNPC
     {
         /// <summary>
         /// Don't change. Pos if alive timer, neg for death timer.
@@ -594,7 +594,9 @@ namespace Erilipah.NPCs.TaintedSkull
                         for (int i = 0; i < 255; i++)
                         {
                             Player p = Main.player[i];
-                            p.position += p.Center.To(npc.Center, 2f);
+                            float distance = p.Distance(npc.Center);
+                            float speed = MathHelper.SmoothStep(10, 0, distance / 1000f);
+                            p.position += p.Center.To(npc.Center, speed);
                         }
                     }
                     else
@@ -692,7 +694,7 @@ namespace Erilipah.NPCs.TaintedSkull
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault(TaintedSkull.Name + "'s Lessers");
+            DisplayName.SetDefault(Taranys.Name + "'s Lessers");
             Main.npcFrameCount[npc.type] = 1;
         }
         public override void SetDefaults()
@@ -727,7 +729,7 @@ namespace Erilipah.NPCs.TaintedSkull
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => IsActive;
         public override void AI()
         {
-            if (!NPC.AnyNPCs(mod.NPCType<TaintedSkull>()))
+            if (!NPC.AnyNPCs(mod.NPCType<Taranys>()))
             {
                 npc.velocity.Y -= 0.2f;
                 npc.rotation += npc.rotation += 0.01f;

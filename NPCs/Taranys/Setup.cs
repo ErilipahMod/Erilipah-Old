@@ -9,10 +9,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah.NPCs.TaintedSkull
+namespace Erilipah.NPCs.Taranys
 {
     //[AutoloadBossHead]
-    public partial class TaintedSkull : ModNPC
+    public partial class Taranys : ModNPC
     {
         private const float dashSpeed = 13f;
         private const float dashChange = 0.275f;
