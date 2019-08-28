@@ -23,7 +23,7 @@ namespace Erilipah
                 else if (Main.netMode == 2)
                     NetMessage.BroadcastChatMessage(NetworkText.FromLiteral(text), new Color(255, 20, 00));
 
-
+                SanguineOre();
             }
 
             Player player = Main.player.First(p => p.active && p.whoAmI == Main.myPlayer);
@@ -55,6 +55,16 @@ namespace Erilipah
             if (Main.netMode == 1)
             {
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, i, o);
+            }
+        }
+
+        private void SanguineOre()
+        {
+            for (int j = (int)WorldGen.rockLayer; j < WorldGen.lavaLine; j++)
+            {
+                int i = Main.rand.Next(0, Main.maxTilesX);
+                if (WorldGen.SolidOrSlopedTile(Main.tile[i, j]))
+                    WorldGen.OreRunner(i: i, j: j, strength: 8, steps: 5, type: (ushort)mod.TileType("SanguineTileTile"));
             }
         }
 
