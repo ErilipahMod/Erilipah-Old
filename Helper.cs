@@ -307,7 +307,7 @@ namespace Erilipah
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player tart = Main.player[i];
-                if (tart.active && !tart.dead && i != entity.whoAmI)
+                if (tart.active && !tart.dead && Main.player[i] != entity)
                 {
                     float distCurrent = Vector2.Distance(tart.Center, entity.Center);
                     if (distCurrent < distClosest)
@@ -326,7 +326,7 @@ namespace Erilipah
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player tart = Main.player[i];
-                if (tart.active && !tart.dead && i != entity.whoAmI && conditions(tart))
+                if (tart.active && !tart.dead && Main.player[i] != entity && conditions(tart))
                 {
                     float distCurrent = Vector2.Distance(tart.Center, entity.Center);
                     if (distCurrent < distClosest)
@@ -345,7 +345,7 @@ namespace Erilipah
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC tart = Main.npc[i];
-                if (tart.active && i != entity.whoAmI && !(tart.immortal || tart.dontTakeDamage) && conditions(tart))
+                if (tart.active && tart != entity && !(tart.immortal || tart.dontTakeDamage) && conditions(tart))
                 {
                     float distCurrent = Vector2.Distance(tart.Center, entity.Center);
                     if (distCurrent < distClosest)
@@ -364,7 +364,7 @@ namespace Erilipah
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC tart = Main.npc[i];
-                if (tart.active && i != entity.whoAmI &&
+                if (tart.active && tart != entity &&
                     (targetHostiles == null ? true : ((bool)targetHostiles ? !tart.friendly : tart.friendly)) &&
                     (ignoreInvincible && !(tart.immortal || tart.dontTakeDamage) || !ignoreInvincible))
                 {
@@ -385,7 +385,7 @@ namespace Erilipah
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC tart = Main.npc[i];
-                if (tart.active && i != entity.whoAmI && npcTypes.Contains(tart.type))
+                if (tart.active && tart != entity && npcTypes.Contains(tart.type))
                 {
                     float distCurrent = Vector2.Distance(tart.Center, entity.Center);
                     if (distCurrent < distClosest)

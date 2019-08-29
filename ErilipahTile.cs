@@ -17,7 +17,7 @@ namespace Erilipah
     {
         public override void NearbyEffects(int i, int j, int type, bool closer)
         {
-            if (!Main.rand.Chance(1 / 300f))
+            if (!Main.rand.Chance(ErilipahItem.LightSnuffRate))
                 return;
 
             Tile tile = Main.tile[i, j];
@@ -32,6 +32,11 @@ namespace Erilipah
 
                 if (Main.LocalPlayer.InErilipah())
                 {
+                    for (int v = 0; v < Main.rand.Next(1, 4); v++)
+                    {
+                        Gore.NewGore(
+                            new Vector2(i * 16 + 8, j * 16 + 8), new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -0.5f), GoreID.ChimneySmoke2, 0.85f);
+                    }
                     Main.PlaySound(SoundID.LiquidsWaterLava.WithPitchVariance(-0.35f), new Vector2((float)(i * 16 + 8), (float)(j * 16 + 8)));
 
                     WorldGen.KillTile(i, j, false, noItem: true);

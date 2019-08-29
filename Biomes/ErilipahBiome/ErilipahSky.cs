@@ -89,23 +89,23 @@ namespace Erilipah.ErilipahBiome
         {
             if (_active && Opacity < 1f)
             {
-                Opacity += 0.001f;
+                Opacity += 0.01f;
             }
             else if (!_active && Opacity > 0f)
             {
-                Opacity -= 0.001f;
+                Opacity -= 0.01f;
             }
             Opacity = MathHelper.Clamp(Opacity, 0, 1f);
 
             if (ashes.Count < (Main.raining || Sandstorm.Happening ? 1200 : 900))
             {
-                float grav = (Main.raining || Sandstorm.Happening ? 1.3f : 1.0f) * Main.rand.NextFloat(1.2f, 5f);
+                float grav = (Main.raining || Sandstorm.Happening ? 1.3f : 1.0f) * Main.rand.NextFloat(1f, 5f);
                 ashes.Add(new FallingAsh(
                     new Vector2(
                         Main.rand.NextFloat(Main.screenPosition.X - 100, Main.screenPosition.X + Main.screenWidth + 100),
                         Main.screenPosition.Y - 50),
                     grav,
-                    MathHelper.Lerp(0.6f, 1.5f, (grav - 1.2f) / 3.8f)
+                    MathHelper.Lerp(0.6f, 1.5f, (grav - 1f) / 5f)
                     ));
             }
             if (Main.LocalPlayer.Center.Y < Main.rockLayer * 16)

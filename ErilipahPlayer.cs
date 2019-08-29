@@ -37,8 +37,8 @@ namespace Erilipah
 
         public override void UpdateBiomes()
         {
-            ZoneErilipah = ErilipahWorld.erilipahTiles > 80;
-            ZoneLostCity = ErilipahWorld.lostCityTiles > 30;
+            ZoneErilipah = ErilipahWorld.erilipahTiles > 25;
+            ZoneLostCity = ErilipahWorld.lostCityTiles > 20;
         }
         public override bool CustomBiomesMatch(Player other)
         {
