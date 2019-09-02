@@ -1,17 +1,23 @@
-﻿using Erilipah.Items.ErilipahBiome.Potions;
+﻿using Erilipah.Biomes.ErilipahBiome;
+using Erilipah.Items.Crystalline;
+using Erilipah.Items.ErilipahBiome;
+using Erilipah.Items.ErilipahBiome.Potions;
 using Erilipah.NPCs.ErilipahBiome;
+using Erilipah.NPCs.Taranys;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
+using static Erilipah.Items.ErilipahBiome.Aboryc;
 
-namespace Erilipah.Biomes.ErilipahBiome
+namespace Erilipah
 {
     public class InfectionUI : UIState
     {
@@ -71,18 +77,20 @@ namespace Erilipah.Biomes.ErilipahBiome
                 Vector2 drawCenter = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels + Height.Pixels / 2);
                 Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
 
-                spriteBatch.Draw(texture2D, drawCenter + new Vector2(0, 9), frame, color, 0f, frame.Size() / 2f, 1f, 0, 0);
+                spriteBatch.Draw(texture2D, drawCenter, frame, color, 0f, frame.Size() / 2f, 1f, 0, 0);
                 if (IsMouseHovering)
                 {
                     string peepeepoopoo = Math.Round(infection, 1).ToString() + "/" + infectionMax.ToString();
                     Vector2 center = Main.MouseScreen + new Vector2(15, 15);
+
+                    Main.LocalPlayer.showItemIconText = peepeepoopoo;
                     Utils.DrawBorderString(spriteBatch, peepeepoopoo, center, Main.mouseTextColorReal);
                     //spriteBatch.DrawString(Main.fontMouseText, peepeepoopoo, center, Main.mouseTextColorReal);
                 }
                 {
                     string peepeepoopoo = "Infection: " + Math.Floor(infection * 100 / infectionMax).ToString() + "%";
                     Vector2 origin = Main.fontMouseText.MeasureString(peepeepoopoo) / 2f;
-                    Vector2 center = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels - 3);
+                    Vector2 center = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels - 12);
 
                     spriteBatch.DrawString(Main.fontMouseText, peepeepoopoo, center, Main.mouseTextColorReal * ((60 - alpha) / 60f), 0f, origin,
                         1f, SpriteEffects.None, 0);
@@ -100,7 +108,7 @@ namespace Erilipah.Biomes.ErilipahBiome
             get => infection;
             set
             {
-                infection = MathHelper.Clamp(value, -5, infectionMax * 1.25f);
+                infection = MathHelper.Clamp(value, -5, infectionMax * 1.255f);
             }
         }
 
@@ -161,7 +169,8 @@ namespace Erilipah.Biomes.ErilipahBiome
 
             if (Main.rand.Chance(proportion / 4))
             {
-                int dustInd = Dust.NewDust(player.position, player.width, player.height, mod.DustType<VoidParticle>(), 0, 0);
+                int type = player.InErilipah() ? mod.DustType<VoidParticle>() : (player.ZoneCrimson ? DustID.Blood : DustID.GreenBlood);
+                int dustInd = Dust.NewDust(player.position, player.width, player.height, type, 0, 0);
                 Main.playerDrawDust.Add(dustInd);
 
                 Dust dust = Main.dust[dustInd];
@@ -186,11 +195,6 @@ namespace Erilipah.Biomes.ErilipahBiome
                 player.AddBuff(mod.BuffType<Watched>(), 2);
             }
 
-            for (int i = 0; i < 6000; i++)
-            {
-                Main.dust[i].noLight = true;
-            }
-
             if (Infection > infectionMax)
             {
                 player.lifeRegenTime = 0;
@@ -200,12 +204,14 @@ namespace Erilipah.Biomes.ErilipahBiome
                 if (counter % (int)Math.Max(30 / (Infection - infectionMax), 1) == 0)
                     player.statLife--;
 
-                if (counter % 30 == 0)
-                    CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, (int)Math.Ceiling(Infection - infectionMax), true, true);
+                if (counter % 30 == 0 && Infection - infectionMax >= 1)
+                    CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, (int)Math.Floor(Infection - infectionMax), true, true);
+                else if (counter % 30 == 0)
+                    CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, 1, true, true);
 
                 if (player.statLife <= 0)
                 {
-                    string biome = player.ZoneCorrupt || player.ZoneCrimson ? "evil" : "decay";
+                    string biome = player.ZoneCorrupt || player.ZoneCrimson ? "evil" : "darkness";
                     player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was infested with " + biome + "."), 30, 0);
                 }
             }
@@ -215,19 +221,77 @@ namespace Erilipah.Biomes.ErilipahBiome
             if (!player.InErilipah())
                 return;
 
-            if (playerBrightness < 0.1f)
+            for (int i = 0; i < 3000; i++)
+            {
+                Main.dust[i].noLight = true;
+            }
+
+            if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && player.velocity == Vector2.Zero && player.channel && player.HeldItem.type == mod.ItemType<Aboryc>())
+            {
+                Predicate<Projectile> p = pee => pee.active && mod.ItemType("") == 0;
+                int sigilIndex = -1;
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    if (Main.projectile[i].active && Main.projectile[i].type == mod.ProjectileType<AbProj>())
+                    {
+                        sigilIndex = i;
+                        break;
+                    }
+                }
+                if (sigilIndex == -1)
+                {
+                    sigilIndex = Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType<AbProj>(), 0, 0, player.whoAmI);
+                }
+                player.GetModPlayer<ErilipahPlayer>().canMove = false;
+                player.itemAnimation = 30;
+
+                Projectile sigil = Main.projectile[sigilIndex];
+                sigil.timeLeft = 30;
+
+                if (playerBrightness < 0.1f)
+                {
+                    darknessCounter++;
+
+                    if (darknessCounter < 220) { }
+                    else if (darknessCounter == 220)
+                    {
+                        Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, 0.2f);
+                    }
+                    else if (darknessCounter < 300)
+                    {
+                        Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 103, 0.2f, 0.3f);
+                        Dust.NewDustPerfect(sigil.Center - Vector2.UnitY * 10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
+                            .customData = 0f;
+                    }
+                    else if (darknessCounter == 300)
+                    {
+                        for (int i = 0; i < 50; i++)
+                        {
+                            Dust.NewDustPerfect(sigil.Center-Vector2.UnitY*10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
+                                .customData = 0f;
+                            Dust.NewDustPerfect(sigil.Center - Vector2.UnitY * 10, mod.DustType<VoidParticle>(), Main.rand.NextVector2CircularEdge(5, 5))
+                                .customData = 0f;
+                        }
+                        sigil.frame = 1;
+                        Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, -0.4f);
+                    }
+                }
+                return;
+            }
+            else if (playerBrightness <= 0.1f)
             {
                 darknessCounter++;
                 if (darknessCounter == 220)
                 {
-                    Main.PlaySound(15, (int)player.Center.X, (int)player.Center.Y, 0, 1f, Main.rand.NextFloat(-0.825f, -0.715f));
+                    Main.PlaySound(15, (int)player.Center.X, (int)player.Center.Y, 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
                 }
                 if (darknessCounter >= 400 && darknessCounter % 120 == 0)
                 {
                     player.Hurt(PlayerDeathReason.ByCustomReason("Darkness overtook " + player.name + "."), player.statLifeMax2 / 5 + Main.rand.Next(15), Main.rand.Next(-1, 2));
                 }
             }
-            else
+            
+            if (playerBrightness > 0.1f)
             {
                 if (darknessCounter > 400) darknessCounter = 400;
                 darknessCounter -= 3;
@@ -238,18 +302,18 @@ namespace Erilipah.Biomes.ErilipahBiome
         }
         public override void PostUpdate()
         {
-            const float infectionInErilipah = 10f / 3600f;
+            const float infectionInErilipah = 8f / 3600f;
             if (player.InErilipah())
             {
                 infectionRate += infectionInErilipah * reductionRate;
             }
             else if (player.ZoneCorrupt)
             {
-                infectionRate += infectionInErilipah * 0.50f * reductionRate;
+                infectionRate += infectionInErilipah * 0.30f * reductionRate;
             }
             else if (player.ZoneCrimson)
             {
-                infectionRate += infectionInErilipah * 0.75f * reductionRate;
+                infectionRate += infectionInErilipah * 0.50f * reductionRate;
             }
             else if (player.ZoneHoly)
             {
@@ -262,7 +326,7 @@ namespace Erilipah.Biomes.ErilipahBiome
 
             if (player.wet)
             {
-                infectionRate += infectionInErilipah * 0.75f;
+                infectionRate += infectionInErilipah;
             }
             if (Main.expertMode)
             {
@@ -271,19 +335,23 @@ namespace Erilipah.Biomes.ErilipahBiome
 
             Infection += infectionRate;
 
-            if (Main.LocalPlayer == player)
+            if (Main.myPlayer == player.whoAmI)
             {
-                if (Infection > infectionMax * 0.8f)
+                if (Infection > infectionMax * 0.8f && !player.buffImmune[BuffID.Weak])
+                {
                     player.AddBuff(BuffID.Weak, 1);
-                if (Infection > infectionMax * 0.9f)
+                }
+                if (Infection > infectionMax * 0.9f && !player.buffImmune[BuffID.Slow])
+                {
                     player.AddBuff(BuffID.Slow, 1);
+                }
             }
         }
 
         private float added = 0f;
         public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
-            if (player.InErilipah() && damage > 1)
+            if (player.InErilipah() && (damage > 1 || added > 0))
             {
                 Infect((float)damage / 17.5f + added);
             }

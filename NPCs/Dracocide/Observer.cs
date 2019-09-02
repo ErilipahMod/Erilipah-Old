@@ -62,8 +62,7 @@ namespace Erilipah.NPCs.Dracocide
         {
             return Collision.CanHit(npc.position, npc.width, npc.height, target.position, target.width, target.height);
         }
-        private void Say(string s)
-        { CombatText.NewText(npc.Hitbox, Color.Crimson, s, true); }
+        private void Say(string s) => CombatText.NewText(npc.Hitbox, Color.Crimson, s, true);
 
         private Entity FindTarget()
         {
@@ -128,9 +127,9 @@ namespace Erilipah.NPCs.Dracocide
             // If the NPC is dying, run its death code & return the function
             if (DeathCounter > 0)
             {
+                DeathCounter++;
                 npc.noGravity = false;
                 npc.netUpdate = true;
-                DeathCounter++;
                 npc.noTileCollide = false;
                 npc.rotation += Helper.RadiansPerTick(2);
 
@@ -201,7 +200,6 @@ namespace Erilipah.NPCs.Dracocide
                     npc.velocity.Y += 0.01f;
                     npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y, -1.4f, 1.4f);
                 }
-
             }
             else
             {

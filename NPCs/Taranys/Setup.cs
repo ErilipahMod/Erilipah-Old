@@ -21,7 +21,7 @@ namespace Erilipah.NPCs.Taranys
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault(Name);
-            Main.npcFrameCount[npc.type] = 1;
+            Main.npcFrameCount[npc.type] = 12;
             NPCID.Sets.TrailCacheLength[npc.type] = 3;
             NPCID.Sets.TrailingMode[npc.type] = 0;
         }
@@ -30,9 +30,9 @@ namespace Erilipah.NPCs.Taranys
         {
             npc.lifeMax = 6500;
             npc.defense = 14;
-            npc.damage = 32;
+            npc.damage = 25;
             npc.knockBackResist = 0f;
-            npc.SetInfecting(3f);
+            npc.SetInfecting(7f);
 
             npc.aiStyle = 0;
             npc.noGravity = true;
@@ -40,7 +40,6 @@ namespace Erilipah.NPCs.Taranys
             npc.noTileCollide = true;
 
             npc.HitSound = SoundID.NPCHit2;
-            npc.DeathSound = SoundID.NPCDeath2;
             // SoundID.NPCHit4 metal
             // SoundID.NPCDeath14 grenade explosion
 
@@ -62,6 +61,10 @@ namespace Erilipah.NPCs.Taranys
         public override void BossLoot(ref string name, ref int potionType)
         {
             potionType = ItemID.HealingPotion;
+            for (int i = 0; i < 8; i++)
+            {
+                Loot.DropItem(npc, mod.ItemType("PureFlower"), 1, 2, 100, 2);
+            }
             if (Main.expertMode)
             {
                 npc.DropBossBags();
@@ -72,8 +75,23 @@ namespace Erilipah.NPCs.Taranys
             }
         }
 
+        public override bool CheckActive()
+        {
+            return Main.player.Any(p => p.active && !p.dead && p.Distance(npc.Center) < 3000);
+        }
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            scale = 1.5f;
+            return null;
+        }
+        public override void BossHeadRotation(ref float rotation)
+        {
+            rotation = npc.rotation;
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
+            FindFrame(102);
             npc.DrawTrail(spriteBatch, npc.oldPos.Length, drawColor);
             npc.DrawNPC(spriteBatch, drawColor);
             this.DrawGlowmask(spriteBatch, Color.White * 0.75f);

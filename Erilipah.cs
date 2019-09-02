@@ -1,6 +1,4 @@
-#define BETA
-using Erilipah.Biomes.ErilipahBiome;
-using Erilipah.ErilipahBiome;
+#undef HANDOUT_BETA
 using Erilipah.Items.Dracocide;
 using Erilipah.Items.Templar;
 using Microsoft.Xna.Framework;
@@ -21,6 +19,14 @@ namespace Erilipah
 
         public override void Load()
         {
+
+#if HANDOUT_BETA
+            ulong PROVIDED_ID = ?;
+            ulong CURRENT_ID = Steamworks.SteamUser.GetSteamID().m_SteamID;
+            if (PROVIDED_ID != CURRENT_ID)
+                throw new Exception("Steam ID does not match the intended recipient ID.");
+#endif
+
             Bandolier = RegisterHotKey("Bondolier", "U");
             VeritasAbilityKey = RegisterHotKey("Veritas", "V");
             VitalityAbilityKey = RegisterHotKey("Vitality Heal", "G");
@@ -42,7 +48,7 @@ namespace Erilipah
                 infectUI = new UserInterface();
                 infectUI.SetState(infectionBar);
 
-                SkyManager.Instance["Erilipah:ErilipahBiome"] = new ErilipahBiome.ErilipahSky();
+                SkyManager.Instance["Erilipah:ErilipahBiome"] = new Biomes.ErilipahBiome.ErilipahSky();
                 Filters.Scene["Erilipah:ErilipahBiome"] = new Filter(new ScreenShaderData("FilterMoonLord").UseIntensity(0.75f), EffectPriority.Low);
             }
         }
@@ -108,7 +114,7 @@ namespace Erilipah
             CustomSky erilipahSky = SkyManager.Instance["Erilipah:ErilipahBiome"];
             if (erilipahSky.IsActive())
             {
-                float tile = MathHelper.Lerp(1f, erilipahIsBright ? 0.52f : 0.35f, erilipahSky.Opacity);
+                float tile = MathHelper.Lerp(1f, erilipahIsBright ? 0.52f : 0.4f, erilipahSky.Opacity);
                 float back = MathHelper.Lerp(1f, erilipahIsBright ? 0.25f : 0.22f, erilipahSky.Opacity);
                 totalBright *= erilipahIsBright ? 1 : MathHelper.Lerp(1f, 0.8f, erilipahSky.Opacity);
 
@@ -119,7 +125,7 @@ namespace Erilipah
                 }
 
                 tileColor = new Color(
-                    (byte)(tileColor.R * tile * 0.8f),
+                    (byte)(tileColor.R * tile * 0.85f),
                     (byte)(tileColor.G * tile * 0.7f),
                     (byte)(tileColor.B * tile * 1.0f), tileColor.A
                     );
@@ -147,7 +153,7 @@ namespace Erilipah
             if (Main.LocalPlayer.InErilipah())
             {
                 music = GetSoundSlot(SoundType.Music, "Sounds/Music/Erilipah");
-                priority = MusicPriority.BiomeMedium;
+                priority = MusicPriority.BiomeHigh;
             }
             
             if (Main.LocalPlayer.InLostCity())

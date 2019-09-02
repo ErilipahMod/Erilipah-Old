@@ -47,9 +47,15 @@ namespace Erilipah.Items.ErilipahBiome
         internal static readonly Color light = new Color(1.7f, 0.3f, 2f);
         public override void HoldItem(Player player)
         {
+            player.itemLocation.X -= 6 * player.direction;
+            player.itemLocation.Y += 4;
+
             if (Main.rand.Next(player.itemAnimation > 0 ? 20 : 40) == 0)
             {
-                Dust.NewDust(new Vector2(player.itemLocation.X + 16f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<Crystalline.CrystallineDust>());
+                if (Main.LocalPlayer.InErilipah())
+                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<Crystalline.CrystallineDust>());
+                else
+                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
             }
             Vector2 position = player.RotatedRelativePoint(new Vector2(player.itemLocation.X + 12f * player.direction + player.velocity.X, player.itemLocation.Y - 14f + player.velocity.Y), true);
 
@@ -90,9 +96,10 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Torch, 1);
-            recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 3);
-            recipe.SetResult(this, 1);
+            recipe.AddIngredient(ItemID.Torch, 6);
+            recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 5);
+            recipe.AddIngredient(mod.ItemType<BioluminescentSinew>(), 1);
+            recipe.SetResult(this, 6);
             recipe.AddRecipe();
         }
     }
@@ -141,18 +148,24 @@ namespace Erilipah.Items.ErilipahBiome
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Main.tile[i, j];
+
+            if (!Main.LocalPlayer.InErilipah() && tile.frameX < 66)
+            {
+                tile.frameX += 66;
+            }
+
             if (tile.frameX < 66)
             {
                 r = CrystallineTorch.light.R / 255f;
                 g = CrystallineTorch.light.G / 255f;
                 b = CrystallineTorch.light.B / 255f;
-            }
 
-            for (int x = -1; x < 2; x++)
-            {
-                for (int y = -1; y < 2; y++)
+                for (int x = -1; x < 2; x++)
                 {
-                    Lighting.AddLight(new Vector2(i, j)*16 + new Vector2(x, y) * 16, CrystallineTorch.light.ToVector3());
+                    for (int y = -1; y < 2; y++)
+                    {
+                        Lighting.AddLight(new Vector2(i, j) * 16 + new Vector2(x, y) * 16, CrystallineTorch.light.ToVector3());
+                    }
                 }
             }
         }

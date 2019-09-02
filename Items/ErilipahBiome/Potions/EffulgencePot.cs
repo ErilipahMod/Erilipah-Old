@@ -60,8 +60,8 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             {
                 player.I().reductionDmg *= 1.50f;
                 if (player.InErilipah())
-                    Lighting.AddLight(player.Center, 1.5f, 1.5f, 1.7f);
-                if (player == Main.LocalPlayer)
+                    Lighting.AddLight(player.Center, 0.85f, 0.7f, 1f);
+                if (player.whoAmI == Main.myPlayer)
                     Erilipah.erilipahIsBright = true;
             }
         }

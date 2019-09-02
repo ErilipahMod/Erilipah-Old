@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -37,8 +38,8 @@ namespace Erilipah
 
         public override void UpdateBiomes()
         {
-            ZoneErilipah = ErilipahWorld.erilipahTiles > 25;
-            ZoneLostCity = ErilipahWorld.lostCityTiles > 20;
+            ZoneLostCity = ErilipahWorld.lostCityTiles > 35;
+            ZoneErilipah = ErilipahWorld.erilipahTiles > 35 || ZoneLostCity;
         }
         public override bool CustomBiomesMatch(Player other)
         {

@@ -1,4 +1,5 @@
 ﻿using Erilipah.Items.ErilipahBiome;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace Erilipah
     public class ErilipahItem : GlobalItem
     {
         public const float LightSnuffRate = 1 / 500f;
+        public static void SnuffFx(Vector2 position)
+        {
+            for (int i = 0; i < Main.rand.Next(1, 3); i++)
+            {
+                Gore.NewGore(position, new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -0.5f), GoreID.ChimneySmoke1 + Main.rand.Next(3), 0.85f);
+            }
+        }
 
         public override void HoldItem(Item item, Player player)
         {
@@ -26,24 +34,20 @@ namespace Erilipah
                     return;
 
                 Main.PlaySound(SoundID.LiquidsWaterLava, player.Center);
-                for (int i = 0; i < Main.rand.Next(1, 4); i++)
+                SnuffFx(player.RotatedRelativePoint(new Vector2(
+                    player.itemLocation.X + 12f * player.direction + player.velocity.X,
+                    player.itemLocation.Y - 14f + player.velocity.Y), true) +
+                    new Vector2(player.itemWidth, player.itemHeight) / 2);
+                if (Main.myPlayer == player.whoAmI)
                 {
-                    var position = player.RotatedRelativePoint(new Microsoft.Xna.Framework.Vector2(
-                        player.itemLocation.X + 12f * player.direction + player.velocity.X,
-                        player.itemLocation.Y - 14f + player.velocity.Y), true);
-
-                    Gore.NewGore(
-                        position + new Microsoft.Xna.Framework.Vector2(player.itemWidth, player.itemHeight) / 2,
-                        new Microsoft.Xna.Framework.Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -0.5f),
-                        GoreID.ChimneySmoke2,
-                        0.85f);
-                }
-                if (Main.LocalPlayer == player)
-                {
-                    if (item.stack == 1)
-                        item.TurnToAir();
-                    else
-                        item.stack--;
+                    try
+                    {
+                        if (item.stack <= 1)
+                            item.TurnToAir();
+                        else
+                            item.stack--;
+                    }
+                    catch { }
                 }
             }
         }
@@ -53,11 +57,11 @@ namespace Erilipah
             if (!Main.rand.Chance(LightSnuffRate))
                 return;
 
-            bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == item.createTile) || item.flame;
-
             int ind = item.FindClosestPlayer(5000);
             if (ind == -1)
                 return;
+
+            bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == item.createTile) || item.flame;
 
             Player player = Main.player[ind];
             if (player.InErilipah() && light)
@@ -66,12 +70,8 @@ namespace Erilipah
                     return;
 
                 Main.PlaySound(SoundID.LiquidsWaterLava, item.Center);
-                for (int i = 0; i < Main.rand.Next(1, 4); i++)
-                {
-                    Gore.NewGore(
-                        item.Center, new Microsoft.Xna.Framework.Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -0.5f), GoreID.ChimneySmoke2, 0.85f);
-                }
-                if (Main.LocalPlayer == player)
+                SnuffFx(item.Center);
+                if (Main.myPlayer == player.whoAmI)
                 {
                     if (item.stack == 1)
                         item.TurnToAir();

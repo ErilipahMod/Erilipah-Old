@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Erilipah.ErilipahBiome;
 using Erilipah.Items.Crystalline;
 using Erilipah.Items.ErilipahBiome;
 using Erilipah.NPCs.ErilipahBiome;
@@ -29,6 +28,7 @@ namespace Erilipah.NPCs.Taranys
 
         private Player Target => Main.player[npc.target];
         private float SpeedMult => MathHelper.Lerp(Main.expertMode ? 0.35f : 0.50f, 1f, npc.life / (float)npc.lifeMax);
+        private int AlphaOT => (int)MathHelper.SmoothStep(200, 0, npc.life / (float)npc.lifeMax);
 
         private static float GetFloorY(Vector2 pos)
         {
@@ -45,7 +45,7 @@ namespace Erilipah.NPCs.Taranys
 
         private void Roar()
         {
-            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1, 0.225f);
+            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, 0.65f);
         }
         private void Hover()
         {
@@ -75,9 +75,9 @@ namespace Erilipah.NPCs.Taranys
         private void Pulse(float distance, float speed = 5, bool repel = false)
         {
             if (distance == 0 || distance == speed)
-                Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 0, 1f, -0.2f);
+                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, -0.35f);
 
-            npc.alpha = (int)MathHelper.SmoothStep(270, 0, distance / (90 * speed));
+            npc.alpha = (int)MathHelper.SmoothStep(0, AlphaOT, distance / (60 * speed));
 
             for (int i = 0; i < distance * 0.2f; i++)
             {
@@ -111,6 +111,9 @@ namespace Erilipah.NPCs.Taranys
                         proj.ai[0] = -120;
                     }
 
+                    if (!proj.hostile && !proj.friendly)
+                        proj.Kill();
+
                     if (Main.expertMode && repel)
                     {
                         if (proj.friendly || proj.hostile)
@@ -123,7 +126,22 @@ namespace Erilipah.NPCs.Taranys
             }
 
             if (!repel)
+            {
+                for (int i = 0; i < 255; i++)
+                {
+                    float distanceToNPC = Vector2.Distance(Main.player[i].Center, npc.Center);
+                    if (distanceToNPC > distance - speed && distanceToNPC < distance + speed)
+                    {
+                        Main.player[i].immune = true;
+                        Main.player[i].immuneTime = 30;
+
+                        Main.player[i].velocity *= -0.2f;
+                        Main.player[i].wingTime = 0;
+                        Main.player[i].rocketTime = 0;
+                    }
+                }
                 return;
+            }
 
             for (int i = 0; i < 255; i++)
             {
@@ -133,7 +151,7 @@ namespace Erilipah.NPCs.Taranys
                     Main.player[i].immune = true;
                     Main.player[i].immuneTime = 30;
 
-                    Main.player[i].velocity = npc.Center.To(Main.player[i].Center, 10);
+                    Main.player[i].velocity = npc.Center.To(Main.player[i].Center, 8);
                     Main.player[i].wingTime = 0;
                     Main.player[i].rocketTime = 0;
                 }
@@ -156,12 +174,17 @@ namespace Erilipah.NPCs.Taranys
                 npc.netUpdate = true;
                 TempTimer = 0;
 
-                if (npc.life < npc.lifeMax * 0.275)
+                if (npc.life < npc.lifeMax * 0.3)
                 {
                     IncrementPhase();
                 }
                 Attack = Main.rand.Next(5);
             }
+
+            if (!Target.InErilipah())
+                npc.dontTakeDamage = true;
+            else
+                npc.dontTakeDamage = false;
 
             if (Timer == 0)
             {
@@ -177,17 +200,36 @@ namespace Erilipah.NPCs.Taranys
                 {
                     Hover();
                     npc.velocity *= (Timer / 100f);
-                    npc.alpha -= 10;
+                    npc.alpha -= 7;
                     Timer++;
                     return;
                 }
-                npc.alpha = (int)MathHelper.SmoothStep(270, 0, npc.life / (float)npc.lifeMax);
+                npc.alpha = AlphaOT;
             }
             else
             {
                 Timer--;
                 npc.alpha = 100;
                 npc.velocity = Vector2.Zero;
+                npc.Center = vector + Main.rand.NextVector2Circular(3, 3) * ((-(200 + Timer) + 200) / 50f);
+                npc.dontTakeDamage = true;
+
+                if (Timer == -30)
+                {
+                    Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 0.7f, -0.1f);
+                }
+
+                if (Timer <= -220)
+                {
+                    npc.dontTakeDamage = false;
+                    if (Timer == -220)
+                        Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, 0.3f);
+                }
+
+                if (Timer < -400)
+                {
+                    npc.StrikeNPC(10, 0, 0, true);
+                }
                 return;
             }
 
@@ -444,22 +486,21 @@ namespace Erilipah.NPCs.Taranys
                         {
                             if (npc.Distance(vector) > 100)
                                 npc.Teleport(vector, 1);
+                            Roar();
                         }
                         else if (TempTimer < 120) // Falling, falling, falling,
                         {
                             TempTimer = 116;
-                            npc.noTileCollide = true;
-                            int off = 10;
                             bool fallThrough = npc.position.Y + npc.height + 2 < Target.position.Y + Target.height;
                             npc.velocity = Collision.TileCollision(
-                                npc.position + new Vector2(off, off), new Vector2(0, dashSpeed),
-                                npc.width - off, npc.height - off, fallThrough, fallThrough);
+                                npc.position + new Vector2(0, -10), new Vector2(0, dashSpeed),
+                                npc.width, npc.height, fallThrough, fallThrough);
                             Rotate(true);
 
                             if (npc.velocity.Y < 4) // until we hit the ground.
                             {
+                                Main.PlaySound(SoundID.NPCDeath14, npc.Center);
                                 npc.velocity = Vector2.Zero;
-                                npc.noTileCollide = true;
                                 TempTimer = 120;
                             }
                         }
@@ -518,7 +559,7 @@ namespace Erilipah.NPCs.Taranys
                         else if (TempTimer % 45 == 0)
                         {
                             npc.netUpdate = true;
-                            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.3f);
+                            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.5f);
                             if (Main.netMode != 1)
                             {
                                 NPC h = Main.npc[NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType<Seeker>(), 0, 0, 1)];
@@ -584,29 +625,45 @@ namespace Erilipah.NPCs.Taranys
 
                         Pulse(TempTimer * 12, 12, true);
                     }
-                    else if (npc.life > 0.1f)
+                    else if (npc.life > 0.1f * npc.lifeMax)
                     {
+                        Hover();
+                        npc.velocity /= 3f;
+
                         if (npc.Distance(vector) > 102)
                         {
                             npc.Teleport(vector, 1);
                         }
 
-                        for (int i = 0; i < 255; i++)
+                        for (int i = 0; i < Main.maxProjectiles; i++)
                         {
+                            Projectile proj = Main.projectile[i];
+                            float distance = proj.Distance(npc.Center);
+                            float speed = MathHelper.SmoothStep(1.5f, 0, distance / 2000f);
+
+                            if (!proj.hostile)
+                                proj.velocity += proj.Center.To(npc.Center, speed);
+                            if (!proj.hostile && !proj.friendly && proj.Distance(npc.Center) < 100)
+                                proj.Kill();
+
+                            if (i >= 255) continue;
+
                             Player p = Main.player[i];
-                            float distance = p.Distance(npc.Center);
-                            float speed = MathHelper.SmoothStep(10, 0, distance / 1000f);
-                            p.position += p.Center.To(npc.Center, speed);
+                            distance = p.Distance(npc.Center);
+                            speed = MathHelper.SmoothStep(1.5f, 0, distance / 2000f);
+
+                            p.velocity.X += (p.Center.X < npc.Center.X ? speed : -speed);
+                            if (MathHelper.Distance(p.Center.X, npc.Center.X) < 50)
+                                p.velocity.Y += (p.Center.Y < npc.Center.Y ? speed : -speed) / 1.5f;
                         }
 
                         for (int i = 0; i < 30; i++)
                         {
-                            float radius = 500 - Timer % 500f;
-                            Dust.NewDustPerfect(npc.Center + Vector2.UnitX.RotatedBy(i / 30f * MathHelper.TwoPi) * radius, 
+                            float radius = MathHelper.SmoothStep(1000f, 0f, TempTimer % 100 / 100f);
+                            Dust.NewDustPerfect(npc.Center + Vector2.UnitX.RotatedBy(i / 30f * MathHelper.TwoPi + TempTimer / 40f) * radius, 
                                 mod.DustType<CrystallineDust>(), Vector2.Zero)
                                 .noGravity = true;
                         }
-                        npc.velocity = Vector2.Zero;
                     }
                     else
                     {
@@ -620,9 +677,9 @@ namespace Erilipah.NPCs.Taranys
                     Hover();
                     npc.velocity /= 3f;
 
-                    if (Timer % 350 == 0)
+                    if (Timer % 500 * SpeedMult == 0)
                     {
-                        SpawnMinions(Main.expertMode ? 5 : 3);
+                        SpawnMinions(Main.expertMode ? 4 : 2);
                         Roar();
                     }
 
@@ -674,23 +731,23 @@ namespace Erilipah.NPCs.Taranys
             {
                 Timer = -1;
 
+                vector = npc.Center;
                 npc.dontTakeDamage = true;
                 npc.life = 1;
                 return false;
             }
-            return Timer < -180;
+            if (Timer < -180)
+            {
+                npc.life = 0;
+                HitEffect(0, 1);
+                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, -0.785f);
+                return true;
+            }
+            return false;
         }
 
         public override void HitEffect(int hitDirection, double damage)
         {
-            if (npc.life <= 0)
-            {
-                const string path = "Gores/Taranys/TaranysGore";
-                Gore.NewGore(npc.position, new Vector2(-3, -3), mod.GetGoreSlot(path + "0"));
-                Gore.NewGore(npc.position, new Vector2(3, -3), mod.GetGoreSlot(path + "1"));
-                Gore.NewGore(npc.position, new Vector2(Main.rand.NextFloat(-1, 1), 2), mod.GetGoreSlot(path + "2"));
-            }
-
             for (int i = 0; i < 3; i++)
             {
                 Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType<ErilipahBiome.VoidParticle>(), hitDirection * 4, -3);
@@ -721,9 +778,9 @@ namespace Erilipah.NPCs.Taranys
         {
             npc.lifeMax = 80;
             npc.defense = 0;
-            npc.damage = 20;
+            npc.damage = 25;
             npc.knockBackResist = 0f;
-            npc.SetInfecting(1.5f);
+            npc.SetInfecting(0.8f);
 
             npc.aiStyle = 0;
             npc.noTileCollide = true;
@@ -814,7 +871,7 @@ namespace Erilipah.NPCs.Taranys
         {
             projectile.width = 16;
             projectile.height = 16;
-            projectile.SetInfecting(2.2f);
+            projectile.SetInfecting(3.5f);
 
             projectile.tileCollide = false;
             projectile.aiStyle = 0;
@@ -853,7 +910,7 @@ namespace Erilipah.NPCs.Taranys
             projectile.scale = 2f;
             projectile.width = 8;
             projectile.height = 8;
-            projectile.SetInfecting(1.2f);
+            projectile.SetInfecting(2.8f);
 
             projectile.tileCollide = false;
             projectile.aiStyle = 0;

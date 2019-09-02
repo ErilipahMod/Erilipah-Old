@@ -208,7 +208,7 @@ namespace Erilipah.Items
                 item.height = 32;
                 item.consumable = false;
 
-                item.value = Item.buyPrice(0, 50, 0, 0);
+                item.value = Item.buyPrice(0, 20, 0, 0);
                 item.rare = ItemRarityID.LightRed;
                 UpdateStats();
             }
@@ -217,7 +217,7 @@ namespace Erilipah.Items
             {
                 ModRecipe r = new ModRecipe(mod);
                 r.AddIngredient(mod.ItemType<Bandolier>(), 1);
-                r.AddIngredient(mod.ItemType<DimensionalTorus>(), 3);
+                r.AddIngredient(TileID.Crystals, 3);
                 r.AddIngredient(ItemID.EndlessMusketPouch, 1);
                 r.AddTile(TileID.CrystalBall);
                 r.SetResult(this);

@@ -11,7 +11,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah.ErilipahBiome
+namespace Erilipah.Biomes.ErilipahBiome
 {
     public class FallingAsh
     {
@@ -62,8 +62,6 @@ namespace Erilipah.ErilipahBiome
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Main.myPlayer < 0 || Main.gameMenu || !Main.LocalPlayer.active || !active)
-                return;
             Texture2D texture2D = ModContent.GetTexture("Erilipah/NPCs/ErilipahBiome/VoidParticle");
             Rectangle frame = texture2D.Frame(1, 3, 0, 1);
             spriteBatch.Draw(texture2D,
@@ -97,7 +95,12 @@ namespace Erilipah.ErilipahBiome
             }
             Opacity = MathHelper.Clamp(Opacity, 0, 1f);
 
-            if (ashes.Count < (Main.raining || Sandstorm.Happening ? 1200 : 900))
+            bool noAshes = Main.myPlayer < 0 || Main.gameMenu || !Main.LocalPlayer.active || Main.LocalPlayer.Center.Y < Main.rockLayer * 16;
+            if (noAshes)
+            {
+                ashes.Clear();
+            }
+            else if (ashes.Count < (Main.raining || Sandstorm.Happening ? 1200 : 900))
             {
                 float grav = (Main.raining || Sandstorm.Happening ? 1.3f : 1.0f) * Main.rand.NextFloat(1f, 5f);
                 ashes.Add(new FallingAsh(
@@ -108,8 +111,7 @@ namespace Erilipah.ErilipahBiome
                     MathHelper.Lerp(0.6f, 1.5f, (grav - 1f) / 5f)
                     ));
             }
-            if (Main.LocalPlayer.Center.Y < Main.rockLayer * 16)
-                ashes.ForEach(ash => ash.Update());
+            ashes.ForEach(ash => ash.Update());
             ashes.RemoveAll(ash => !ash.active);
             foreach (var droplet in Main.rain)
             {

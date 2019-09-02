@@ -55,7 +55,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     else
                         tile.type = (ushort)mod.TileType("InfectedClump");
 
-                    WorldGen.TileFrame(i, j);
+                    WorldGen.TileFrame((int)tilePos.X, (int)tilePos.Y);
                 }
 
                 if (tile.wall > 0 && !(
@@ -76,7 +76,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     else
                         tile.wall = (ushort)mod.WallType<InfectedClumpWall>();
 
-                    WorldGen.SquareWallFrame(i, j);
+                    WorldGen.SquareWallFrame((int)tilePos.X, (int)tilePos.Y);
                 }
             }
             catch { }
@@ -164,7 +164,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override bool Drop(int i, int j)
         {
-            if (Main.tile[i, j].liquid < 200)
+            if (Main.tile[i, j].liquid + Main.tile[i, j - 1].liquid < 200)
                 Main.tile[i, j].liquid += 20;
             return true;
         }
@@ -207,7 +207,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 item.CloneDefaults(ItemID.DirtBlock);
                 item.width = 16;
                 item.height = 16;
-                item.createTile = mod.TileType<InfectedClump>();
+                item.createTile = mod.TileType<SpoiledClump>();
             }
         }
 

@@ -13,7 +13,7 @@ namespace Erilipah.NPCs.ErilipahBiome
     {
         public override bool Update(Dust dust)
         {
-            if (dust.customData is Vector3 position) // play.tribewars.net
+            if (dust.customData is Vector3 position)
             {
                 if (Vector2.Distance(dust.position, new Vector2(position.X, position.Y)) > position.Z)
                 {

@@ -16,12 +16,3 @@
             projectile.hostile = !
                 (projectile.friendly = true);
         }
-        public override void ModifyDamageHitbox(ref Rectangle hitbox)
-        {
-            int offSetX = 0;
-            int offSetY = 0;
-
-            hitbox.Offset(offSetX, offSetY);
-            hitbox.Width -= offSetX;
-            hitbox.Height -= offSetY;
-        }

@@ -1,6 +1,4 @@
-﻿using Erilipah.Biomes.ErilipahBiome;
-using Erilipah.Biomes.ErilipahBiome.Tiles;
-using Erilipah.ErilipahBiome;
+﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -329,6 +327,25 @@ namespace Erilipah
                 if (tart.active && !tart.dead && Main.player[i] != entity && conditions(tart))
                 {
                     float distCurrent = Vector2.Distance(tart.Center, entity.Center);
+                    if (distCurrent < distClosest)
+                    {
+                        closest = i;
+                        distClosest = distCurrent;
+                    }
+                }
+            }
+            return closest;
+        }
+        internal static int FindClosestNPC(Vector2 pos, float viewDistance, Predicate<NPC> conditions)
+        {
+            int closest = -1;
+            float distClosest = viewDistance;
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC tart = Main.npc[i];
+                if (tart.active && !(tart.immortal || tart.dontTakeDamage) && conditions(tart))
+                {
+                    float distCurrent = Vector2.Distance(tart.Center, pos);
                     if (distCurrent < distClosest)
                     {
                         closest = i;

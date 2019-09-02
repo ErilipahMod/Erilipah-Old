@@ -31,10 +31,6 @@ namespace Erilipah
                 shop.item[nextSlot++].SetDefaults(mod.ItemType("GunMold"));
                 shop.item[nextSlot++].SetDefaults(mod.ItemType("Bandolier"));
             }
-            if (type == NPCID.Wizard && NPC.downedMechBossAny)
-            {
-                shop.item[nextSlot++].SetDefaults(mod.ItemType<Items.Materials.DimensionalTorus>());
-            }
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)

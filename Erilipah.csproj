@@ -14,9 +14,6 @@
     <None Remove="Items\Sacracite\SacraciteRelic.cs~RF44927539.TMP" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Items\Taranys\" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 </Project>

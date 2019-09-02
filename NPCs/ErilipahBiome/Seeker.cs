@@ -69,7 +69,10 @@ namespace Erilipah.NPCs.ErilipahBiome
             }
         }
 
+        private bool Direction { get => npc.ai[2] == 1; set => npc.ai[2] = value ? 1 : 0; }
+        private bool HasSeenTarget { get => npc.ai[3] == 1; set => npc.ai[3] = value ? 1 : 0; }
         private Player Target => Main.player[npc.target];
+
         public override void AI()
         {
             npc.ai[0]++;
@@ -77,11 +80,39 @@ namespace Erilipah.NPCs.ErilipahBiome
             // If spawned from Taranys, just float; else, circle target
             if (npc.ai[1] == 1)
             {
-                npc.velocity = npc.GoTo(Target.Center, 0.01f, 0.6f);
+                npc.velocity = npc.GoTo(Target.Center, 0.03f, 1.2f);
             }
             else
             {
                 npc.velocity = npc.GoTo(Target.Center + new Vector2(0, 220).RotatedBy(npc.ai[0] / 100f), 0.17f, 2.25f);
+            }
+
+            if (npc.ai[1] != 1 && !HasSeenTarget)
+            {
+                if (Collision.CanHit(npc.Center, 1, 1, Target.Center, 1, 1))
+                {
+                    HasSeenTarget = true;
+                    return;
+                }
+
+                // Go to the direction it's facing.
+                npc.velocity.X += 0.2f * Direction.ToDirectionInt();
+                npc.velocity.X = MathHelper.Clamp(npc.velocity.X, -1.8f, 1.8f);
+                if (npc.collideX)
+                {
+                    npc.velocity.X *= -0.2f;
+                    Direction = !Direction;
+                    npc.netUpdate = true;
+                }
+                if (npc.collideY || !Collision.CanHit(npc.position, npc.width, npc.height, npc.position + new Vector2(30 * Direction.ToDirectionInt(), 200), npc.width + 10, npc.height + 10))
+                {
+                    npc.velocity.Y -= 0.15f;
+                    npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y, -2.5f, 2.5f);
+                }
+
+                npc.rotation = npc.velocity.ToRotation();
+                npc.spriteDirection = npc.velocity.X < 0 ? 1 : -1;
+                return;
             }
 
             if (npc.ai[0] % 160 == 0 && Main.netMode != 1)
@@ -95,8 +126,11 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
-            Loot.DropItem(npc, ItemID.Heart, 1, 1, 50);
+            if (npc.ai[1] == 1)
+                Loot.DropItem(npc, ItemID.Heart, 1, 1, 50);
+            else
+                Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
+
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)

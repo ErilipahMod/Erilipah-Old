@@ -1,6 +1,4 @@
-﻿using Erilipah.Biomes.ErilipahBiome;
-using Erilipah.ErilipahBiome;
-using Erilipah.Items.Dracocide;
+﻿using Erilipah.Items.Dracocide;
 using Erilipah.Items.Templar;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
