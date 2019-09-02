@@ -28,9 +28,6 @@ namespace Erilipah.Items.ErilipahBiome.Potions
 
             item.value = Item.sellPrice(0, 0, 1);
             item.rare = ItemRarityID.Blue;
-
-            item.buffTime = 3600 * 5;
-            item.buffType = mod.BuffType<ReductionPotBuff>();
         }
 
         public override bool CanUseItem(Player player)
@@ -40,6 +37,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void OnConsumeItem(Player player)
         {
             player.AddBuff(BuffID.PotionSickness, item.buffTime);
+            player.AddBuff(mod.BuffType<ReductionPotBuff>(), 3600 * 5);
         }
 
         public override void AddRecipes()
