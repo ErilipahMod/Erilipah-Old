@@ -9,7 +9,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Antihemic Serum");
-            Tooltip.SetDefault("Lowers infection from damage");
+            Tooltip.SetDefault("Halves infection from damage");
         }
         public override void SetDefaults()
         {

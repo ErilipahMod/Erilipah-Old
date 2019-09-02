@@ -15,7 +15,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Inhibitor Serum");
-            Tooltip.SetDefault("Slows ambient infection");
+            Tooltip.SetDefault("Halves the rate of ambient infection");
         }
         public override void SetDefaults()
         {

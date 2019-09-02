@@ -10,7 +10,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Purity Serum");
-            Tooltip.SetDefault("Bloodborne and ambient infection is reduced\nLess potent than its reactants");
+            Tooltip.SetDefault("Bloodborne and ambient infection are lowered by 30% each");
         }
         public override void SetDefaults()
         {
@@ -72,11 +72,6 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             {
                 player.I().reductionDmg *= 0.70f;
                 player.I().reductionRate *= 0.70f;
-
-                if (player.lifeRegen > 0)
-                    player.lifeRegen /= 2;
-
-                player.AddBuff(BuffID.Weak, 2);
             }
         }
     }
