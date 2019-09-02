@@ -30,6 +30,11 @@ namespace Erilipah
             return player.inventory.FirstOrDefault(ammo => ammo.ammo > 0 && !ammo.IsAir && (conditions == null || conditions(ammo)));
         }
 
+        internal static float Brightness(this Player player)
+        {
+            Rectangle loc = new Rectangle(player.getRect().X / 16, player.getRect().Y / 16, 2, 3);
+            return Lighting.BrightnessAverage(loc.X, loc.Y, loc.Width, loc.Height);
+        }
         internal static bool InErilipah(this Player player) => player.GetModPlayer<ErilipahPlayer>().ZoneErilipah || player.GetModPlayer<ErilipahPlayer>().ZoneLostCity;
         internal static bool InLostCity(this Player player) => player.GetModPlayer<ErilipahPlayer>().ZoneLostCity;
         internal static bool IsErilipahTile(this Tile tile)

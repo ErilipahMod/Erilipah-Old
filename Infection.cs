@@ -180,7 +180,7 @@ namespace Erilipah
             }
         }
 
-        private int darknessCounter = 0;
+        public int darknessCounter = 0;
         private int counter = 0;
         public override void PreUpdate()
         {
@@ -216,8 +216,8 @@ namespace Erilipah
                 }
             }
 
-            Rectangle loc = new Rectangle(player.getRect().X / 16, player.getRect().Y / 16, 2, 3);
-            float playerBrightness = Lighting.BrightnessAverage(loc.X, loc.Y, loc.Width, loc.Height);
+            
+            float playerBrightness = player.Brightness();
             if (!player.InErilipah())
                 return;
 
@@ -226,59 +226,7 @@ namespace Erilipah
                 Main.dust[i].noLight = true;
             }
 
-            if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && player.velocity == Vector2.Zero && player.channel && player.HeldItem.type == mod.ItemType<Aboryc>())
-            {
-                Predicate<Projectile> p = pee => pee.active && mod.ItemType("") == 0;
-                int sigilIndex = -1;
-                for (int i = 0; i < Main.maxProjectiles; i++)
-                {
-                    if (Main.projectile[i].active && Main.projectile[i].type == mod.ProjectileType<AbProj>())
-                    {
-                        sigilIndex = i;
-                        break;
-                    }
-                }
-                if (sigilIndex == -1)
-                {
-                    sigilIndex = Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType<AbProj>(), 0, 0, player.whoAmI);
-                }
-                player.GetModPlayer<ErilipahPlayer>().canMove = false;
-                player.itemAnimation = 30;
-
-                Projectile sigil = Main.projectile[sigilIndex];
-                sigil.timeLeft = 30;
-
-                if (playerBrightness < 0.1f)
-                {
-                    darknessCounter++;
-
-                    if (darknessCounter < 220) { }
-                    else if (darknessCounter == 220)
-                    {
-                        Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, 0.2f);
-                    }
-                    else if (darknessCounter < 300)
-                    {
-                        Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 103, 0.2f, 0.3f);
-                        Dust.NewDustPerfect(sigil.Center - Vector2.UnitY * 10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
-                            .customData = 0f;
-                    }
-                    else if (darknessCounter == 300)
-                    {
-                        for (int i = 0; i < 50; i++)
-                        {
-                            Dust.NewDustPerfect(sigil.Center-Vector2.UnitY*10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
-                                .customData = 0f;
-                            Dust.NewDustPerfect(sigil.Center - Vector2.UnitY * 10, mod.DustType<VoidParticle>(), Main.rand.NextVector2CircularEdge(5, 5))
-                                .customData = 0f;
-                        }
-                        sigil.frame = 1;
-                        Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, -0.4f);
-                    }
-                }
-                return;
-            }
-            else if (playerBrightness <= 0.1f)
+            if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && playerBrightness <= 0.1f)
             {
                 darknessCounter++;
                 if (darknessCounter == 220)
@@ -290,8 +238,7 @@ namespace Erilipah
                     player.Hurt(PlayerDeathReason.ByCustomReason("Darkness overtook " + player.name + "."), player.statLifeMax2 / 5 + Main.rand.Next(15), Main.rand.Next(-1, 2));
                 }
             }
-            
-            if (playerBrightness > 0.1f)
+            else
             {
                 if (darknessCounter > 400) darknessCounter = 400;
                 darknessCounter -= 3;
@@ -419,6 +366,7 @@ namespace Erilipah
         public override void clientClone(ModPlayer clientClone)
         {
             InfectionPlr clone = clientClone as InfectionPlr;
+            clone.darknessCounter = darknessCounter;
             clone.Infection = Infection;
             clone.infectionMax = infectionMax;
         }

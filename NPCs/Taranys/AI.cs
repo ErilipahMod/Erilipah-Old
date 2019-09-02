@@ -111,9 +111,6 @@ namespace Erilipah.NPCs.Taranys
                         proj.ai[0] = -120;
                     }
 
-                    if (!proj.hostile && !proj.friendly)
-                        proj.Kill();
-
                     if (Main.expertMode && repel)
                     {
                         if (proj.friendly || proj.hostile)
@@ -507,11 +504,12 @@ namespace Erilipah.NPCs.Taranys
                         else if (TempTimer < 180) // Create some dusts & painful sharp crystals that shoot up from the ground
                         {
                             float distance = (TempTimer - 120) * dashSpeed;
-                            float speed = 11;
 
                             for (int i = -1; i < 2; i += 2)
                             {
+                                float speed = Main.rand.NextFloat(10, 13);
                                 float y = GetFloorY(npc.Center);
+
                                 Vector2 position = new Vector2(npc.Center.X + distance * i, y);
                                 Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f).customData = 0f;
 
@@ -925,6 +923,7 @@ namespace Erilipah.NPCs.Taranys
         public override void AI()
         {
             projectile.ai[0]--;
+            projectile.netUpdate = true;
 
             if (projectile.ai[1] != 0)
             {

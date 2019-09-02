@@ -60,6 +60,7 @@ namespace Erilipah.NPCs.Taranys
 
         public override void BossLoot(ref string name, ref int potionType)
         {
+            ErilipahWorld.downedTaintedSkull = true;
             potionType = ItemID.HealingPotion;
             for (int i = 0; i < 8; i++)
             {
@@ -91,7 +92,6 @@ namespace Erilipah.NPCs.Taranys
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            FindFrame(102);
             npc.DrawTrail(spriteBatch, npc.oldPos.Length, drawColor);
             npc.DrawNPC(spriteBatch, drawColor);
             this.DrawGlowmask(spriteBatch, Color.White * 0.75f);

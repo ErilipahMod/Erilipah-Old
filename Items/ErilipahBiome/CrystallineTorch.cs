@@ -153,6 +153,10 @@ namespace Erilipah.Items.ErilipahBiome
             {
                 tile.frameX += 66;
             }
+            if (Main.LocalPlayer.InErilipah() && tile.frameX >= 66)
+            {
+                tile.frameX -= 66;
+            }
 
             if (tile.frameX < 66)
             {

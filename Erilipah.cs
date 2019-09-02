@@ -118,10 +118,11 @@ namespace Erilipah
                 float back = MathHelper.Lerp(1f, erilipahIsBright ? 0.25f : 0.22f, erilipahSky.Opacity);
                 totalBright *= erilipahIsBright ? 1 : MathHelper.Lerp(1f, 0.8f, erilipahSky.Opacity);
 
-                if (Main.raining)
+                if (Main.raining && Main.LocalPlayer.Center.Y < Main.rockLayer * 16)
                 {
                     tile /= 2f;
                     back /= 2f;
+                    totalBright *= 0.8f;
                 }
 
                 tileColor = new Color(
@@ -174,7 +175,7 @@ namespace Erilipah
                 }
 
                 AddBoss("Lunaemia", 2.99999f, ErilipahWorld.downedLunaemia, "Use a [i:" + ItemType("ModelMoon") + "] at night");
-                AddBoss("Taranys", 5.99999f, ErilipahWorld.downedTaintedSkull, "Pee pee poo poo!!");
+                AddBoss("Taranys", 5.99999f, ErilipahWorld.downedTaintedSkull, "Use and hold [i:" + ItemType("ModelMoon") + "] in darkness in Erilipah");
             }
         }
 

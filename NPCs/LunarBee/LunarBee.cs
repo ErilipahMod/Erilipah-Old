@@ -389,6 +389,7 @@ namespace Erilipah.NPCs.LunarBee
 
         public override void BossLoot(ref string name, ref int potionType)
         {
+            ErilipahWorld.downedLunaemia = true;
             potionType = ItemID.LesserHealingPotion;
             if (Main.expertMode)
             {
