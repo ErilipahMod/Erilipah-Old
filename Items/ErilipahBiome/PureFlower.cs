@@ -26,7 +26,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override bool OnPickup(Player player)
         {
-            Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, Main.rand.NextFloat(-0.1f, 0.3f));
+            Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, Main.rand.NextFloat(0.2f, 0.5f));
             player.I().Infect(Main.expertMode ? -5f : -3f);
             item.TurnToAir();
             return false;
