@@ -15,7 +15,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Inhibitor Serum");
-            Tooltip.SetDefault("Halves the rate of ambient infection");
+            Tooltip.SetDefault("Slows ambient infection");
         }
         public override void SetDefaults()
         {
@@ -34,6 +34,9 @@ namespace Erilipah.Items.ErilipahBiome.Potions
 
             item.value = Item.sellPrice(0, 0, 1);
             item.rare = ItemRarityID.Blue;
+
+            item.buffTime = 3600 * 5;
+            item.buffType = mod.BuffType<SlowingPotBuff>();
         }
 
         public override bool CanUseItem(Player player)
@@ -43,7 +46,6 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void OnConsumeItem(Player player)
         {
             player.AddBuff(BuffID.PotionSickness, item.buffTime);
-            player.AddBuff(mod.BuffType<SlowingPotBuff>(), 3600 * 5);
         }
 
         public override void AddRecipes()
@@ -75,6 +77,11 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             public override void Update(Player player, ref int buffIndex)
             {
                 player.I().reductionRate *= 0.50f;
+                if (player.HasBuff(mod.BuffType<PurityPot.PurityPotBuff>()) || player.HasBuff(mod.BuffType<ReductionPot.ReductionPotBuff>()))
+                {
+                    player.DelBuff(buffIndex);
+                    buffIndex--;
+                }
             }
         }
     }

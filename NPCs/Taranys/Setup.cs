@@ -62,10 +62,8 @@ namespace Erilipah.NPCs.Taranys
         {
             ErilipahWorld.downedTaintedSkull = true;
             potionType = ItemID.HealingPotion;
-            for (int i = 0; i < 8; i++)
-            {
-                Loot.DropItem(npc, mod.ItemType("PureFlower"), 1, 2, 100, 2);
-            }
+
+            Loot.DropItem(npc, mod.ItemType("PureFlower"), 3, 4, 100, 1.5f);
             if (Main.expertMode)
             {
                 npc.DropBossBags();

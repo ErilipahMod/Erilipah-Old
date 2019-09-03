@@ -85,11 +85,12 @@ namespace Erilipah.Items.ErilipahBiome
 
                 Player player = Main.player[projectile.owner];
                 Vector2 pos = new Vector2(player.Center.X, player.Center.Y - 100);
+                projectile.timeLeft = 10;
 
                 // Ai0 = floating counter
                 // LocalAi0 = scale counter
 
-                Timer++;
+                Timer += 1f;
 
                 #region Fancy vfx
                 if (projectile.ai[0] < time)
@@ -102,16 +103,14 @@ namespace Erilipah.Items.ErilipahBiome
                 else
                     projectile.localAI[0] = -scaleTime;
 
-                if (Timer < 400)
+                if (Timer < 500 && (Timer < 300 || Vector2.Distance(projectile.Center, pos) > 8))
                     projectile.Center = new Vector2(pos.X, MathHelper.SmoothStep(pos.Y - dist, pos.Y + dist, Math.Abs(projectile.ai[0]) / time));
-                else if (Timer < 450)
-                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X, player.Center.Y - 100), 0.1f);
+                else if (Timer < 500)
+                    projectile.Center = pos;
 
                 if (projectile.frame > 0)
-                    Lighting.AddLight(projectile.Center, 
-                        new Vector3(1.2f, 1.0f, 0.9f * projectile.scale) * projectile.scale * ((255 - projectile.alpha) / 255f));
+                    Lighting.AddLight(projectile.Center, new Vector3(1.2f, 1.0f, 1.2f * projectile.scale) * projectile.scale);
 
-                projectile.ai[1]++;
                 projectile.scale = MathHelper.SmoothStep(0.92f, 1.08f, Math.Abs(projectile.localAI[0]) / scaleTime);
                 projectile.netUpdate = true;
                 #endregion
@@ -121,7 +120,6 @@ namespace Erilipah.Items.ErilipahBiome
                 {
                     projectile.Kill();
                 }
-                projectile.timeLeft = 2;
                 player.GetModPlayer<InfectionPlr>().darknessCounter--;
 
                 const int summonTime = 200;
@@ -162,12 +160,16 @@ namespace Erilipah.Items.ErilipahBiome
                     }
                 }
 
-                if (Timer > 500 + summonTime)
+                if (Timer > 525 + summonTime)
                 {
-                    if (projectile.alpha > 0)
-                        projectile.alpha--;
                     projectile.velocity = Vector2.Zero;
-                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.08f);
+                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.1f);
+                }
+                else if (Timer > 450 + summonTime)
+                {
+                    projectile.velocity = Vector2.Zero;
+                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.02f);
+
                 }
                 else if (Timer == 450 + summonTime)
                 {
@@ -179,13 +181,12 @@ namespace Erilipah.Items.ErilipahBiome
                     t.Center = projectile.Center;
 
                     projectile.velocity = Vector2.Zero;
-                    projectile.alpha = 255;
                 }
-                else if (Timer >= 450 && projectile.localAI[0] < 450 + summonTime)
+                else if (Timer >= 450 && Timer < 450 + summonTime)
                 {
                     Vector2 newPos = new Vector2(player.Center.X, player.Center.Y - 200);
-                    Vector2 distance = new Vector2(0, summonTime - (projectile.localAI[0] - 450)) / 2f;
-                    float rotation = (float)Math.Pow(projectile.localAI[0] - 450, 1.81f);
+                    Vector2 distance = new Vector2(0, summonTime - (Timer - 450)) / 2f;
+                    float rotation = (float)Math.Pow(Timer - 450, 1.7f);
                     rotation /= 100f;
 
                     projectile.Center = newPos + distance.RotatedBy(rotation);

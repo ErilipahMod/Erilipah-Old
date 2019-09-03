@@ -24,11 +24,14 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             item.healLife = 0;
             item.healMana = 0;
 
-            //item.width = 32;
-            //item.height = 32;
+            item.width = 32;
+            item.height = 32;
 
             item.value = Item.sellPrice(0, 0, 1);
             item.rare = ItemRarityID.Blue;
+
+            item.buffTime = (int)(3600 * 2.5f);
+            item.buffType = mod.BuffType<PurityPotBuff>();
         }
 
         public override bool CanUseItem(Player player)
@@ -38,7 +41,6 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         public override void OnConsumeItem(Player player)
         {
             player.AddBuff(BuffID.PotionSickness, item.buffTime);
-            player.AddBuff(mod.BuffType<PurityPotBuff>(), (int)(3600 * 2.5));
         }
 
         public override void AddRecipes()
@@ -72,6 +74,11 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             {
                 player.I().reductionDmg *= 0.70f;
                 player.I().reductionRate *= 0.70f;
+                if (player.HasBuff(mod.BuffType<SlowingPot.SlowingPotBuff>()) || player.HasBuff(mod.BuffType<ReductionPot.ReductionPotBuff>()))
+                {
+                    player.DelBuff(buffIndex);
+                    buffIndex--;
+                }
             }
         }
     }

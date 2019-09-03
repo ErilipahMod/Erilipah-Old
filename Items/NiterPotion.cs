@@ -14,7 +14,7 @@ namespace Erilipah.Items
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Effulgence Potion");
+            DisplayName.SetDefault("Niter Potion");
             Tooltip.SetDefault("Induces a potent power surge\nTakes 50 life");
         }
         public override void SetDefaults()
@@ -35,9 +35,14 @@ namespace Erilipah.Items
             item.buffType = mod.BuffType<NiterPotionBuff>();
         }
 
+        public override bool CanUseItem(Player player)
+        {
+            return !player.HasBuff(BuffID.PotionSickness);
+        }
+
         public override void OnConsumeItem(Player player)
         {
-            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " bursted with energy."), 50, 0);
+            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " bursted with energy."), 50 + player.statDefense / 2, 0);
             player.AddBuff(BuffID.PotionSickness, 900);
         }
 
@@ -75,8 +80,6 @@ namespace Erilipah.Items
                 player.wellFed = true;
                 player.statDefense += (int)(20 * proportion);
                 player.endurance = 0.35f * proportion;
-                if (player.whoAmI == Main.myPlayer)
-                    Lighting.brightness *= 1.5f;
             }
         }
     }

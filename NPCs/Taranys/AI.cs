@@ -45,7 +45,7 @@ namespace Erilipah.NPCs.Taranys
 
         private void Roar()
         {
-            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, 0.65f);
+            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, 0.35f);
         }
         private void Hover()
         {
@@ -397,7 +397,7 @@ namespace Erilipah.NPCs.Taranys
                             if (Vector2.Distance(npc.Center, vector) < dashSpeed * 2)
                                 TempTimer = 30;
                         }
-                        else if (TempTimer < 40) { npc.alpha = 255; npc.rotation = 0; npc.velocity = Vector2.Zero; } // 10 tick buffer to slow down
+                        else if (TempTimer < 40) { npc.rotation = 0; npc.velocity = Vector2.Zero; } // 10 tick buffer to slow down
                         else if (TempTimer < 120)
                         {
                             // 7 deadly crystal projectiles; every 10 ticks through delta70 ticks
@@ -738,7 +738,7 @@ namespace Erilipah.NPCs.Taranys
             {
                 npc.life = 0;
                 HitEffect(0, 1);
-                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, -0.785f);
+                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.885f);
                 return true;
             }
             return false;
