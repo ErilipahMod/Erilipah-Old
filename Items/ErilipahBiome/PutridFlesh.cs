@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ID;
+﻿using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Erilipah.Items.ErilipahBiome
 {
-    class PutridFlesh : ModItem
+    internal class PutridFlesh : ModItem
     {
         public override void SetStaticDefaults()
         {

@@ -1,7 +1,6 @@
 #define BETA
 #if BETA
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Erilipah.Items.Accessories

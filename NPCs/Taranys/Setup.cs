@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -76,7 +72,7 @@ namespace Erilipah.NPCs.Taranys
 
         public override bool CheckActive()
         {
-            return Main.player.Any(p => p.active && !p.dead && p.Distance(npc.Center) < 3000);
+            return !Main.player.Any(p => p.active && !p.dead && p.Distance(npc.Center) < 3000);
         }
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
         {

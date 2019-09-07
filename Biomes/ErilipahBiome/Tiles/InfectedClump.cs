@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Erilipah.NPCs.ErilipahBiome;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -167,6 +163,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             if (Main.tile[i, j].liquid + Main.tile[i, j - 1].liquid < 200)
                 Main.tile[i, j].liquid += 20;
             return true;
+        }
+
+        public override void FloorVisuals(Player player)
+        {
+            Dust dust = Main.dust[Dust.NewDust(
+                player.position + new Vector2(0, player.height), player.width, 0, mod.DustType<VoidParticle>(),
+                player.direction * -0.5f, -0.8f)];
+            dust.noGravity = true;
+            dust.fadeIn = 0.8f;
         }
     }
     public class SpoiledClump : ModTile

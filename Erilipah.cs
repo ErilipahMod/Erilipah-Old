@@ -15,7 +15,7 @@ namespace Erilipah
 {
     public partial class Erilipah : Mod
     {
-        public Erilipah(){}
+        public Erilipah() { }
 
         public override void Load()
         {
@@ -132,8 +132,8 @@ namespace Erilipah
                     );
 
                 backgroundColor = new Color(
-                    (byte)(backgroundColor.R * back * 0.8f), 
-                    (byte)(backgroundColor.G * back * 0.7f), 
+                    (byte)(backgroundColor.R * back * 0.8f),
+                    (byte)(backgroundColor.G * back * 0.7f),
                     (byte)(backgroundColor.B * back * 1.0f), backgroundColor.A
                     );
             }
@@ -156,7 +156,7 @@ namespace Erilipah
                 music = GetSoundSlot(SoundType.Music, "Sounds/Music/Erilipah");
                 priority = MusicPriority.BiomeHigh;
             }
-            
+
             if (Main.LocalPlayer.InLostCity())
             {
                 music = GetSoundSlot(SoundType.Music, "Sounds/Music/LostCity");
@@ -174,8 +174,8 @@ namespace Erilipah
                     bossChecklist.Call("AddBossWithInfo", name, difficulty, (Func<bool>)(() => downed), description);
                 }
 
-                AddBoss("Lunaemia", 2.99999f, ErilipahWorld.downedLunaemia, "Use a [i:" + ItemType("ModelMoon") + "] at night");
-                AddBoss("Taranys", 5.99999f, ErilipahWorld.downedTaintedSkull, "Use and hold [i:" + ItemType("ModelMoon") + "] in darkness in Erilipah");
+                AddBoss("Lunaemia", 2.9999f, ErilipahWorld.downedLunaemia, "Use a [i:" + ItemType("ModelMoon") + "] at night");
+                AddBoss("Taranys", 5.9999f, ErilipahWorld.downedTaintedSkull, "Use and hold [i:" + ItemType("ModelMoon") + "] in darkness in Erilipah");
             }
         }
 

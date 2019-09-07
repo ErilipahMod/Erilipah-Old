@@ -75,7 +75,7 @@ namespace Erilipah.Items.Phlogiston
             Vector2 mouse = (Main.MouseWorld - projectile.Center);
             mouse.Normalize();
 
-            projectile.Center = plr.Center + mouse * 15 + (Vector2.UnitY * 4);
+            projectile.Center = plr.Center + mouse * 15;
             projectile.timeLeft = (plr.itemAnimation > 0) ? 2 : 0;
             plr.heldProj = projectile.whoAmI;
         }

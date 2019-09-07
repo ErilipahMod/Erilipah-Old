@@ -84,10 +84,15 @@ namespace Erilipah.Items.Phlogiston
                 projectile.friendly = false;
             else
                 projectile.friendly = true;
+
+            Vector2 pos = new Vector2(
+                (float)System.Math.Sin(projectile.position.X),
+                (float)System.Math.Cos(projectile.position.Y)) * 8;
+            Dust.NewDustPerfect(projectile.Center + pos, mod.DustType("DeepFlames")).noGravity = true;
         }
 
         protected override DamageTypes DamageType => DamageTypes.Ranged;
-        protected override DustTrailTypes DustTrailType => DustTrailTypes.PerfectNoGravity;
+        protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
         protected override float? Rotation => projectile.velocity.ToRotation() + Degrees180;
     }
 }

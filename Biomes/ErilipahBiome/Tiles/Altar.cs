@@ -1,19 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
-    class Altar : ModTile
+    internal class Altar : ModTile
     {
         public override void SetDefaults()
         {

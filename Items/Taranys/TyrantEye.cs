@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Erilipah.NPCs.ErilipahBiome;
+using Microsoft.Xna.Framework;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
-using System.IO;
-using Erilipah.NPCs.ErilipahBiome;
+using Terraria.ModLoader;
 
 namespace Erilipah.Items.Taranys
 {
@@ -16,140 +12,245 @@ namespace Erilipah.Items.Taranys
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Tyrant Eye");
-            Tooltip.SetDefault("Left click to pulse, damaging and repelling enemies\nRight click to stare, degrading the targeted enemy");
+            DisplayName.SetDefault("Eye of the Tyrant");
+            Tooltip.SetDefault("Uses 15 mana per pulse\nHold left click to stare; stare strengthens over time\nRight click to pulse, damaging and repelling enemies");
         }
 
         public override void SetDefaults()
         {
             item.damage = 32;
-            item.knockBack = 1;
+            item.knockBack = 1.5f;
             item.crit = 10;
             item.magic = true;
             item.mana = 8;
             item.noMelee = true;
+            item.autoReuse = false;
+            item.channel = true;
+            item.useTurn = true;
+
+            item.UseSound = SoundID.Item103;
 
             item.maxStack = 1;
             item.useTime = 22;
             item.useAnimation = 10;
             item.useStyle = ItemUseStyleID.HoldingUp;
-            item.holdStyle = ItemUseStyleID.HoldingOut;
+            item.holdStyle = 1;
             item.autoReuse = false;
-            item.UseSound = SoundID.Item103.WithPitchVariance(-0.95f).WithVolume(0.25f);
 
             item.width = 30;
             item.height = 42;
 
             item.value = item.AutoValue();
-            item.rare = ItemRarityID.Blue;
+            item.rare = ItemRarityID.LightRed;
 
-            pulse = 0;
+            item.shoot = mod.ProjectileType<EyeProj>();
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                player.statMana -= 7;
+                player.itemTime = 30;
+                player.itemAnimation = 30;
+                if (player.whoAmI == Main.myPlayer)
+                {
+                    position = Main.MouseWorld;
+                    Main.PlaySound(2, (int)position.X, (int)position.Y, 125, 1, 0.5f);
+                }
+            }
+
+            if (player.altFunctionUse == 2 || !player.ownedProjectileCounts.Contains(type))
+                Projectile.NewProjectile(position, Vector2.Zero, type, damage, knockBack, player.whoAmI, player.altFunctionUse == 2 ? -2 : 0);
+            return false;
         }
 
         public override void HoldItem(Player player)
         {
-            if (player.whoAmI == Main.myPlayer)
-            for (int i = 0; i < 30; i++)
+            if (player.itemAnimation <= 0)
             {
-                Dust.NewDustPerfect(Main.MouseWorld + Vector2.UnitX.RotatedBy(i / 30f * MathHelper.TwoPi) * 50, mod.DustType<VoidParticle>())
-                        .customData = (int)1;
+                player.itemLocation.X -= 13 * player.direction;
+                player.itemLocation.Y += 18;
             }
+
+            if (player.whoAmI == Main.myPlayer)
+                for (int i = 0; i < 30; i++)
+                {
+                    Vector2 dustPos = Main.MouseWorld + Vector2.UnitX.RotatedBy(i / 30f * MathHelper.TwoPi) * 50;
+                    float bright = Lighting.Brightness((int)(dustPos.X / 16), (int)(dustPos.Y / 16));
+
+                    Dust dust = Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(1, 1), mod.DustType<VoidParticle>(), Vector2.Zero);
+                    dust.noGravity = true;
+                    dust.velocity = Vector2.Zero;
+                    dust.scale = bright * 0.8f;
+
+                    dust = Dust.NewDustPerfect(dustPos, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
+                    dust.noGravity = true;
+                    dust.velocity = Vector2.Zero;
+                    dust.scale = (1 - bright) * 0.8f;
+                }
         }
 
-        private float pulse = 0;
-        public override bool UseItem(Player player)
+        public override Vector2? HoldoutOffset() => new Vector2(-4, 0);
+        public override bool AltFunctionUse(Player player) => player.statMana >= 15;
+    }
+
+    public class EyeProj : ModProjectile
+    {
+        public override string Texture => Helper.Invisible;
+        private bool IsRightClick => projectile.ai[0] == -2;
+        private float Pulse { get => projectile.ai[1]; set => projectile.ai[1] = value; }
+        private float Timer { get => projectile.localAI[0]; set => projectile.localAI[0] = value; }
+
+        private Vector2 DustPos(Vector2 forward, float speed, float time, float frequency, float amplitude)
         {
-            // Stare
-            if (player.altFunctionUse == 2)
+            Vector2 up = new Vector2(-forward.Y, forward.X);
+            float upspeed = (float)Math.Cos(time * frequency) * amplitude * frequency;
+            return up * upspeed + forward * speed;
+        }
+
+        public override void AI()
+        {
+            Player player = Main.player[projectile.owner];
+            projectile.netUpdate = true;
+            projectile.timeLeft = 2;
+
+            // First tick
+            if (Pulse == 0)
             {
-                item.channel = true;
+                Pulse = 50;
+            }
 
-                if (player.statMana < item.mana)
-                    return false;
-                if (Main.myPlayer != player.whoAmI)
-                    return base.UseItem(player);
+            // Ensure the projectile dies
+            if (player.statMana < 8 || (!player.channel && !IsRightClick) || (Pulse > 500 && IsRightClick))
+            {
+                projectile.Kill();
+                return;
+            }
 
-                Vector2 pos;
-                int closestIndex = Helper.FindClosestNPC(Main.MouseWorld, 100, n => !n.friendly);
-                if (closestIndex == -1)
-                    pos = Main.MouseWorld;
-                else
+            if (!IsRightClick)
+            {
+                Pulse++;
+                player.itemTime = 40;
+                player.itemAnimation = 40;
+
+                if (Pulse % 5 == 0)
+                    player.statMana -= 1;
+
+                // Using Pulse to sync it up
+                projectile.ai[0] = -1;
+                if (Main.myPlayer == player.whoAmI)
                 {
-                    NPC target = Main.npc[closestIndex];
+                    projectile.netUpdate = true;
+                    projectile.Center = Main.MouseWorld;
+                    projectile.ai[0] = projectile.FindClosestNPC(100, true, true);
+                }
+
+                Vector2 pos = Vector2.Zero;
+                if (Main.myPlayer == player.whoAmI)
+                    pos = Main.MouseWorld;
+                if (projectile.ai[0] > -1)
+                {
+                    NPC target = Main.npc[(int)projectile.ai[0]];
                     pos = target.Center;
                     if (target.immune[player.whoAmI] <= 0)
                     {
-                        target.immune[player.whoAmI] = item.useTime;
-                        target.StrikeNPC(item.damage, 0, 0);
                         target.netUpdate = true;
+                        target.immune[player.whoAmI] = (int)(20 * (1 - Pulse / (300 + Pulse)));
+                        player.ApplyDamageToNPC(target, projectile.damage + (int)Pulse / 35, 0, 0, false);
+                        player.addDPS((int)((projectile.damage + Pulse / 35) / (60 / (20 * (1 - Pulse / (300 + Pulse))))));
                     }
                 }
+                else
+                    Pulse = 0;
 
-                const int perSecond = 6;
-                float amount = (float)Main.time % 140 / (140f / perSecond) % 1f;
-                Vector2 dustPos = Vector2.Lerp(player.Center, pos, amount);
-                Dust dust = Dust.NewDustPerfect(dustPos, mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f - amount);
-                dust.noGravity = true;
+                if (pos == Vector2.Zero)
+                    return;
+
+                projectile.localAI[0]++; // Local dust timer
+                for (int i = 0; i < 3; i++)
+                {
+                    float speed = 100 * (1 - Pulse / (500 + Pulse)) + 40; // Accelerate over time
+                    float amount = projectile.localAI[0] % speed / speed % 1f;
+                    Vector2 dustPos = Vector2.SmoothStep(player.Center, pos, amount); // Lerp towards the end pos
+                    if (i != 0)
+                    {
+                        Vector2 sine = DustPos((pos - dustPos).SafeNormalize(Vector2.Zero), 10, projectile.localAI[0], 3, 8);
+                        dustPos += sine;
+                    } // Create a fancy effect
+                    float bright = Lighting.Brightness((int)(dustPos.X / 16), (int)(dustPos.Y / 16));
+
+                    if (i == 0 && projectile.localAI[0] % 15 == 0)
+                        Main.PlaySound(2, (int)dustPos.X, (int)dustPos.Y, 9, 1, -0.3f + Math.Min(0.6f, Pulse / 500f));
+
+                    Dust dust = Dust.NewDustPerfect(dustPos, mod.DustType<VoidParticle>(), Vector2.Zero);
+                    dust.noGravity = true;
+                    dust.velocity = Vector2.Zero;
+                    dust.scale = bright * 1.25f;
+
+                    dust = Dust.NewDustPerfect(dustPos, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
+                    dust.noGravity = true;
+                    dust.velocity = Vector2.Zero;
+                    dust.scale = (1 - bright) * 1.25f;
+
+                    // Dusts & done
+                }
             }
             else // Pulse outward
             {
-                item.channel = false;
-
-                const float effectiveDist = 15;
-                pulse += effectiveDist;
-
-                if (pulse < 1000)
-                    player.itemAnimation = 10;
+                const float effectiveDist = 20;
+                Pulse += effectiveDist;
 
                 #region Pulse
-                for (int i = 0; i < pulse * 0.2f; i++)
+                for (int i = 0; i < Pulse * 0.2f; i++)
                 {
                     // Create dusts in an even ring around the NPC
-                    float rotation = MathHelper.Lerp(0, MathHelper.TwoPi, i / (pulse * 0.2f));
-                    Vector2 position = player.Center + Vector2.UnitX.RotatedBy(rotation) * pulse;
+                    float rotation = MathHelper.Lerp(0, MathHelper.TwoPi, i / (Pulse * 0.2f));
+                    Vector2 position = projectile.Center + Vector2.UnitX.RotatedBy(rotation) * Pulse;
+                    float bright = Lighting.Brightness((int)(position.X / 16), (int)(position.Y / 16));
 
-                    Dust dust = Dust.NewDustPerfect(position, mod.DustType<NPCs.ErilipahBiome.VoidParticle>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(position, mod.DustType<VoidParticle>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
+                    dust.scale = bright * 1.25f;
 
                     dust = Dust.NewDustPerfect(position, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
+                    dust.scale = (1 - bright) * 1.1f;
                 }
 
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
                     Projectile proj = Main.projectile[i];
-                    float distanceToNPC = Vector2.Distance(proj.Center, player.Center);
+                    float distanceToNPC = Vector2.Distance(proj.Center, projectile.Center);
 
-                    if (proj.active && distanceToNPC > pulse - effectiveDist && distanceToNPC < pulse + effectiveDist && proj.hostile)
+                    if (proj.active && distanceToNPC > Pulse - effectiveDist && distanceToNPC < Pulse + effectiveDist && proj.hostile)
                     {
-                        proj.velocity = player.Center.To(proj.Center, proj.velocity.Length());
+                        proj.velocity = projectile.Center.To(proj.Center, proj.velocity.Length());
                     }
                 }
 
                 for (int i = 0; i < 200; i++)
                 {
                     NPC n = Main.npc[i];
-                    float distanceToNPC = Vector2.Distance(n.Center, player.Center);
-                    if (distanceToNPC > pulse - effectiveDist && distanceToNPC < pulse + effectiveDist)
+                    float distanceToNPC = Vector2.Distance(n.Center, projectile.Center);
+                    if (distanceToNPC > Pulse - effectiveDist && distanceToNPC < Pulse + effectiveDist)
                     {
-                        if (n.boss)
-                            n.velocity += player.Center.To(n.Center, 6 * item.knockBack * n.knockBackResist + 2);
+                        if (n.immune[player.whoAmI] <= 0 && !n.friendly && !n.dontTakeDamage)
+                        {
+                            player.ApplyDamageToNPC(n, projectile.damage, projectile.knockBack, (projectile.Center.X > n.Center.X).ToDirectionInt(), false);
+                            n.immune[player.whoAmI] = 20;
+                        }
+                        if (n.boss && n.type != NPCID.CultistBoss)
+                            n.velocity += projectile.Center.To(n.Center, 5 * projectile.knockBack * n.knockBackResist + 2.35f * projectile.knockBack);
                         else
-                            n.velocity += player.Center.To(n.Center, 8 * item.knockBack * n.knockBackResist);
+                            n.velocity += projectile.Center.To(n.Center, 5 * projectile.knockBack * n.knockBackResist);
                         n.netUpdate = true;
                     }
                 }
                 #endregion
             }
-            return true;
         }
-
-        public override void NetSend(BinaryWriter writer) => writer.Write(pulse);
-        public override void NetRecieve(BinaryReader reader) => pulse = reader.ReadSingle();
-
-        public override Vector2? HoldoutOffset() => new Vector2(-4, 0);
-        public override bool AltFunctionUse(Player player) => true;
     }
 }

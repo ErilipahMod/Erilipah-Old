@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Erilipah.Items.Crystalline;
+﻿using Erilipah.Items.Crystalline;
+using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -91,7 +90,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                     AttackTypes |= Main.rand.Next(_attackTypes);
                 }
 
-                npc.GivenName = Main.rand.Next(new string[] 
+                npc.GivenName = Main.rand.Next(new string[]
                     { "Abomination", "Monster", "Thing", "Amalgam", "Horror" }
                 );
 
@@ -551,6 +550,11 @@ namespace Erilipah.NPCs.ErilipahBiome
             Main.npcFrameCount[npc.type] = 5;
             NPCID.Sets.TrailCacheLength[npc.type] = 4;
             NPCID.Sets.TrailingMode[npc.type] = 0;
+        }
+
+        public override void NPCLoot()
+        {
+            Loot.DropItem(npc, mod.ItemType<BioluminescentSinew>(), 1, 1, 35 * npc.scale);
         }
     }
 }

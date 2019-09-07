@@ -1,16 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Erilipah.Items.ErilipahBiome
 {
-    class PureFlower : ModItem
+    internal class PureFlower : ModItem
     {
         public override string Texture => "Terraria/Item_" + ItemID.Daybloom;
 

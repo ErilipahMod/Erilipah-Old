@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Erilipah.Items.Crystalline;
+using Erilipah.NPCs.ErilipahBiome;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Erilipah.Items.Crystalline;
-using Erilipah.NPCs.ErilipahBiome;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -18,7 +15,7 @@ namespace Erilipah.Items.ErilipahBiome
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sigil of Darkness");
-            Tooltip.SetDefault("It whispers for you to hold it still in Erilipah's darkness\n" +
+            Tooltip.SetDefault("It whispers for you to hold it still in Erilipah's absolute darkness\n" +
                 "'Do not fear the night\nWhen you hold my hand\nFor in the dark, I am light'");
         }
 
@@ -52,8 +49,8 @@ namespace Erilipah.Items.ErilipahBiome
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<BioluminescentSinew>(), 2);
-            recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 3);
+            recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 5);
+            recipe.AddIngredient(mod.ItemType<InfectionModule>(), 5);
             recipe.AddTile(TileID.DemonAltar);
 
             recipe.SetResult(this, 1);
@@ -76,7 +73,7 @@ namespace Erilipah.Items.ErilipahBiome
                 projectile.timeLeft = 2;
             }
 
-            float Timer { get => projectile.ai[1]; set => projectile.ai[1] = value; }
+            private float Timer { get => projectile.ai[1]; set => projectile.ai[1] = value; }
             public override void AI()
             {
                 const float scaleTime = 180;
@@ -116,7 +113,7 @@ namespace Erilipah.Items.ErilipahBiome
                 #endregion
 
                 #region Summon ritual
-                if (!player.channel && Timer < 450)
+                if ((!player.channel && Timer < 220) || (player.dead && NPC.AnyNPCs(mod.NPCType<NPCs.Taranys.Taranys>())))
                 {
                     projectile.Kill();
                 }
@@ -147,29 +144,29 @@ namespace Erilipah.Items.ErilipahBiome
                     Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, -0.4f);
                 }
 
-                if (Timer > 450)
+                if (Timer >= 220)
                 {
                     if (Timer < 450 + summonTime)
                     {
                         // Lock the player in
-                        player.channel = true;
-                        player.itemAnimation = 30;
-                        player.itemAnimationMax = 30;
-                        player.itemTime = 30;
+                        player.itemTime = 2;
+                        player.itemAnimation = 2;
                         player.heldProj = projectile.whoAmI;
+                        player.GetModPlayer<ErilipahPlayer>().canMove = false;
+
+                        player.immune = true;
+                        player.immuneTime = 30;
                     }
                 }
 
-                if (Timer > 525 + summonTime)
+                if (Timer > 530 + summonTime)
                 {
                     projectile.velocity = Vector2.Zero;
                     projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.1f);
                 }
                 else if (Timer > 450 + summonTime)
                 {
-                    projectile.velocity = Vector2.Zero;
-                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.02f);
-
+                    projectile.velocity *= 0.92f;
                 }
                 else if (Timer == 450 + summonTime)
                 {
@@ -180,13 +177,13 @@ namespace Erilipah.Items.ErilipahBiome
                     t.frame = new Rectangle(96, 0, 96, 102);
                     t.Center = projectile.Center;
 
-                    projectile.velocity = Vector2.Zero;
+                    projectile.velocity = new Vector2(0, -6);
                 }
                 else if (Timer >= 450 && Timer < 450 + summonTime)
                 {
                     Vector2 newPos = new Vector2(player.Center.X, player.Center.Y - 200);
                     Vector2 distance = new Vector2(0, summonTime - (Timer - 450)) / 2f;
-                    float rotation = (float)Math.Pow(Timer - 450, 1.7f);
+                    float rotation = (float)Math.Pow(Timer - 450, 1.815f);
                     rotation /= 100f;
 
                     projectile.Center = newPos + distance.RotatedBy(rotation);
@@ -197,8 +194,8 @@ namespace Erilipah.Items.ErilipahBiome
             public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
             {
                 Texture2D texture = Main.projectileTexture[projectile.type];
-                spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, 
-                    texture.Frame(1, 2, 0, projectile.frame), Color.White * ((255 - projectile.alpha) / 255f), 0f, 
+                spriteBatch.Draw(texture, projectile.Center - Main.screenPosition,
+                    texture.Frame(1, 2, 0, projectile.frame), Color.White * ((255 - projectile.alpha) / 255f), 0f,
                     Main.projectileTexture[projectile.type].Size() / 2, projectile.scale, 0, 1);
                 return false;
             }

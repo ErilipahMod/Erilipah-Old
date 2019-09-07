@@ -1,8 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,10 +7,13 @@ namespace Erilipah.Items.Weapons
 {
     public class NightsBane : ModItem
     {
-        int Damage => 23;
-        float Knockback => 5;
-        int UseSpeed => 22;
-        float ShootSpeed => 10.5f;
+        private int Damage => 23;
+
+        private float Knockback => 5;
+
+        private int UseSpeed => 22;
+
+        private float ShootSpeed => 10.5f;
 
         public override void SetStaticDefaults()
         {
@@ -52,9 +51,11 @@ namespace Erilipah.Items.Weapons
     }
     public partial class NightsBaneProj : ModProjectile
     {
-        int Pierce => 2;
-        int Dust => DustID.Electric;
-        int FlightTime => 40;
+        private int Pierce => 2;
+
+        private int Dust => DustID.Electric;
+
+        private int FlightTime => 40;
 
         public override void SetDefaults()
         {

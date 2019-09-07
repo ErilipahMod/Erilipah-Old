@@ -21,7 +21,8 @@ namespace Erilipah
 
         public override TagCompound Save()
         {
-            return new TagCompound() {
+            return new TagCompound()
+            {
                 [nameof(downedLunaemia)] = downedLunaemia,
                 [nameof(downedTaintedSkull)] = downedTaintedSkull
             };

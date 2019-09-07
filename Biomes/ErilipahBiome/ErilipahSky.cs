@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Events;
 using Terraria.Graphics.Effects;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Erilipah.Biomes.ErilipahBiome
@@ -130,7 +125,7 @@ namespace Erilipah.Biomes.ErilipahBiome
         public override Color OnTileColor(Color inColor)
         {
             Vector4 start = new Vector4(0.4f, 0.1f, 0.4f, 1f);
-            Vector4 end = Vector4.Lerp(start, inColor.ToVector4(), 1-Intensity);
+            Vector4 end = Vector4.Lerp(start, inColor.ToVector4(), 1 - Intensity);
             return new Color(end);
         }
         public override float GetCloudAlpha() => 0;

@@ -1,16 +1,13 @@
-﻿using Erilipah.Biomes.ErilipahBiome;
-using Erilipah.Biomes.ErilipahBiome.Tiles;
+﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Erilipah.Items.Crystalline;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using Terraria.World.Generation;
 
 namespace Erilipah

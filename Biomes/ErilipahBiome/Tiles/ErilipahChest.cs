@@ -136,7 +136,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 }
                 else
                 {
-                    NetMessage.SendData(31, -1, -1, null, left, (float)top, 0f, 0f, 0, 0, 0);
+                    NetMessage.SendData(31, -1, -1, null, left, top, 0f, 0f, 0, 0, 0);
                     Main.stackSplit = 600;
                 }
             }
@@ -149,7 +149,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     {
                         if (Main.netMode == 1)
                         {
-                            NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, (float)left, (float)top);
+                            NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
                         }
                     }
                 }

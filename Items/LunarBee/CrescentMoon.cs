@@ -19,7 +19,7 @@ namespace Erilipah.Items.LunarBee
         {
             // most important
             item.width = 48;
-                item.height = 36;
+            item.height = 36;
             item.useStyle = 1;
             item.maxStack = 1;
 
@@ -81,7 +81,7 @@ namespace Erilipah.Items.LunarBee
         public override void SetDefaults()
         {
             projectile.width = 48;
-                projectile.height = 36;
+            projectile.height = 36;
             projectile.friendly = true;
             projectile.thrown = true;
             projectile.ai[0] = 2;

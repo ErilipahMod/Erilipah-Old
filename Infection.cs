@@ -1,6 +1,4 @@
 ﻿using Erilipah.Biomes.ErilipahBiome;
-using Erilipah.Items.Crystalline;
-using Erilipah.Items.ErilipahBiome;
 using Erilipah.Items.ErilipahBiome.Potions;
 using Erilipah.NPCs.ErilipahBiome;
 using Erilipah.NPCs.Taranys;
@@ -8,14 +6,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
-using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
-using static Erilipah.Items.ErilipahBiome.Aboryc;
 
 namespace Erilipah
 {
@@ -30,9 +26,10 @@ namespace Erilipah
             Height.Set(28, 0);
         }
 
-        float alpha = 60f;
-        bool ActiveOther(Player p) => p.active && !p.dead && p.I().Infection > 0;
-        bool ActiveBar() => Main.LocalPlayer.active && Main.LocalPlayer.I().Infection > 0;
+        private float alpha = 60f;
+
+        private bool ActiveOther(Player p) => p.active && !p.dead && p.I().Infection > 0;
+        private bool ActiveBar() => Main.LocalPlayer.active && Main.LocalPlayer.I().Infection > 0;
         public override void Draw(SpriteBatch spriteBatch)
         {
             // Draw others' percentages
@@ -170,6 +167,8 @@ namespace Erilipah
             if (Main.rand.Chance(proportion / 4))
             {
                 int type = player.InErilipah() ? mod.DustType<VoidParticle>() : (player.ZoneCrimson ? DustID.Blood : DustID.GreenBlood);
+                if (!player.InErilipah() && !player.ZoneCrimson && !player.ZoneCrimson)
+                    type = mod.DustType<VoidParticle>();
                 int dustInd = Dust.NewDust(player.position, player.width, player.height, type, 0, 0);
                 Main.playerDrawDust.Add(dustInd);
 
@@ -216,7 +215,6 @@ namespace Erilipah
                 }
             }
 
-            
             float playerBrightness = player.Brightness();
             if (!player.InErilipah())
                 return;
@@ -246,6 +244,17 @@ namespace Erilipah
 
             if (darknessCounter < 0)
                 darknessCounter = 0;
+
+            if (Infection > infectionMax * 0.8f)
+            {
+                player.buffImmune[BuffID.Weak] = false;
+                player.AddBuff(BuffID.Weak, 1);
+            }
+            if (Infection > infectionMax * 0.9f)
+            {
+                player.buffImmune[BuffID.Slow] = false;
+                player.AddBuff(BuffID.Slow, 1);
+            }
         }
         public override void PostUpdate()
         {
@@ -281,18 +290,6 @@ namespace Erilipah
             }
 
             Infection += infectionRate;
-
-            if (Main.myPlayer == player.whoAmI)
-            {
-                if (Infection > infectionMax * 0.8f && !player.buffImmune[BuffID.Weak])
-                {
-                    player.AddBuff(BuffID.Weak, 1);
-                }
-                if (Infection > infectionMax * 0.9f && !player.buffImmune[BuffID.Slow])
-                {
-                    player.AddBuff(BuffID.Slow, 1);
-                }
-            }
         }
 
         private float added = 0f;

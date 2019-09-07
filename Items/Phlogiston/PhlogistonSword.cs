@@ -12,7 +12,7 @@ namespace Erilipah.Items.Phlogiston
         protected override int ShootCool => 34;
         protected override bool FiresProjectile => true;
 
-        protected override int[] Dimensions => new int[] { 50, 50 };
+        protected override int[] Dimensions => new int[] { 64, 64 };
         protected override int Rarity => 3;
         protected override UseTypes UseType => UseTypes.SwordSwing;
 

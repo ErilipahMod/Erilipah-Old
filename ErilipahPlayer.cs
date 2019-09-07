@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Erilipah.Items.Taranys;
 using System.IO;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Erilipah
@@ -13,12 +16,34 @@ namespace Erilipah
         public int extraItemReach = 0;
         public bool canMove = true;
         public bool canJump = true;
+        public bool healingSoulTorch = false;
 
         public override void ResetEffects()
         {
             extraItemReach = 0;
             canMove = true;
             canJump = true;
+        }
+
+        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+        {
+            if (player.FindEquip(mod.ItemType<TorchOfSoul>()).modItem is TorchOfSoul equip && !healingSoulTorch)
+            {
+                int amount = target.lifeMax / 200 * damage;
+                equip.stored += amount;
+
+                Rectangle loc = player.getRect();
+                loc.Y -= 30;
+                CombatText.NewText(loc, new Color(247, 202, 166), amount);
+            }
+        }
+
+        public override void ProcessTriggers(TriggersSet triggersSet)
+        {
+            if (!healingSoulTorch && player.statLife < player.statLifeMax2 && player.FindEquip(mod.ItemType<TorchOfSoul>()) != null && triggersSet.QuickHeal && player.HasBuff(BuffID.PotionSickness))
+            {
+                healingSoulTorch = true;
+            }
         }
 
         public override void SetControls()

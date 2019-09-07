@@ -2,11 +2,6 @@
 using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -118,7 +113,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             if (npc.ai[0] % 160 == 0 && Main.netMode != 1)
             {
                 Vector2 to = npc.Center.To(Target.Center);
-                Projectile.NewProjectile(npc.Center + to * 30, to * 6, mod.ProjectileType<Zoub>(), npc.damage / 2, 1f);
+                Projectile.NewProjectile(npc.Center + to * 30, to * 6, mod.ProjectileType<Zoub>(), npc.damage / 2, 1f, 255);
             }
 
             npc.rotation = npc.Center.To(Target.Center).ToRotation() + (npc.spriteDirection == -1 ? MathHelper.Pi : 0);

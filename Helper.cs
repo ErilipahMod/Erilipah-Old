@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -29,6 +28,15 @@ namespace Erilipah
             }
             return player.inventory.FirstOrDefault(ammo => ammo.ammo > 0 && !ammo.IsAir && (conditions == null || conditions(ammo)));
         }
+        internal static Item FindEquip(this Player player, int type)
+        {
+            for (int i = 0; i < player.armor.Length; i++)
+            {
+                if (player.armor[i].type == type)
+                    return player.armor[i];
+            }
+            return null;
+        }
 
         internal static float Brightness(this Player player)
         {
@@ -53,7 +61,7 @@ namespace Erilipah
                 tile.wall == mod.WallType<SpoiledClump.SpoiledClumpWall>() ||
                 tile.wall == mod.WallType<TaintedBrick.TaintedBrickWall>();
         }
-            
+
         internal static InfectionPlr I(this Player player) => player.GetModPlayer<InfectionPlr>();
 
         internal static void SetInfecting(this NPC npc, float infecting) => npc.GetGlobalNPC<InfectionPlr.InfectionNPC>().infecting = infecting;
@@ -154,7 +162,7 @@ namespace Erilipah
         }
         internal static void DrawNPC(this NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {
-            spriteBatch.Draw(Main.npcTexture[npc.type], npc.Center - Main.screenPosition, 
+            spriteBatch.Draw(Main.npcTexture[npc.type], npc.Center - Main.screenPosition,
                 npc.frame, drawColor * ((255 - npc.alpha) / 255f), npc.rotation, npc.frame.Size() / 2, npc.scale,
                 npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
         }

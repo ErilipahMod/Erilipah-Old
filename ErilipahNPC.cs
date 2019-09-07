@@ -51,5 +51,10 @@ namespace Erilipah
                 }
             }
         }
+
+        public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+        {
+            base.EditSpawnRate(player, ref spawnRate, ref maxSpawns);
+        }
     }
 }

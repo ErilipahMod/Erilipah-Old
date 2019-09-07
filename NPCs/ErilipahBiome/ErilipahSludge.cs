@@ -2,11 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -46,7 +42,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             // npc.MakeBuffImmune(BuffID.OnFire);
         }
 
-        int timer = 0;
+        private int timer = 0;
         public override void AI()
         {
             Player target = Main.player[npc.target];

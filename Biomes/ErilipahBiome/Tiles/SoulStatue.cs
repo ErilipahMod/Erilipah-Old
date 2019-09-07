@@ -1,18 +1,11 @@
 ﻿using Erilipah.Items.ErilipahBiome;
 using Erilipah.NPCs.ErilipahBiome;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
@@ -105,13 +98,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
     public class SoulStatue : ModTile
     {
-        bool TryGetTE(int i, int j, out TESoulStatue statue)
+        private bool TryGetTE(int i, int j, out TESoulStatue statue)
         {
             Tile tile = Main.tile[i, j];
             int x = i - tile.frameX / 18;
             int y = j - tile.frameY / 18;
             if (TileEntity.ByPosition.TryGetValue(new Point16(x, y), out var tileEntity))
-            { 
+            {
                 statue = (TESoulStatue)tileEntity;
             }
             else
@@ -127,7 +120,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             Main.tileFrameImportant[Type] = true;
             Main.tileLavaDeath[Type] = false;
             TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Statues, 12));
-            TileObjectData.newTile.HookPlaceOverride = 
+            TileObjectData.newTile.HookPlaceOverride =
                 new PlacementHook(mod.GetTileEntity<TESoulStatue>().Hook_AfterPlacement, -1, 0, true);
             TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<TaintedBrick>() };
             TileObjectData.newTile.StyleHorizontal = true;
@@ -143,7 +136,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             soundType = -1;
         }
 
-        int frame = 0;
+        private int frame = 0;
         internal const int CrackingPoint = 120;
         public override void NearbyEffects(int i, int j, bool closer)
         {

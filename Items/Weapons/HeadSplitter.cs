@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
@@ -101,7 +98,7 @@ namespace Erilipah.Items.Weapons
             projectile.velocity =
                 (target.Center - projectile.Center);
             IsStickingToTarget = true;
-            targetWhoAmI = (float)target.whoAmI;
+            targetWhoAmI = target.whoAmI;
             projectile.netUpdate = true; // netUpdate this javelin
         }
         public override bool? CanHitNPC(NPC target)

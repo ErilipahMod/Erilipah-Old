@@ -52,9 +52,9 @@ namespace Erilipah
             {
                 i = Item.NewItem(rect, item, e);
             }
-            if (Main.netMode == 1)
+            if (Main.netMode == NetmodeID.MultiplayerClient && i > 0)
             {
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, i, o);
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, i, e);
             }
         }
 

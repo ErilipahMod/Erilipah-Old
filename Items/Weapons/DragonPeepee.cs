@@ -75,7 +75,7 @@ namespace Erilipah.Items.Weapons
             {
                 Main.dust[Dust.NewDust(npc.position, npc.width, npc.height, 109, newColor: Color.Black)].noGravity = true;
             }
-            
+
             if (npc.buffTime[buffIndex] <= 1)
             {
                 if (stack > 1)
