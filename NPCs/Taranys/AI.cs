@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -96,7 +97,12 @@ namespace Erilipah.NPCs.Taranys
 
                 if (!Main.projHook[proj.type] && proj.active && distanceToNPC > distance - speed && distanceToNPC < distance + speed)
                 {
-                    proj.velocity = repel ? npc.Center.To(proj.Center, proj.velocity.Length()) : Vector2.Zero;
+                    bool validType = proj.aiStyle == 0 || proj.aiStyle == 1 || proj.aiStyle == 2 || proj.aiStyle == 8 || 
+                        proj.aiStyle == 21 || proj.aiStyle == 24 || proj.aiStyle == 28 || proj.aiStyle == 29 || proj.aiStyle == 131;
+                    validType &= !proj.WipableTurret && !proj.hide && !proj.minion;
+
+                    if (repel && validType)
+                        proj.velocity = npc.Center.To(proj.Center, proj.velocity.Length());
 
                     if (proj.type != mod.ProjectileType<SharpCrystal>())
                         proj.aiStyle = 1;
@@ -148,6 +154,15 @@ namespace Erilipah.NPCs.Taranys
                     Main.player[i].rocketTime = 0;
                 }
             }
+
+            if (!Filters.Scene["TaranysPulse"].IsActive())
+            {
+                Filters.Scene.Activate("TaranysPulse", npc.Center).GetShader().
+                    UseColor(1, 3f, speed).UseTargetPosition(npc.Center);
+            }
+            float progress = MathHelper.Lerp(0, 1, distance / 1000f);
+            Filters.Scene["TaranysPulse"].GetShader().UseProgress(progress).
+                UseOpacity(115 * (1 - progress));
         }
 
         public override void AI()
@@ -245,6 +260,14 @@ namespace Erilipah.NPCs.Taranys
                 if (Timer > -30)
                     return;
 
+                if (!Filters.Scene["TaranysPulse"].IsActive())
+                {
+                    Filters.Scene.Activate("TaranysPulse", npc.Center).GetShader().
+                        UseColor(5, 8, 20).UseTargetPosition(npc.Center);
+                }
+                float progress = Math.Abs(Timer + 30);
+                Filters.Scene["TaranysPulse"].GetShader().UseProgress(progress / 60f).UseOpacity(1 - progress / 300f);
+
                 const float speed = 20;
                 float distance = (Math.Abs(Timer) - 29) * speed;
 
@@ -293,6 +316,12 @@ namespace Erilipah.NPCs.Taranys
                         Main.player[i].rocketTime = 0;
                     }
                 }
+
+                if (Timer < -300)
+                {
+                    npc.life = 0;
+                    npc.HitEffect(0, 1);
+                }
                 return;
             }
 
@@ -311,6 +340,7 @@ namespace Erilipah.NPCs.Taranys
                         Pulse(TempTimer * 15 % (120 * 15), 15, true);
                         if (TempTimer > 240)
                         {
+                            Filters.Scene["TaranysPulse"].Deactivate();
                             if (Attack != -1)
                             {
                                 IncrementPhase(); // If we're coming from the Expert mode minion phase, skip to phase 3
@@ -583,9 +613,9 @@ namespace Erilipah.NPCs.Taranys
                                 Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f).customData = 0f;
                                 Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
 
-                                if (Main.netMode != 1 && Main.rand.Chance(0.45f))
+                                if (Main.netMode != 1 && Main.rand.Chance(0.275f))
                                 {
-                                    float speed = Main.rand.NextFloat(10, 13);
+                                    float speed = Main.rand.NextFloat(10, 17);
                                     Projectile p = Main.projectile[Projectile.NewProjectile(position, Vector2.UnitY * -speed, mod.ProjectileType<SharpCrystal>(), npc.damage / 2, 1)];
                                     p.ai[1] = 1;
                                 }
@@ -603,6 +633,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else // Wind down
                         {
+                            Filters.Scene["TaranysPulse"].Deactivate();
                             npc.netUpdate = true;
                             TempTimer = (int)(60 * (1 - SpeedMult)); // Decrease breathing time as HP decreases
                             if (Main.netMode != 1 && Main.rand.Chance(dashChange))
@@ -700,6 +731,7 @@ namespace Erilipah.NPCs.Taranys
                     }
                     else if (npc.life > 0.175f * npc.lifeMax)
                     {
+                        Filters.Scene["TaranysPulse"].Deactivate();
                         npc.velocity = npc.GoTo(new Vector2(npc.Center.X, Target.Center.Y - 30), 0.1f, 3f);
                         npc.velocity *= 0.9f;
 
@@ -710,8 +742,6 @@ namespace Erilipah.NPCs.Taranys
                             float speed = MathHelper.SmoothStep(8f, 0, distance / 1000f);
 
                             p.position.X += (p.Center.X < npc.Center.X ? speed : -speed);
-                            if (MathHelper.Distance(p.position.X, npc.Center.X) < 10)
-                                p.position.Y += (p.Center.Y < npc.Center.Y ? speed : -speed) / 2;
                         }
 
                         for (int i = 0; i < 30; i++)
@@ -807,7 +837,7 @@ namespace Erilipah.NPCs.Taranys
             if (Timer < -300)
             {
                 npc.life = 0;
-                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.7f);
+                Filters.Scene["TaranysPulse"].Deactivate();
                 Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, 0.6f);
                 return true;
             }
@@ -915,11 +945,14 @@ namespace Erilipah.NPCs.Taranys
                 Timer = -time;
 
             NPC mother = Main.npc[(int)npc.ai[0]];
+            Vector2 tCen = Main.player[mother.target].Center;
             float rotation = npc.ai[1] + (ExtraRot += 0.01f);
             float distance = MathHelper.SmoothStep(130, 800, Math.Abs(Timer) / (float)time);
 
+            npc.direction = npc.spriteDirection = tCen.X < npc.Center.X ? 1 : -1;
             npc.Center = mother.Center + Vector2.UnitX.RotatedBy(rotation) * distance;
-            npc.rotation = rotation + (npc.spriteDirection == 1 ? MathHelper.Pi : 0);
+            npc.rotation = npc.Center.To(tCen).ToRotation() + 
+                (npc.spriteDirection == -1 ? MathHelper.Pi : 0);
             npc.velocity = Vector2.Zero;
 
             Dust.NewDustPerfect(Vector2.Lerp(npc.Center, mother.Center, Math.Abs(Timer) / (float)time),
@@ -978,13 +1011,18 @@ namespace Erilipah.NPCs.Taranys
             projectile.ai[1]++;
             for (int i = 0; i < projectile.ai[0] + 1; i++)
             {
-                Vector2 offset = DustPos(projectile.velocity.SafeNormalize(Vector2.Zero), projectile.velocity.Length(), projectile.ai[1], 3, 5);
+                Vector2 offset = DustPos(projectile.velocity.SafeNormalize(Vector2.Zero), projectile.velocity.Length(), projectile.ai[1], 3, 6.5f);
 
                 Dust dust = Dust.NewDustPerfect(projectile.Center + offset, mod.DustType<CrystallineDust>());
                 dust.velocity = Vector2.Zero;
                 dust.noGravity = true;
                 dust.scale = 1.25f;
             }
+
+            Dust centerDust = Dust.NewDustPerfect(projectile.Center, mod.DustType<CrystallineDust>());
+            centerDust.velocity = Vector2.Zero;
+            centerDust.noGravity = true;
+            centerDust.scale = 1.4f;
         }
         private Vector2 DustPos(Vector2 forward, float speed, float time, float frequency, float amplitude)
         {
@@ -1005,18 +1043,40 @@ namespace Erilipah.NPCs.Taranys
         }
         public override void SetDefaults()
         {
-            projectile.scale = 2f;
+            projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
+            projectile.scale = Main.rand.NextFloat(0.9f, 1.1f);
             projectile.width = 8;
             projectile.height = 8;
             projectile.SetInfecting(2.8f);
 
+            projectile.rotation = Main.rand.NextFloat(6.28f);
             projectile.tileCollide = false;
             projectile.aiStyle = 0;
             projectile.timeLeft = 600;
+            projectile.alpha = 255;
 
             projectile.maxPenetrate = 1;
             projectile.hostile = !
                 (projectile.friendly = false);
+        }
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D texture2d = ModContent.GetTexture(Texture);
+            Rectangle frame = texture2d.Frame(1, 2, 0, projectile.frame);
+            Vector2 drawOrigin = frame.Size() / 2;
+            Vector2 drawPos = projectile.Center - Main.screenPosition;
+
+            spriteBatch.Draw(
+                texture2d,
+                drawPos,
+                frame,
+                Color.White * 0.6f,
+                projectile.rotation,
+                drawOrigin,
+                projectile.scale,
+                projectile.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                0f);
         }
 
         public override void AI()
@@ -1026,14 +1086,16 @@ namespace Erilipah.NPCs.Taranys
 
             if (projectile.ai[1] != 0)
             {
+                projectile.rotation += projectile.velocity.X / 16f;
                 projectile.frame = 1;
                 projectile.width = 10;
                 projectile.height = 16;
 
-                projectile.velocity.Y *= 0.985f;
+                projectile.velocity.Y *= 0.98f;
                 return;
             }
 
+            projectile.rotation += projectile.spriteDirection * 0.09f;
             if (projectile.ai[0] > 0)
             {
                 projectile.tileCollide = true;

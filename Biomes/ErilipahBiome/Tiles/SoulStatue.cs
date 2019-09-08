@@ -136,8 +136,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             soundType = -1;
         }
 
-        private int frame = 0;
         internal const int CrackingPoint = 120;
+        private int frameY = 0;
+
         public override void NearbyEffects(int i, int j, bool closer)
         {
             if (TryGetTE(i, j, out var statue))
@@ -150,16 +151,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
             // Set the frame
             if (statue.Crack <= 60)
-                frame = 0;
+                frameY = 0;
             if (statue.Crack > 60 && statue.Crack < 120)
-                frame = 1;
+                frameY = 1;
             if (statue.Crack >= 120 && statue.Crack < 240)
-                frame = 2;
+                frameY = 2;
             if (statue.Broken)
-                frame = 3;
+                frameY = 3;
 
-            frameXOffset = 0;
-            frameYOffset = frame * 18 * 3;
+            frameYOffset = frameY * 18 * 3;
         }
 
         public override bool CanExplode(int i, int j) => false;

@@ -28,7 +28,7 @@ namespace Erilipah.NPCs.Taranys
             npc.defense = 14;
             npc.damage = 25;
             npc.knockBackResist = 0f;
-            npc.SetInfecting(7f);
+            npc.SetInfecting(4.5f);
 
             npc.aiStyle = 0;
             npc.noGravity = true;

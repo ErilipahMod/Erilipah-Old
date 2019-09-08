@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -100,7 +101,7 @@ namespace Erilipah.Items.Taranys
         public override string Texture => Helper.Invisible;
         private bool IsRightClick => projectile.ai[0] == -2;
         private float Pulse { get => projectile.ai[1]; set => projectile.ai[1] = value; }
-        private float Timer { get => projectile.localAI[0]; set => projectile.localAI[0] = value; }
+        private byte Shader { get => (byte)projectile.localAI[1]; set => projectile.localAI[1] = value; }
 
         private Vector2 DustPos(Vector2 forward, float speed, float time, float frequency, float amplitude)
         {
@@ -122,7 +123,7 @@ namespace Erilipah.Items.Taranys
             }
 
             // Ensure the projectile dies
-            if (player.statMana < 8 || (!player.channel && !IsRightClick) || (Pulse > 500 && IsRightClick))
+            if (player.statMana < 8 || (!player.channel && !IsRightClick) || (Pulse > 600 && IsRightClick))
             {
                 projectile.Kill();
                 return;
@@ -225,7 +226,11 @@ namespace Erilipah.Items.Taranys
                     Projectile proj = Main.projectile[i];
                     float distanceToNPC = Vector2.Distance(proj.Center, projectile.Center);
 
-                    if (proj.active && distanceToNPC > Pulse - effectiveDist && distanceToNPC < Pulse + effectiveDist && proj.hostile)
+                    bool validType = proj.aiStyle == 0 || proj.aiStyle == 1 || proj.aiStyle == 2 || proj.aiStyle == 8 ||
+                        proj.aiStyle == 21 || proj.aiStyle == 24 || proj.aiStyle == 28 || proj.aiStyle == 29 || proj.aiStyle == 131;
+                    validType &= !proj.WipableTurret && !proj.hide && !proj.minion;
+
+                    if (validType && proj.active && distanceToNPC > Pulse - effectiveDist && distanceToNPC < Pulse + effectiveDist && proj.hostile)
                     {
                         proj.velocity = projectile.Center.To(proj.Center, proj.velocity.Length());
                     }
@@ -243,13 +248,42 @@ namespace Erilipah.Items.Taranys
                             n.immune[player.whoAmI] = 20;
                         }
                         if (n.boss && n.type != NPCID.CultistBoss)
-                            n.velocity += projectile.Center.To(n.Center, 5 * projectile.knockBack * n.knockBackResist + 2.35f * projectile.knockBack);
+                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist + 2f * projectile.knockBack);
                         else
-                            n.velocity += projectile.Center.To(n.Center, 5 * projectile.knockBack * n.knockBackResist);
+                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist);
                         n.netUpdate = true;
                     }
                 }
+
+                for (byte i = 1; i <= 4; i++)
+                {
+                    // If it's not active and we don't have a shader, take it
+                    if (!Filters.Scene["TyrantEye" + i].IsActive() && Shader == 0)
+                    {
+                        Shader = i; // mark that it's taken with localAI1
+                        Filters.Scene.Activate("TyrantEye" + i, projectile.Center).GetShader().
+                            UseColor(1, 5, 20).UseTargetPosition(projectile.Center);
+                    }
+                }
+
+                // If we have a shader
+                if (Shader > 0)
+                {
+                    // Do the do
+                    float progress = MathHelper.Lerp(0, 1, Pulse / 600);
+                    Filters.Scene["TyrantEye" + Shader].GetShader().UseProgress(progress).
+                        UseOpacity(70 * (1 - progress));
+                }
                 #endregion
+            }
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            // If we have a shader, disable it
+            if (Shader > 0)
+            {
+                Filters.Scene["TyrantEye" + Shader].Deactivate();
             }
         }
     }

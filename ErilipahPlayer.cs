@@ -1,4 +1,5 @@
 ﻿using Erilipah.Items.Taranys;
+using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -27,9 +28,10 @@ namespace Erilipah
 
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
-            if (player.FindEquip(mod.ItemType<TorchOfSoul>()).modItem is TorchOfSoul equip && !healingSoulTorch)
+            var i = player.FindEquip(mod.ItemType<TorchOfSoul>());
+            if (i != null && i.modItem is TorchOfSoul equip && !healingSoulTorch)
             {
-                int amount = target.lifeMax / 200 * damage;
+                int amount = Math.Min(1, target.lifeMax) / 500 * damage;
                 equip.stored += amount;
 
                 Rectangle loc = player.getRect();

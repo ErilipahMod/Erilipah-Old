@@ -56,11 +56,6 @@ namespace Erilipah.Items.ErilipahBiome.Potions
 
         internal class ReductionPotBuff : ModBuff
         {
-            public override bool Autoload(ref string name, ref string texture)
-            {
-                texture = "Erilipah/Debuff";
-                return true;
-            }
             public override void SetDefaults()
             {
                 DisplayName.SetDefault("Antihemic");

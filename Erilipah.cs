@@ -2,6 +2,7 @@
 using Erilipah.Items.Dracocide;
 using Erilipah.Items.Templar;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using Terraria;
@@ -48,14 +49,27 @@ namespace Erilipah
                 infectUI = new UserInterface();
                 infectUI.SetState(infectionBar);
 
+                // Color params: x=number, y=inverse size, z=speed
+                Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/ShockwaveEffect"));
+                void RegisterShockwave(string name)
+                {
+                    Filters.Scene[name] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
+                    Filters.Scene[name].Load();
+                }
+
+                RegisterShockwave("TaranysPulse");
+                RegisterShockwave("TyrantEye1");
+                RegisterShockwave("TyrantEye2");
+                RegisterShockwave("TyrantEye3");
+                RegisterShockwave("TyrantEye4");
+
                 SkyManager.Instance["Erilipah:ErilipahBiome"] = new Biomes.ErilipahBiome.ErilipahSky();
-                Filters.Scene["Erilipah:ErilipahBiome"] = new Filter(new ScreenShaderData("FilterMoonLord").UseIntensity(0.75f), EffectPriority.Low);
+                Filters.Scene["Erilipah:ErilipahBiome"] = new Filter(new ScreenShaderData("FilterMoonLord").UseIntensity(0.55f), EffectPriority.Low);
             }
         }
         public override void Unload()
         {
             Bandolier = null;
-            VeritasAbilityKey = null;
 
             vitalityBar = null;
             vitalityUI = null;

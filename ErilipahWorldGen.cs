@@ -12,11 +12,6 @@ using Terraria.World.Generation;
 
 namespace Erilipah
 {
-
-    // NEXT
-    // Add custom Erilipah chests
-    // in them, put madness focuses, very rare serums, and the Bioluminescent Sinew, with a weapon of some sort
-
     public partial class ErilipahWorld : ModWorld
     {
         /* int JRprogress = (int)(Main.dayLength / 1.5);
@@ -57,7 +52,6 @@ namespace Erilipah
 
         private int I(string s) => mod.ItemType(s);
         private ushort T(string n) => (ushort)mod.TileType(n);
-        private static int AnywhereX() => WorldGen.genRand.Next(1, Main.maxTilesX);
         private static int GetHighestY(int x, int width, params int[] types)
         {
             int toReturn = 200;
@@ -137,7 +131,6 @@ namespace Erilipah
             tasks.Insert(index, new PassLegacy("[Erilipah] Sacracite", SacraciteOre));
         }
 
-        private bool altar = false;
         private bool GenLeft => WorldGen.dungeonX > Main.maxTilesX / 2;
         private int ChasmBottomY;
         private int BiomeCenterX
@@ -189,7 +182,58 @@ namespace Erilipah
             }
             progress.Set(0.5f);
 
-            #region Pit
+            PitGen();
+
+            // Distance from the center
+            const int outerDistance = 60;
+            const int innerDistance = 35;
+
+            // Left spikes
+            MakeSpike(BiomeCenterX - outerDistance, -1, 15, 0.175f);
+            MakeSpike(BiomeCenterX - innerDistance, -1, 18, 0.225f);
+            // Right spikes
+            MakeSpike(BiomeCenterX + innerDistance, +1, 18, 0.225f);
+            MakeSpike(BiomeCenterX + outerDistance, +1, 15, 0.175f);
+
+            void MakeSpike(int x, int dir, int width, float decWidthChance)
+            {
+                int y = GetHighestY(x, width * dir, T("InfectedClump"), T("SpoiledClump")) + 8;
+
+                int iterations = 0;
+                WorldGen.TileRunner(x + width / 2, y + 14, 6, 5, (ushort)mod.TileType<CrystallineTileTile>());
+
+                for (int i = 0; i < width - 1; i++)
+                {
+                    WorldGen.PlaceTile(x - i * dir + 1, y + 1, T("InfectedClump"), forced: true);
+                }
+                for (int i = 0; i < width - 2; i++)
+                {
+                    WorldGen.PlaceTile(x - i * dir + 2, y + 2, T("InfectedClump"), forced: true);
+                }
+                while (width > 0)
+                {
+                    for (int i = 0; i < width; i++)
+                    {
+                        WorldGen.PlaceTile(x - i * dir, y, T("InfectedClump"), forced: true);
+                    }
+
+                    if (WorldGen.genRand.NextFloat() < decWidthChance && iterations > 8)
+                    {
+                        width--;
+                    }
+
+                    if (WorldGen.genRand.NextFloat() < decWidthChance / 1.5)
+                    {
+                        x -= 1 * dir;
+                    }
+                    iterations++;
+                    y--;
+                }
+            }
+            progress.Set(0.75f);
+        }
+        private void PitGen()
+        {
             int halfWidth = 13;
             const int depthDecayPoint = 70;
             const float widenChance = 0.2f;
@@ -197,7 +241,7 @@ namespace Erilipah
 
             int spotX = BiomeCenterX;
             int top = GetY(BiomeCenterX, 200, T("InfectedClump")) - 13;
-            j = top;
+            int j = top;
             while (halfWidth > 0)
             {
                 j++; // Go down
@@ -255,61 +299,13 @@ namespace Erilipah
             WorldGen.PlaceTile(spotX + 1, j - 5, T("InfectedClump"), forced: true);
             WorldGen.SlopeTile(spotX, j - 4, 4);
 
-            int endX = spotX + 1;
-            int endY = j - 10;
+            int altarX = spotX + 1;
+            int altarY = j - 10;
 
-            WorldGen.Place2x2(endX, endY, TileID.Heart, 0);
-
-            #endregion
-
-            // Distance from the center
-            const int outerDistance = 60;
-            const int innerDistance = 35;
-
-            // Left spikes
-            MakeSpike(BiomeCenterX - outerDistance, -1, 15, 0.175f);
-            MakeSpike(BiomeCenterX - innerDistance, -1, 18, 0.225f);
-            // Right spikes
-            MakeSpike(BiomeCenterX + innerDistance, +1, 18, 0.225f);
-            MakeSpike(BiomeCenterX + outerDistance, +1, 15, 0.175f);
-
-            void MakeSpike(int x, int dir, int width, float decWidthChance)
-            {
-                int y = GetHighestY(x, width * dir, T("InfectedClump"), T("SpoiledClump")) + 8;
-
-                int iterations = 0;
-                WorldGen.TileRunner(x + width / 2, y + 14, 6, 5, (ushort)mod.TileType<CrystallineTileTile>());
-
-                for (int i = 0; i < width - 1; i++)
-                {
-                    WorldGen.PlaceTile(x - i * dir + 1, y + 1, T("InfectedClump"), forced: true);
-                }
-                for (int i = 0; i < width - 2; i++)
-                {
-                    WorldGen.PlaceTile(x - i * dir + 2, y + 2, T("InfectedClump"), forced: true);
-                }
-                while (width > 0)
-                {
-                    for (int i = 0; i < width; i++)
-                    {
-                        WorldGen.PlaceTile(x - i * dir, y, T("InfectedClump"), forced: true);
-                    }
-
-                    if (WorldGen.genRand.NextFloat() < decWidthChance && iterations > 8)
-                    {
-                        width--;
-                    }
-
-                    if (WorldGen.genRand.NextFloat() < decWidthChance / 1.5)
-                    {
-                        x -= 1 * dir;
-                    }
-                    iterations++;
-                    y--;
-                }
-            }
-            progress.Set(0.75f);
+            WorldGen.Place3x2(altarX, altarY, T("Altar"));
+            AltarPosition = new Vector2(altarX * 16, altarY * 16);
         }
+
         private void LostChasmGen(GenerationProgress progress)
         {
             progress.Message = "[Erilipah] Massive underground chasm";
@@ -401,6 +397,8 @@ namespace Erilipah
             const int potsPerFloor = 6;
             const float bannerChance = 0.175f;
             const float paintingChance = 0.35f;
+
+            const int statueStyles = 2;
             const float statueChance = 0.35f;
 
             ushort type = T("TaintedBrick");
@@ -469,7 +467,7 @@ namespace Erilipah
                     if (WorldGen.genRand.Chance(statueChance))
                     {
                         int x = WorldGen.genRand.Next(leftX + 1, rightX - 1);
-                        WorldGen.Place2xX(x, floor - 1, (ushort)mod.TileType<SoulStatue>());
+                        WorldGen.Place2xX(x, floor - 1, (ushort)mod.TileType<SoulStatue>(), WorldGen.genRand.Next(statueStyles));
                     }
                 }
 
@@ -676,6 +674,16 @@ namespace Erilipah
                     int relLeft = rightX + 1;
                     int relRight = rightX + extensionLength;
 
+                    // Statues
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (WorldGen.genRand.Chance(statueChance))
+                        {
+                            int x = WorldGen.genRand.Next(relLeft + 1, relRight - 1);
+                            WorldGen.Place2xX(x, floorToExtendY - 1, (ushort)mod.TileType<SoulStatue>(), WorldGen.genRand.Next(statueStyles));
+                        }
+                    }
+
                     // Paintings
                     if (WorldGen.genRand.Chance(paintingChance))
                     {
@@ -691,16 +699,6 @@ namespace Erilipah
                                 WorldGen.genRand.Next(extensionRoof + 3, extensionRoof + 8),
                                 TileID.Painting3X3, WorldGen.genRand.Next(13, 21)
                                 );
-                    }
-
-                    // Statues
-                    for (int i = 0; i < 2; i++)
-                    {
-                        if (WorldGen.genRand.Chance(statueChance))
-                        {
-                            int x = WorldGen.genRand.Next(relLeft + 1, relRight - 1);
-                            WorldGen.Place2xX(x, floorToExtendY - 1, (ushort)mod.TileType<SoulStatue>());
-                        }
                     }
 
                     // Pots
@@ -719,12 +717,6 @@ namespace Erilipah
                 }
             }
 
-            if (!altar && WorldGen.genRand.Chance(0.1f) || (!altar && rightX > Chasm.Right - 90))
-            {
-                altar = true;
-                MakeAltar(leftX + (rightX - leftX) / 2, roofY - 1);
-                return;
-            }
             Action[] roofs = new Action[5] { PillarRoof, TriangleRoof, UnevenRoof, FluidRoof, HornedRoof };
             WorldGen.genRand.Next(roofs)();
 
@@ -1042,15 +1034,6 @@ namespace Erilipah
                     }
                 }
             }
-        }
-        private void MakeAltar(int middleX, int surfaceY)
-        {
-            for (int i = -5; i <= 5; i++)
-            {
-                int locX = i + middleX;
-                WorldGen.PlaceTile(locX, surfaceY, mod.TileType<TaintedRubble>(), false, true);
-            }
-            WorldGen.Place3x2(middleX - 1, surfaceY - 1, T("Altar"));
         }
 
         private void Infect(int i, int j)

@@ -1,4 +1,5 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -13,6 +14,8 @@ namespace Erilipah
         public static bool sanguineOreSpawned = false;
         public static bool downedLunaemia = false;
         public static bool downedTaintedSkull = false;
+
+        public static Vector2 AltarPosition { get; private set; }
 
         public override void Initialize()
         {

@@ -15,7 +15,7 @@ namespace Erilipah.Items
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Niter Potion");
+            DisplayName.SetDefault("Lesser Niter Potion");
             Tooltip.SetDefault("Induces a potent power surge");
         }
         public override void SetDefaults()
@@ -32,7 +32,7 @@ namespace Erilipah.Items
             item.value = Item.sellPrice(0, 0, 1);
             item.rare = ItemRarityID.Green;
 
-            item.buffTime = 500;
+            item.buffTime = 400;
             item.buffType = mod.BuffType<NiterPotionBuff>();
         }
 
@@ -72,11 +72,6 @@ namespace Erilipah.Items
 
         internal class NiterPotionBuff : ModBuff
         {
-            public override bool Autoload(ref string name, ref string texture)
-            {
-                texture = "Erilipah/Debuff";
-                return true;
-            }
             public override void SetDefaults()
             {
                 DisplayName.SetDefault("Niter");

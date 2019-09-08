@@ -76,10 +76,6 @@ namespace Erilipah.Items.ErilipahBiome
             private float Timer { get => projectile.ai[1]; set => projectile.ai[1] = value; }
             public override void AI()
             {
-                const float scaleTime = 180;
-                const float time = 107;
-                const float dist = 20;
-
                 Player player = Main.player[projectile.owner];
                 Vector2 pos = new Vector2(player.Center.X, player.Center.Y - 100);
                 projectile.timeLeft = 10;
@@ -89,19 +85,28 @@ namespace Erilipah.Items.ErilipahBiome
 
                 Timer += 1f;
 
-                #region Fancy vfx
-                if (projectile.ai[0] < time)
+                Effects(180, 107, 20, pos);
+
+                if (Timer < 730 || NPC.AnyNPCs(mod.NPCType<NPCs.Taranys.Taranys>()))
+                    Ritual(player);
+                else
+                    AlAltar(player);
+            }
+
+            private void Effects(float scaleTime, float hoverTime, float hoverDist, Vector2 pos)
+            {
+                if (projectile.ai[0] < hoverTime)
                     projectile.ai[0]++;
                 else
-                    projectile.ai[0] = -time;
+                    projectile.ai[0] = -hoverTime;
 
                 if (projectile.localAI[0] < scaleTime)
                     projectile.localAI[0]++;
                 else
                     projectile.localAI[0] = -scaleTime;
 
-                if (Timer < 500 && (Timer < 300 || Vector2.Distance(projectile.Center, pos) > 8))
-                    projectile.Center = new Vector2(pos.X, MathHelper.SmoothStep(pos.Y - dist, pos.Y + dist, Math.Abs(projectile.ai[0]) / time));
+                if (Timer < 500 && (Timer < 300 || Vector2.Distance(projectile.Center, pos) > 3))
+                    projectile.Center = new Vector2(pos.X, MathHelper.SmoothStep(pos.Y - hoverDist, pos.Y + hoverDist, Math.Abs(projectile.ai[0]) / hoverTime));
                 else if (Timer < 500)
                     projectile.Center = pos;
 
@@ -110,9 +115,10 @@ namespace Erilipah.Items.ErilipahBiome
 
                 projectile.scale = MathHelper.SmoothStep(0.92f, 1.08f, Math.Abs(projectile.localAI[0]) / scaleTime);
                 projectile.netUpdate = true;
-                #endregion
+            }
 
-                #region Summon ritual
+            private void Ritual(Player player)
+            {
                 if ((!player.channel && Timer < 220) || (player.dead && NPC.AnyNPCs(mod.NPCType<NPCs.Taranys.Taranys>())))
                 {
                     projectile.Kill();
@@ -188,7 +194,11 @@ namespace Erilipah.Items.ErilipahBiome
 
                     projectile.Center = newPos + distance.RotatedBy(rotation);
                 }
-                #endregion
+            }
+
+            private void AlAltar(Player player)
+            {
+                
             }
 
             public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -198,6 +208,25 @@ namespace Erilipah.Items.ErilipahBiome
                     texture.Frame(1, 2, 0, projectile.frame), Color.White * ((255 - projectile.alpha) / 255f), 0f,
                     Main.projectileTexture[projectile.type].Size() / 2, projectile.scale, 0, 1);
                 return false;
+            }
+
+            private void DropItemInstanced(Rectangle r, int itemType, int itemStack = 1)
+            {
+                if (itemType <= 0)
+                    return;
+                if (Main.netMode == 2)
+                {
+                    int number = Item.NewItem(r, itemType, itemStack, true, 0, false, false);
+                    Main.itemLockoutTime[number] = 54000;
+                    for (int remoteClient = 0; remoteClient < 255; ++remoteClient)
+                    {
+                        if (Main.player[remoteClient].active)
+                            NetMessage.SendData(90, remoteClient, -1, null, number, 0.0f, 0.0f, 0.0f, 0, 0, 0);
+                    }
+                    Main.item[number].active = false;
+                }
+                else if (Main.netMode == 0)
+                    Item.NewItem(r, itemType, itemStack, false, 0, false, false);
             }
         }
     }

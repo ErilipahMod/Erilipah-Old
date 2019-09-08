@@ -27,6 +27,7 @@ namespace Erilipah
         }
 
         private float alpha = 60f;
+        private int counter = 0;
 
         private bool ActiveOther(Player p) => p.active && !p.dead && p.I().Infection > 0;
         private bool ActiveBar() => Main.LocalPlayer.active && Main.LocalPlayer.I().Infection > 0;
@@ -68,9 +69,29 @@ namespace Erilipah
                 float infectionMax = Main.LocalPlayer.I().infectionMax;
 
                 Texture2D texture2D = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Infection");
-                float amount = Math.Min(1, Math.Max(0, infection) / infectionMax);
+                float amount = Math.Max(0, infection) / infectionMax;
                 int frameY = (int)Math.Round(MathHelper.Lerp(0, 20, amount));
-                Rectangle frame = texture2D.Frame(1, 21, 0, frameY);
+
+                if (amount > infectionMax)
+                {
+                    counter++;
+
+                    float speedMult = infectionMax / infection / 4;
+                    int countModulo = (int)(7 * speedMult);
+                    if (counter % countModulo == 0)
+                    {
+                        frameY++;
+                        if (frameY > 22)
+                        {
+                            frameY = 20;
+                        }
+                    }
+                }
+                else
+                {
+                    counter = 0;
+                }
+                Rectangle frame = texture2D.Frame(1, 23, 0, frameY);
                 Vector2 drawCenter = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels + Height.Pixels / 2);
                 Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
 
@@ -297,7 +318,7 @@ namespace Erilipah
         {
             if (player.InErilipah() && (damage > 1 || added > 0))
             {
-                Infect((float)damage / 17.5f + added);
+                Infect((float)damage / 20f + added);
             }
         }
         public class InfectionNPC : GlobalNPC
