@@ -194,9 +194,9 @@ namespace Erilipah.Items
             {
                 DisplayName.SetDefault("Three-Torus Bandolier");
                 Tooltip.SetDefault("Functions like the Bandolier; can hold ten types of bullets\n" +
-                    "A full stack of bullets is needed to add a type of bullet to the Bandolier\n" +
+                    "A full stack of bullets is needed to add to the Bandolier\n" +
                     "When in use, gun speed increases greatly and no ammo is consumed\n" +
-                    "'It's bigger on the inside'");
+                    "'It's bigger on the inside!'");
             }
             public override void SetDefaults()
             {
@@ -207,7 +207,7 @@ namespace Erilipah.Items
                 item.height = 32;
                 item.consumable = false;
 
-                item.value = Item.buyPrice(0, 20, 0, 0);
+                item.value = Item.buyPrice(0, 50, 0, 0);
                 item.rare = ItemRarityID.LightRed;
                 UpdateStats();
             }
@@ -216,8 +216,8 @@ namespace Erilipah.Items
             {
                 ModRecipe r = new ModRecipe(mod);
                 r.AddIngredient(mod.ItemType<Bandolier>(), 1);
-                r.AddIngredient(TileID.Crystals, 3);
                 r.AddIngredient(ItemID.EndlessMusketPouch, 1);
+                r.AddIngredient(TileID.Crystals, 3);
                 r.AddTile(TileID.CrystalBall);
                 r.SetResult(this);
                 r.AddRecipe();

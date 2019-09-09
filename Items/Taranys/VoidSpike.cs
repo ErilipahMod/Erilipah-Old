@@ -11,6 +11,7 @@ namespace Erilipah.Items.Taranys
 {
     public class VoidSpike : ModItem
     {
+        // TEST
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Shatters when hitting an enemy at low health, mauling it");

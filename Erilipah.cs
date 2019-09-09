@@ -62,6 +62,7 @@ namespace Erilipah
                 RegisterShockwave("TyrantEye2");
                 RegisterShockwave("TyrantEye3");
                 RegisterShockwave("TyrantEye4");
+                RegisterShockwave("AborycTake");
 
                 SkyManager.Instance["Erilipah:ErilipahBiome"] = new Biomes.ErilipahBiome.ErilipahSky();
                 Filters.Scene["Erilipah:ErilipahBiome"] = new Filter(new ScreenShaderData("FilterMoonLord").UseIntensity(0.55f), EffectPriority.Low);

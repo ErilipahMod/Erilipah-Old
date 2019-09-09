@@ -282,21 +282,21 @@ namespace Erilipah
             // When done, place a chest at the very bottom
             for (int i = 6; i < 10; i++)
             {
-                WorldGen.PlaceTile(spotX, j - i, T("InfectedClump"), forced: true);
-                WorldGen.PlaceTile(spotX + 1, j - i, T("InfectedClump"), forced: true);
+                WorldGen.PlaceTile(spotX, j - i, T("TaintedRubble"), forced: true);
+                WorldGen.PlaceTile(spotX + 1, j - i, T("TaintedRubble"), forced: true);
             }
 
             // Blocks to either side of the crystal
-            WorldGen.PlaceTile(spotX - 1, j - 9, T("InfectedClump"), forced: true);
-            WorldGen.PlaceTile(spotX + 2, j - 9, T("InfectedClump"), forced: true);
+            WorldGen.PlaceTile(spotX - 1, j - 9, T("TaintedRubble"), forced: true);
+            WorldGen.PlaceTile(spotX + 2, j - 9, T("TaintedRubble"), forced: true);
 
             // Supporting blocks for the side blocks
-            WorldGen.PlaceTile(spotX - 1, j - 8, T("InfectedClump"), forced: true);
+            WorldGen.PlaceTile(spotX - 1, j - 8, T("TaintedRubble"), forced: true);
             WorldGen.SlopeTile(spotX - 1, j - 8, 4);
-            WorldGen.PlaceTile(spotX + 2, j - 8, T("InfectedClump"), forced: true);
+            WorldGen.PlaceTile(spotX + 2, j - 8, T("TaintedRubble"), forced: true);
             WorldGen.SlopeTile(spotX + 2, j - 8, 3);
 
-            WorldGen.PlaceTile(spotX + 1, j - 5, T("InfectedClump"), forced: true);
+            WorldGen.PlaceTile(spotX + 1, j - 5, T("TaintedRubble"), forced: true);
             WorldGen.SlopeTile(spotX, j - 4, 4);
 
             int altarX = spotX + 1;

@@ -1,5 +1,6 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Microsoft.Xna.Framework;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -27,13 +28,33 @@ namespace Erilipah
             return new TagCompound()
             {
                 [nameof(downedLunaemia)] = downedLunaemia,
-                [nameof(downedTaintedSkull)] = downedTaintedSkull
+                [nameof(downedTaintedSkull)] = downedTaintedSkull,
+                ["AltarX"] = AltarPosition.X,
+                ["AltarY"] = AltarPosition.Y
             };
         }
         public override void Load(TagCompound tag)
         {
             downedLunaemia = tag.ContainsKey(nameof(downedLunaemia));
             downedTaintedSkull = tag.ContainsKey(nameof(downedTaintedSkull));
+
+            AltarPosition = new Vector2(
+                tag.GetFloat("AltarX"), tag.GetFloat("AltarY")
+                );
+        }
+
+        public override void PostUpdate()
+        {
+            IfNoneSpawnAboryc();
+        }
+
+        private void IfNoneSpawnAboryc()
+        {
+            int aborycType = mod.ProjectileType<Items.ErilipahBiome.AbProj>();
+            if (!Main.projectile.Any(p => p.active && p.type == aborycType))
+            {
+                Projectile.NewProjectile(AltarPosition, Vector2.Zero, aborycType, 0, 0, 255);
+            }
         }
 
         public override void ResetNearbyTileEffects()

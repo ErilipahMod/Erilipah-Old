@@ -8,6 +8,7 @@ namespace Erilipah.Items.Taranys
 {
     public class TorchOfSoul : ModItem
     {
+        // TEST
         public int stored = 0;
         public override void SetStaticDefaults()
         {

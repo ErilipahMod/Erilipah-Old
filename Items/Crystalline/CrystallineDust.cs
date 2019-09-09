@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Erilipah.Items.ErilipahBiome;
+using Microsoft.Xna.Framework;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
-using static Erilipah.Items.ErilipahBiome.Aboryc;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -21,9 +22,16 @@ namespace Erilipah.Items.Crystalline
 
                 dust.customData = (float)dust.customData + 1;
                 if ((float)dust.customData < 100)
+                {
                     dust.velocity *= 0.96f;
+                }
                 else
+                {
                     dust.velocity += dust.position.To(sigil.Center - Vector2.UnitY * 10, 1 / 8f);
+                    dust.scale = Vector2.Distance(dust.position, sigil.Center) / 100f;
+                    if (dust.scale > 1)
+                        dust.scale = 1;
+                }
 
                 if (timer > 130 && Vector2.Distance(sigil.Center - Vector2.UnitY * 10, dust.position) < 16)
                     dust.active = false;
@@ -32,13 +40,31 @@ namespace Erilipah.Items.Crystalline
                 dust.noGravity = true;
                 return false;
             }
+            if (dust.customData is double portion)
+            {
+                Projectile sigil = Main.projectile.FirstOrDefault(p => p.active && p.frame == 1 && p.type == mod.ProjectileType<AbProj>());
+                if (sigil == null)
+                {
+                    dust.active = false;
+                    return true;
+                }
+
+                dust.position = Vector2.Lerp(Main.LocalPlayer.Center, ErilipahWorld.AltarPosition - new Vector2(0, 100), (float)portion);
+                dust.rotation += 0.1f;
+
+                if (Vector2.Distance(Main.LocalPlayer.Center, sigil.Center) < 150)
+                {
+                    dust.customData = (int)0; // Stop tracking and start falling bich
+                }
+                return false;
+            }
             return true;
         }
 
         public override bool MidUpdate(Dust dust)
         {
             if (!dust.noGravity) dust.velocity.Y += 0.003f;
-            else dust.velocity *= 0.7f;
+            else dust.velocity *= 0.88f;
 
             return false;
         }
