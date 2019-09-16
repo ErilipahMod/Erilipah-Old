@@ -69,6 +69,8 @@ namespace Erilipah.Items.Weapons
         }
         public override void Update(NPC npc, ref int buffIndex)
         {
+            npc.GetGlobalNPC<ErilipahNPC>().WitherStack = stack;
+
             npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
             npc.lifeRegen -= stack * 4 + 4;
             if (Main.rand.NextBool(3))

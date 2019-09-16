@@ -17,6 +17,7 @@ namespace Erilipah
         public static bool downedTaintedSkull = false;
 
         public static Vector2 AltarPosition { get; private set; }
+        public static Vector2 ChasmPosition { get; private set; }
 
         public override void Initialize()
         {

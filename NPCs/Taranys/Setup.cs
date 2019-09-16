@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Erilipah.Items.ErilipahBiome;
+using Erilipah.Items.Taranys;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Terraria;
@@ -44,6 +46,7 @@ namespace Erilipah.NPCs.Taranys
 
             npc.value = npc.AutoValue();
 
+            bossBag = mod.ItemType<TaranysBag>();
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Taranys");
         }
 
@@ -66,7 +69,15 @@ namespace Erilipah.NPCs.Taranys
             }
             else
             {
-                Loot.DropItem(npc, mod.ItemType("SynthesizedLunaesia"), 16, 24, 100);
+                Loot.DropItem(npc, mod.ItemType<ShellChunk>(), 6, 11);
+                Loot.DropItem(npc, mod.ItemType<MadnessFocus>(), 9, 16);
+
+                switch (Main.rand.Next(3))
+                {
+                    default: Loot.DropItem(npc, mod.ItemType<TyrantEye>()); break;
+                    case 1: Loot.DropItem(npc, mod.ItemType<VoidSpike>()); break;
+                    case 3: Loot.DropItem(npc, mod.ItemType<ScepterOfEternalAbyss>()); break;
+                }
             }
         }
 

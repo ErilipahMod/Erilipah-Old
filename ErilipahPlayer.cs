@@ -31,9 +31,9 @@ namespace Erilipah
 
         void TorchOfSoul(NPC target, int damage)
         {
-            if (bankedDamage >= 500)
+            if (bankedDamage >= 200)
             {
-                bankedDamage = 500;
+                bankedDamage = 200;
                 return;
             }
             if (healingSoulTorch) return;

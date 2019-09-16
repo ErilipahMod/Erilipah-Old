@@ -141,7 +141,7 @@ namespace Erilipah
                 return GenLeft ? offset : Main.maxTilesX - offset;
             }
         }
-        internal Rectangle Chasm = new Rectangle();
+        private Rectangle Chasm = new Rectangle();
 
         private void ErilipahBiomeGen(GenerationProgress progress)
         {
@@ -322,6 +322,8 @@ namespace Erilipah
             int variation1 = 0;
             int variation2 = 0;
 
+            int trueTop = int.MaxValue;
+
             // Make the main cavern
             while (chasmX < Chasm.X + Chasm.Width && chasmHeight > 0)
             {
@@ -351,9 +353,13 @@ namespace Erilipah
                     tile.wall = 0;
                 }
 
+                if (trueTop > chasmRoof)
+                    trueTop = chasmRoof;
+
                 progress.Set(Chasm.Right - Chasm.X / (float)Chasm.Width);
             }
             Chasm.Width = chasmX - Chasm.X;
+            ChasmPosition = new Vector2(Chasm.X + Chasm.Width / 2, (trueTop + 6) * 16);
         }
         private void LostCityGen(GenerationProgress progress)
         {

@@ -4,22 +4,25 @@
 		}
 		public override void SetDefaults()
 		{
+			item.width  = 32;
+			item.height = 32;
+
 			item.damage = 32;
             item.knockBack = 1;
             item.crit = 0;
             item.melee = true;
-            item.noMelee = false;
 
-            item.maxStack = 1;
             item.useTime =
             item.useAnimation = 20;
+
             item.useStyle = 1;
-            item.autoReuse = true;
+			item.noMelee = false;
+			item.autoReuse = true;
+			item.useTurn = true;
+
             item.UseSound = SoundID.Item1;
 
-            item.width  = 32;
-			item.height = 32;
-
+			item.maxStack = 1;
 			item.value = item.AutoValue();
 			item.rare = ItemRarityID.Blue;
 

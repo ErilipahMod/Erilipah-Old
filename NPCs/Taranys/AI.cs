@@ -840,6 +840,12 @@ namespace Erilipah.NPCs.Taranys
                 npc.life = 0;
                 Filters.Scene["TaranysPulse"].Deactivate();
                 Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, 0.6f);
+
+                int Type(int t) => mod.GetGoreSlot("Gores/Taranys/Taranys0" + t);
+                for (int i = 0; i < 5; i++)
+                {
+                    Gore.NewGore(npc.position, Main.rand.NextVector2CircularEdge(3, 3), Type(i));
+                }
                 return true;
             }
             return false;

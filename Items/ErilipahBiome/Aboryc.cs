@@ -267,13 +267,8 @@ namespace Erilipah.Items.ErilipahBiome
                             .noGravity = true;
                     }
 
-                    // TODO: Finalize all the Taranys drops when they're all done
-                    // TODO: Add the Lost Key, which teleports you down to the Lost City and can unlock the Throne Room to the huge abomination
                     Rectangle dropArea = new Rectangle((int)AboveAltar.X - 5, (int)AboveAltar.Y - 5, 10, 10);
-                    DropItemInstanced(dropArea, mod.ItemType<TyrantEye>());
-                    DropItemInstanced(dropArea, mod.ItemType<VoidSpike>());
-                    DropItemInstanced(dropArea, mod.ItemType<TorchOfSoul>());
-                    DropItemInstanced(dropArea, mod.ItemType<MadnessFocus>(), 20);
+                    DropItemInstanced(dropArea, mod.ItemType<LostKey>());
 
                     ShockTimer = 1;
                     Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 29, 1, -0.35f);

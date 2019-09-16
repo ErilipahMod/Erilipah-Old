@@ -71,7 +71,7 @@ namespace Erilipah
         {
             int useSpeed = (item.useTime > 0 ? item.useTime : 60);
             return (int)(Math.Max(item.damage, 1) * Math.Max(item.knockBack / 2, 1) * Math.Max(item.defense, 1) *
-                    (60 / useSpeed) * (item.rare) * 5);
+                    (60 / useSpeed) * item.rare * 5 + Math.Pow(MathHelper.Clamp(item.crit, 0, 96), 2));
         }
         internal static int AutoValue(this NPC npc)
         {
