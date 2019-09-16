@@ -8,12 +8,12 @@ namespace Erilipah.Items.Taranys
 {
     public class TorchOfSoul : ModItem
     {
-        // TEST
-        public int stored = 0;
+        private int Banked => Main.player[item.owner].GetModPlayer<ErilipahPlayer>().bankedDamage;
+
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Soul Bank");
-            Tooltip.SetDefault("Stores damage dealt to enemies for consumption\nPressing quick heal with Potion Sickness will use the item");
+            DisplayName.SetDefault("Spirit Trapper");
+            Tooltip.SetDefault("Stores half of damage dealt as life in a bank\nCannot store more than 500 life\nCannot store life while withdrawing life\nUse the Soul Bank key to withdraw life");
         }
 
         public override void SetDefaults()
@@ -26,33 +26,12 @@ namespace Erilipah.Items.Taranys
 
             item.value = 25000;
             item.rare = ItemRarityID.LightRed;
-            stored = 0;
         }
-
-        public override void UpdateEquip(Player player)
-        {
-            if (player.GetModPlayer<ErilipahPlayer>().healingSoulTorch)
-            {
-                if (stored <= 0 || player.statLife >= player.statLifeMax2)
-                {
-                    player.GetModPlayer<ErilipahPlayer>().healingSoulTorch = false;
-                    return;
-                }
-
-                if (player.lifeRegenCount % 5 == 0)
-                {
-                    player.statLife++;
-                    stored--;
-                }
-            }
-        }
-
-        public override void NetSend(BinaryWriter writer) => writer.Write(stored);
-        public override void NetRecieve(BinaryReader reader) => stored = reader.ReadInt32();
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(mod, "Stored Dmg", "Use to heal " + stored + " life")
+            if (Banked > 0)
+            tooltips.Add(new TooltipLine(mod, "Stored Dmg", "Use to heal " + Banked + " life")
             {
                 overrideColor = CombatText.HealLife
             });

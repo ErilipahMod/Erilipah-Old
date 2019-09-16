@@ -10,10 +10,6 @@ namespace Erilipah
 {
     public partial class Erilipah : Mod
     {
-        public static ModHotKey VeritasAbilityKey;
-        public static ModHotKey VitalityAbilityKey;
-        public static ModHotKey Bandolier;
-
         private UserInterface vitalityUI;
         private UserInterface shieldBrokenUI;
         private UserInterface infectUI;

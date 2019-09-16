@@ -44,7 +44,15 @@ namespace Erilipah.NPCs.LunarBee
             }
         }
 
-        private Vector2[] TrailPos = new Vector2[3];
+        private readonly Vector2[] TrailPos = new Vector2[3];
+        private Vector2 StingerPos
+        {
+            get
+            {
+                Vector2 offset = (npc.spriteDirection == 1 ? new Vector2(npc.width - 4, 102) : new Vector2(4, 102));
+                return npc.position + offset.RotatedBy(npc.rotation, npc.Size / 2);
+            }
+        }
         private float TrailRot = 0;
         private int TrailAlpha = 0;
 
@@ -75,7 +83,7 @@ namespace Erilipah.NPCs.LunarBee
                 spriteBatch.Draw(
                     texture,
                     TrailPos[i] - Main.screenPosition,
-                    new Rectangle(0, i * 100 + 400, texture.Width, texture.Height / 8),
+                    new Rectangle(0, i * 100, texture.Width, texture.Height / 8),
                     Color.White * ((TrailAlpha + i * 30) / 255f),
                     TrailRot,
                     drawOrigin,
@@ -199,12 +207,11 @@ namespace Erilipah.NPCs.LunarBee
                     if (cycleTime % 5 == 0)
                     {
                         npc.netUpdate = true;
-                        Vector2 stinger = npc.position + (npc.spriteDirection == 1 ? new Vector2(npc.width - 8, 82) : new Vector2(8, 82));
                         Vector2 spreaded = npc.Center.To(Target.Center).RotatedByRandom(0.3f);
-                        Main.PlaySound(SoundID.Item17, stinger);
+                        Main.PlaySound(SoundID.Item17, StingerPos);
 
                         if (Main.netMode != 1)
-                            Projectile.NewProjectile(stinger + spreaded * 30, spreaded * 8.5f, mod.ProjectileType<CrystalShard>(), dmgSmallChunks, 1);
+                            Projectile.NewProjectile(StingerPos + spreaded * 30, spreaded * 8.5f, mod.ProjectileType<CrystalShard>(), dmgSmallChunks, 1);
                     }
                 }
 
@@ -241,7 +248,7 @@ namespace Erilipah.NPCs.LunarBee
                     {
                         if (PhaseTimer % 90 == 0)
                         {
-                            Vector2 butt = npc.position + (npc.spriteDirection == 1 ? new Vector2(npc.width - 66, 94) : new Vector2(66, 94));
+                            Vector2 butt = npc.position + (npc.spriteDirection == 1 ? new Vector2(npc.width - 14, 70) : new Vector2(14, 70));
                             NPC wasp = Main.npc[NPC.NewNPC((int)butt.X, (int)butt.Y, mod.NPCType<Lunacrita>(), ai1: npc.whoAmI, Target: npc.target)];
                             wasp.damage = dmgSummon;
                             wasp.velocity = npc.Center.To(butt, 5);
@@ -327,7 +334,7 @@ namespace Erilipah.NPCs.LunarBee
                     TrailPos[0] = Vector2.Lerp(npc.Center, endPosition, 0.25f);
                     TrailPos[1] = Vector2.Lerp(npc.Center, endPosition, 0.50f);
                     TrailPos[2] = Vector2.Lerp(npc.Center, endPosition, 0.75f);
-                    TrailRot = npc.Center.To(endPosition).ToRotation();
+                    TrailRot = npc.Center.To(endPosition).ToRotation() - MathHelper.PiOver2;
                     TrailAlpha = 100;
 
                     // Teleport
@@ -368,9 +375,8 @@ namespace Erilipah.NPCs.LunarBee
                 {
                     npc.netUpdate = true;
                     int numCrystals = Main.rand.Next(12, 17) + Main.expertMode.ToInt() * 3;
-                    Vector2 stinger = npc.position + (npc.spriteDirection == 1 ? new Vector2(npc.width - 8, 82) : new Vector2(8, 82));
 
-                    Helper.FireInCircle(stinger, numCrystals, mod.ProjectileType<CrystalShard>(), dmgDIO, 5f, ai0: 1);
+                    Helper.FireInCircle(StingerPos, numCrystals, mod.ProjectileType<CrystalShard>(), dmgDIO, 5f, ai0: 1);
                 }
 
                 // Change phases after X knifethrows
@@ -405,7 +411,7 @@ namespace Erilipah.NPCs.LunarBee
 
         public override void FindFrame(int frameHeight)
         {
-            const int ticksPerFrame = 7;
+            const int ticksPerFrame = 5;
             ++npc.frameCounter;
             if (npc.frameCounter % ticksPerFrame == 0)
             {
@@ -416,7 +422,7 @@ namespace Erilipah.NPCs.LunarBee
 
         public override void SetStaticDefaults()
         {
-            Main.npcFrameCount[npc.type] = 8;
+            Main.npcFrameCount[npc.type] = 4;
         }
         public override void SetDefaults()
         {
@@ -432,8 +438,8 @@ namespace Erilipah.NPCs.LunarBee
             npc.HitSound = SoundID.NPCHit1;
             npc.DeathSound = SoundID.NPCDeath1;
 
-            npc.width = 124;
-            npc.height = 100;
+            npc.width = 86;
+            npc.height = 104;
 
             npc.value = Item.buyPrice(0, 3, 0, 0);
 

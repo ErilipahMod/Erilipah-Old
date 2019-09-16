@@ -11,7 +11,6 @@ namespace Erilipah.Items.Taranys
 {
     public class VoidSpike : ModItem
     {
-        // TEST
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Shatters when hitting an enemy at low health, mauling it");
@@ -21,19 +20,20 @@ namespace Erilipah.Items.Taranys
             item.damage = 45;
             item.knockBack = 3.5f;
             item.crit = 9;
+            item.mana = 0;
+
             item.melee = true;
             item.noMelee = false;
-            item.mana = 9;
+            item.autoReuse = true;
+            item.useTurn = true;
 
             item.maxStack = 1;
-            item.useTime =
-            item.useAnimation = 27;
+            item.useTime = item.useAnimation = 21;
             item.useStyle = 1;
-            item.autoReuse = true;
             item.UseSound = SoundID.Item1;
 
-            item.width = 40;
-            item.height = 48;
+            item.width = 52;
+            item.height = 66;
 
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
@@ -46,35 +46,54 @@ namespace Erilipah.Items.Taranys
         {
             if (item.melee)
             {
-                var manaTool = tooltips.FirstOrDefault(n => n.mod == "Terraria" && n.Name == "UseMana");
-                if (manaTool != null)
-                    manaTool.text = "Uses " + item.mana + " life";
-
-                tooltips.Add(new TooltipLine(mod, "RC", "Right click to use mana"));
+                tooltips.Add(new TooltipLine(mod, "RC", "Right click to use magic damage"));
             }
             else
             {
-                tooltips.Add(new TooltipLine(mod, "RC", "Right click to use life"));
+                tooltips.Add(new TooltipLine(mod, "RC", "Right click to use melee damage"));
             }
         }
 
         public override bool AltFunctionUse(Player player) => true;
 
-        private bool AnyShards(Player player) => !player.ownedProjectileCounts.Any(p => p == mod.ProjectileType<VoidSpikeProj>());
+        private bool AnyShards(Player player)
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                Projectile p = Main.projectile[i];
+                if (p.active && p.owner == player.whoAmI && p.type == mod.ProjectileType<VoidSpikeProj>())
+                    return true;
+            }
+            return false;
+        }
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
+                Main.PlaySound(2, player.Center, 29);
                 item.magic = !item.magic;
                 item.melee = !item.magic;
-                return false;
+
+                if (item.magic)
+                {
+                    item.damage = 38;
+                    item.useTime = item.useAnimation = 16;
+                    item.mana = 4;
+                }
+                else
+                {
+                    item.damage = 45;
+                    item.useTime = item.useAnimation = 21;
+                    item.mana = 0;
+                }
+                return true;
             }
             return !AnyShards(player);
         }
 
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
-            if (!AnyShards(player) && target.life < 0.15 * target.lifeMax && !target.immortal && !target.dontTakeDamage)
+            if (!AnyShards(player) && target.lifeMax > 200 && target.life < 0.25 * target.lifeMax && !target.immortal && !target.dontTakeDamage)
             {
                 if (Main.netMode != 1)
                 {
@@ -101,12 +120,15 @@ namespace Erilipah.Items.Taranys
         }
         public override void SetDefaults()
         {
-            projectile.width = 24;
-            projectile.height = 26;
+            projectile.width = 42;
+            projectile.height = 54;
 
-            projectile.tileCollide = true;
+            projectile.tileCollide = false;
             projectile.aiStyle = 0;
             projectile.timeLeft = 100;
+
+            projectile.maxPenetrate = 100;
+            projectile.penetrate = 100;
 
             projectile.melee = true;
             projectile.maxPenetrate = 1;
@@ -119,14 +141,13 @@ namespace Erilipah.Items.Taranys
             // Ai1 = timer
             // Local0 = blur length
             projectile.ai[1]++;
+            projectile.rotation += projectile.velocity.Length() / 20;
             projectile.timeLeft = 2;
 
             if (Target == -1 || Main.npc[Target].dontTakeDamage)
             {
                 // Slow down other velocities; accelerate to player
-                projectile.velocity *= 0.8f;
-                projectile.velocity += projectile.Center.To(Owner.Center, 0.15f);
-                projectile.velocity = Vector2.Clamp(projectile.velocity, Vector2.One * -5, Vector2.One * 5);
+                projectile.velocity = projectile.Center.To(Owner.Center, 8f);
                 projectile.localAI[0] = 2;
 
                 // Die when returned
@@ -135,18 +156,15 @@ namespace Erilipah.Items.Taranys
             }
             else if (Main.npc[Target].active)
             {
-                if (projectile.ai[1] < 100)
+                if (projectile.ai[1] < 20)
                 {
-                    projectile.velocity *= 0.93f;
+                    projectile.velocity *= 0.97f;
                     projectile.localAI[0] = 0;
                 }
                 else
                 {
-                    projectile.rotation = projectile.velocity.X / 13f;
-                    projectile.velocity =
-                        projectile.Center.To(Main.npc[Target].Center, 5) +
-                        projectile.GoTo(Main.npc[Target].Center, 0.15f, 5 + Target / 100f);
-                    projectile.localAI[0] = Target / 125f;
+                    projectile.velocity = projectile.Center.To(Main.npc[Target].Center, 20);
+                    projectile.localAI[0] = 3;
                 }
             }
             else
@@ -154,7 +172,7 @@ namespace Erilipah.Items.Taranys
                 // Find next target; if none, return to player.
                 projectile.netUpdate = true;
                 var nextTargets = from n in Main.npc
-                                  where n.active && n.life < n.lifeMax * 0.15 && n.Distance(projectile.Center) < 350
+                                  where n.active && n.lifeMax > 200 && n.life < n.lifeMax * 0.20 && n.Distance(projectile.Center) < 350
                                   orderby n.life descending
                                   select n.whoAmI;
                 int? selection = nextTargets.FirstOrDefault();
@@ -171,27 +189,26 @@ namespace Erilipah.Items.Taranys
                 projectile.ai[1] = 0;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (projectile.localAI[0] <= 0)
-                return;
-
-            Texture2D texture = Main.projectileTexture[projectile.type];
-            int frames = Main.projFrames[projectile.type];
-            Rectangle rect = texture.Frame(1, frames, 0, projectile.frame);
-
-            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, (texture.Height / Main.projFrames[projectile.type]) * 0.5f);
-            for (int i = 0; i < Math.Min(projectile.oldPos.Length, projectile.localAI[0]); i++)
+            if (projectile.localAI[0] > 0 && projectile.velocity.Length() > 0)
             {
-                Vector2 drawPos = projectile.oldPos[i] - Main.screenPosition + drawOrigin + new Vector2(0, projectile.gfxOffY);
-                Color color = projectile.GetAlpha(lightColor) * ((projectile.localAI[0] - i) / projectile.localAI[0]);
-                SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                Texture2D texture = Main.projectileTexture[projectile.type];
+                Rectangle rect = texture.Frame(1, Main.projFrames[projectile.type], 0, projectile.frame);
+                float variable = Math.Min(projectile.oldPos.Length, projectile.localAI[0]);
+                for (int i = 0; i < variable; i++)
+                {
+                    Vector2 drawPos = projectile.oldPos[i] - Main.screenPosition + rect.Size() / 2 + new Vector2(0, projectile.gfxOffY);
+                    Color color = projectile.GetAlpha(drawColor) * ((variable - i) / (float)variable);
+                    SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                spriteBatch.Draw(
-                    texture: texture, position: drawPos, sourceRectangle: rect, color: color, rotation: projectile.oldRot[i],
-                    origin: drawOrigin, scale: projectile.scale, effects: effects, layerDepth: 0
-                    );
+                    spriteBatch.Draw(
+                        texture: texture, position: drawPos, sourceRectangle: rect, color: color, rotation: projectile.oldRot[i],
+                        origin: rect.Size() / 2, scale: projectile.scale, effects: effects, layerDepth: 0
+                        );
+                }
             }
+            return true;
         }
     }
 }

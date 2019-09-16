@@ -14,10 +14,13 @@ namespace Erilipah
         public bool ZoneErilipah { get; private set; } = false;
         public bool ZoneLostCity { get; private set; } = false;
 
+        public int bankedDamage = 0;
         public int extraItemReach = 0;
         public bool canMove = true;
         public bool canJump = true;
         public bool healingSoulTorch = false;
+
+        private bool pressedSoulBank = false;
 
         public override void ResetEffects()
         {
@@ -26,13 +29,28 @@ namespace Erilipah
             canJump = true;
         }
 
-        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+        void TorchOfSoul(NPC target, int damage)
         {
-            var i = player.FindEquip(mod.ItemType<TorchOfSoul>());
-            if (i != null && i.modItem is TorchOfSoul equip && !healingSoulTorch)
+            if (bankedDamage >= 500)
             {
-                int amount = Math.Min(1, target.lifeMax) / 500 * damage;
-                equip.stored += amount;
+                bankedDamage = 500;
+                return;
+            }
+            if (healingSoulTorch) return;
+
+            Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
+            if (i != null && !target.immortal && !target.dontTakeDamage)
+            {
+                int amount = damage / 2;
+                if (amount < 1)
+                    amount = 1;
+
+                bankedDamage += amount;
+                if (bankedDamage > 500)
+                {
+                    bankedDamage = 500;
+                    amount = 500 - amount;
+                }
 
                 Rectangle loc = player.getRect();
                 loc.Y -= 30;
@@ -40,11 +58,66 @@ namespace Erilipah
             }
         }
 
+        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+        {
+            TorchOfSoul(target, damage);
+        }
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            TorchOfSoul(target, damage);
+        }
+
+        public override void UpdateLifeRegen()
+        {
+            if (healingSoulTorch)
+            {
+                if (player.statLife >= player.statLifeMax2)
+                {
+                    player.GetModPlayer<ErilipahPlayer>().healingSoulTorch = false;
+                    CombatText.NewText(player.getRect(), Main.errorColor, "Full life");
+                    return;
+                }
+                if (bankedDamage == 0)
+                {
+                    player.GetModPlayer<ErilipahPlayer>().healingSoulTorch = false;
+                    CombatText.NewText(player.getRect(), Main.errorColor, "Empty bank", true);
+                    return;
+                }
+
+                if (Main.myPlayer == player.whoAmI && (int)Main.time % 5 == 0)
+                {
+                    player.netLife = true;
+
+                    if ((int)Main.time % 25 == 0)
+                        CombatText.NewText(player.getRect(), CombatText.HealLife, 5, false, true);
+                    player.statLife++;
+                    bankedDamage--;
+                }
+            }
+        }
+
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (!healingSoulTorch && player.statLife < player.statLifeMax2 && player.FindEquip(mod.ItemType<TorchOfSoul>()) != null && triggersSet.QuickHeal && player.HasBuff(BuffID.PotionSickness))
+            if (player.FindEquip(mod.ItemType<TorchOfSoul>()) != null && Erilipah.SoulBank.JustReleased)
             {
-                healingSoulTorch = true;
+                if (player.statLife >= player.statLifeMax2)
+                {
+                    if (!pressedSoulBank)
+                        CombatText.NewText(player.getRect(), Main.errorColor, "Full life");
+                    pressedSoulBank = true;
+                }
+                else if (bankedDamage == 0)
+                {
+                    if (!pressedSoulBank)
+                        CombatText.NewText(player.getRect(), Main.errorColor, "Empty bank", true);
+                    pressedSoulBank = true;
+                }
+                else
+                {
+                    Main.PlaySound(SoundID.Item4, player.Center);
+                    healingSoulTorch = !healingSoulTorch;
+                    pressedSoulBank = false;
+                }
             }
         }
 

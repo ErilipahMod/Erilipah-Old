@@ -38,19 +38,12 @@ namespace Erilipah.Items.Phlogiston
 
         protected override int Pierce => 0;
         protected override int Bounce => 0;
-        protected override float Gravity => 0;
-        protected override int AIStyle
-        {
-            get
-            {
-                aiType = ProjectileID.WoodenArrowFriendly;
-                return 1;
-            }
-        }
+        protected override float Gravity => -0.05f;
+        protected override int AIStyle => 1;
 
         protected override TextureTypes TextureType => TextureTypes.ItemClone;
         protected override DamageTypes DamageType => DamageTypes.Ranged;
-        protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
+        protected override DustTrailTypes DustTrailType => DustTrailTypes.PerfectNoGravity;
 
         protected override float? Rotation => projectile.velocity.ToRotation() - Degrees90;
 

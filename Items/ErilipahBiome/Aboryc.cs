@@ -14,7 +14,6 @@ namespace Erilipah.Items.ErilipahBiome
 {
     public class AbProj : ModProjectile
     {
-        // TEST
         public override void SetStaticDefaults()
         {
             Main.projFrames[projectile.type] = 2;
@@ -37,7 +36,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         private static Vector2 AboveAltar => ErilipahWorld.AltarPosition - Vector2.UnitY * 100;
         private bool Taken => projectile.owner != 255;
-        private bool SummonComplete => Timer > 730;
+        private bool SummonComplete => Timer > 1330 + 600;
 
         private float Timer { get => projectile.ai[0]; set => projectile.ai[0] = value; }
         private float ShockTimer { get => projectile.ai[1]; set => projectile.ai[1] = value; }
@@ -80,7 +79,7 @@ namespace Erilipah.Items.ErilipahBiome
                 Player player = Main.player[projectile.owner];
 
                 int taranys = NPC.FindFirstNPC(mod.NPCType<NPCs.Taranys.Taranys>());
-                bool taranysIsDying = Main.npc[taranys].ai[0] < 0;
+                bool taranysIsDying = taranys != -1 && Main.npc[taranys].ai[0] < 0;
 
                 if (SummonComplete && taranys == -1 || Timer < 0)
                 {
@@ -99,11 +98,13 @@ namespace Erilipah.Items.ErilipahBiome
                     projectile.scale += 0.015f;
                     // Grow overtop Taranys as if to kill him
                 }
-                else if (Timer > 90 || player.Brightness() < 0.1f)
+                else 
                 {
                     Timer++;
-                    Ritual(player);
                     Effects(new Vector2(player.Center.X, player.Center.Y - 100));
+
+                    if (Timer > 600)
+                        Ritual(player, (int)Timer - 600);
                 }
             }
             else
@@ -133,6 +134,8 @@ namespace Erilipah.Items.ErilipahBiome
             const float scaleTime = 107;
             const float hoverTime = 180;
 
+            projectile.velocity = Vector2.Zero;
+
             if (ScaleTimer < scaleTime)
                 ScaleTimer++;
             else
@@ -161,7 +164,7 @@ namespace Erilipah.Items.ErilipahBiome
             }
         }
 
-        private void Ritual(Player player)
+        private void Ritual(Player player, int time)
         {
             player.GetModPlayer<InfectionPlr>().darknessCounter--;
             if (player.dead && NPC.AnyNPCs(mod.NPCType<NPCs.Taranys.Taranys>()))
@@ -175,18 +178,18 @@ namespace Erilipah.Items.ErilipahBiome
                 }
             }
 
-            if (Timer < 220) { }
-            else if (Timer == 220)
+            if (time < 220) { }
+            else if (time == 220)
             {
                 Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 29, 1, 0.2f);
             }
-            else if (Timer < 300)
+            else if (time < 300)
             {
                 Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 103, 0.2f, 0.3f);
                 Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
                     .customData = 0f;
             }
-            else if (Timer == 300)
+            else if (time == 300)
             {
                 for (int i = 0; i < 50; i++)
                 {
@@ -198,9 +201,9 @@ namespace Erilipah.Items.ErilipahBiome
                 ShockTimer = 1;
             }
 
-            if (Timer >= 220)
+            if (time >= 220)
             {
-                if (Timer < 650)
+                if (time < 650)
                 {
                     // Lock the player in
                     player.itemTime = 2;
@@ -213,16 +216,16 @@ namespace Erilipah.Items.ErilipahBiome
                 }
             }
 
-            if (Timer > 730)
+            if (time > 730)
             {
                 projectile.velocity = Vector2.Zero;
                 projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.1f);
             }
-            else if (Timer > 650)
+            else if (time > 650)
             {
                 projectile.velocity *= 0.92f;
             }
-            else if (Timer == 650)
+            else if (time == 650)
             {
                 if (Main.netMode != 1)
                     NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType<NPCs.Taranys.Taranys>());
@@ -233,11 +236,11 @@ namespace Erilipah.Items.ErilipahBiome
 
                 projectile.velocity = new Vector2(0, -6);
             }
-            else if (Timer >= 450 && Timer < 650)
+            else if (time >= 450 && time < 650)
             {
                 Vector2 newPos = new Vector2(player.Center.X, player.Center.Y - 200);
-                Vector2 distance = new Vector2(0, 200 - (Timer - 450)) / 2f; // 200 = the time of this phase, hence its existing
-                float rotation = (float)Math.Pow(Timer - 450, 1.815f);
+                Vector2 distance = new Vector2(0, 200 - (time - 450)) / 2f; // 200 = the time of this phase, hence its existing
+                float rotation = (float)Math.Pow(time - 450, 1.815f);
                 rotation /= 100f;
 
                 projectile.Center = newPos + distance.RotatedBy(rotation);
@@ -323,11 +326,24 @@ namespace Erilipah.Items.ErilipahBiome
                 Item.NewItem(r, itemType, itemStack, false, 0, false, false);
         }
 
+        float pulse = 1f;
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
+            float pulseIntensity = MathHelper.Lerp(0f, 1f, Timer / 600f);
+            float pulseSpeed = (int)MathHelper.Lerp(0.01f, 0.15f, Timer / 600f);
+            pulse += pulseSpeed;
+            if (pulse > +1)
+                pulse = -1 + (pulse - 1);
+
+            float inputPulse;
+            if (Timer > 600 || Timer < 0)
+                inputPulse = 1;
+            else
+                inputPulse = Math.Max(pulseIntensity, Math.Abs(pulse));
+
             Texture2D texture = Main.projectileTexture[projectile.type];
             spriteBatch.Draw(texture, projectile.Center - Main.screenPosition,
-                texture.Frame(1, 2, 0, projectile.frame), Color.White * ((255 - projectile.alpha) / 255f), 0f,
+                texture.Frame(1, 2, 0, projectile.frame), Color.White * ((255 - projectile.alpha) / 255f) * inputPulse, 0f,
                 Main.projectileTexture[projectile.type].Size() / 2, projectile.scale, 0, 1);
             return false;
         }

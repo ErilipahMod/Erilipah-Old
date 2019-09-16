@@ -38,5 +38,10 @@ namespace Erilipah.NPCs.Phlogiston
 
             // npc.MakeBuffImmune(BuffID.OnFire);
         }
+
+        public override void AI()
+        {
+            base.AI();
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Erilipah.Items.Taranys
         public override void SetDefaults()
         {
             item.damage = 32;
-            item.knockBack = 1.5f;
+            item.knockBack = 1.65f;
             item.crit = 10;
             item.magic = true;
             item.mana = 8;
@@ -272,7 +272,7 @@ namespace Erilipah.Items.Taranys
                     // Do the do
                     float progress = MathHelper.Lerp(0, 1, Pulse / 600);
                     Filters.Scene["TyrantEye" + Shader].GetShader().UseProgress(progress).
-                        UseOpacity(70 * (1 - progress));
+                        UseOpacity(30 * (1 - progress));
                 }
                 #endregion
             }

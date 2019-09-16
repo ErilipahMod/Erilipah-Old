@@ -126,7 +126,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 {
                     RotateToTarget();
                 }
-                if (AttackTimer == -1) Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, -0.5f);
+                if (AttackTimer == -1) Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 2, 1, -0.12f * npc.scale);
                 return;
             }
 
@@ -389,7 +389,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                             continue;
                         if (projectile.extraUpdates > 0)
                             projectile.extraUpdates--;
-                        projectile.velocity *= 0.93f;
+                        projectile.velocity *= 0.965f;
                     }
                     for (int i = 0; i < Main.maxNPCs; i++)
                     {

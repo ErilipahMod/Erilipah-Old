@@ -18,6 +18,11 @@ namespace Erilipah
     {
         public Erilipah() { }
 
+        public static ModHotKey VeritasAbilityKey;
+        public static ModHotKey VitalityAbilityKey;
+        public static ModHotKey Bandolier;
+        public static ModHotKey SoulBank;
+
         public override void Load()
         {
 
@@ -29,8 +34,9 @@ namespace Erilipah
 #endif
 
             Bandolier = RegisterHotKey("Bondolier", "U");
-            VeritasAbilityKey = RegisterHotKey("Veritas", "V");
+            VeritasAbilityKey = RegisterHotKey("Veritas Ability", "V");
             VitalityAbilityKey = RegisterHotKey("Vitality Heal", "G");
+            SoulBank = RegisterHotKey("Soul Bank", "Y");
 
             if (!Main.dedServ)
             {
@@ -71,6 +77,7 @@ namespace Erilipah
         public override void Unload()
         {
             Bandolier = null;
+            SoulBank = null;
 
             vitalityBar = null;
             vitalityUI = null;

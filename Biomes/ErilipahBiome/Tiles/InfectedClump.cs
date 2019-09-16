@@ -167,11 +167,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override void FloorVisuals(Player player)
         {
+            if (Main.rand.NextFloat(System.Math.Abs(player.velocity.X)) < 0.5f)
+                return;
+
             Dust dust = Main.dust[Dust.NewDust(
                 player.position + new Vector2(0, player.height), player.width, 0, mod.DustType<VoidParticle>(),
                 player.direction * -0.5f, -0.8f)];
             dust.noGravity = true;
-            dust.fadeIn = 0.8f;
+            dust.velocity /= 2f;
+            dust.fadeIn = 1.15f;
         }
     }
     public class SpoiledClump : ModTile

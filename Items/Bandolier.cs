@@ -91,12 +91,12 @@ namespace Erilipah.Items
 
         public class Bandolier : Bandoliers
         {
-            public override string Texture => "Erilipah/TempSprite";
+            public override string Texture => "Erilipah/Items/Bandolier";
             public override void SetStaticDefaults()
             {
-                Tooltip.SetDefault("Right click in inventory to add or remove bullets\n" +
+                Tooltip.SetDefault("Right click the bandolier with bullets to add the bullets\n" +
                     "Press the Bandolier hotkey to cycle through bullets\n" +
-                    "Can hold five types of bullets of any stack count\n" +
+                    "Can hold five types of bullets\n" +
                     "When in use, gun speed increases but extra ammo is consumed\n" +
                     "'For all your gun-slingin' needs'");
             }
@@ -105,8 +105,8 @@ namespace Erilipah.Items
                 item.maxStack = 1;
 
                 item.ranged = true;
-                item.width = 32;
-                item.height = 32;
+                item.width = 28;
+                item.height = 34;
                 item.consumable = false;
 
                 item.value = Item.buyPrice(0, 35, 0, 0);
@@ -189,13 +189,14 @@ namespace Erilipah.Items
 
         public class ThreeTorusBandolier : Bandoliers
         {
-            public override string Texture => "Erilipah/TempSprite";
+            public override string Texture => "Erilipah/Items/BandolierThreeTorus";
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Three-Torus Bandolier");
-                Tooltip.SetDefault("Functions like the Bandolier; can hold ten types of bullets\n" +
-                    "A full stack of bullets is needed to add to the Bandolier\n" +
-                    "When in use, gun speed increases greatly and no ammo is consumed\n" +
+                Tooltip.SetDefault("Right-click the bandolier with a full stack of bullets to add them\n" +
+                    "Press the Bandolier hotkey to cycle through bullets\n" +
+                    "Can hold ten types of bullets\n" +
+                    "When in use, gun speed greatly increases and no ammo is consumed\n" +
                     "'It's bigger on the inside!'");
             }
             public override void SetDefaults()
@@ -204,7 +205,7 @@ namespace Erilipah.Items
 
                 item.ranged = true;
                 item.width = 32;
-                item.height = 32;
+                item.height = 44;
                 item.consumable = false;
 
                 item.value = Item.buyPrice(0, 50, 0, 0);

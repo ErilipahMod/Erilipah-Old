@@ -45,14 +45,17 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         private float fluctuant = 0;
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
-            fluctuant += 0.025f;
-            if (fluctuant > 1)
-                fluctuant = -1;
+            if (Main.tile[i, j].frameX == 18)
+            {
+                fluctuant += 0.0225f;
+                if (fluctuant > 1)
+                    fluctuant = -1;
 
-            float absFluctuant = System.Math.Abs(fluctuant);
-            r = MathHelper.SmoothStep(0, 2f, absFluctuant);
-            g = MathHelper.SmoothStep(0, 1f, absFluctuant);
-            b = MathHelper.SmoothStep(0, 3.5f, absFluctuant);
+                float absFluctuant = System.Math.Abs(fluctuant);
+                r = MathHelper.SmoothStep(-1f, 1.65f, absFluctuant);
+                g = MathHelper.SmoothStep(-0.6f, 0.8f, absFluctuant);
+                b = MathHelper.SmoothStep(-1f, 2f, absFluctuant);
+            }
         }
     }
 }

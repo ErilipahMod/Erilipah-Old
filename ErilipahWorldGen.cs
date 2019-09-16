@@ -303,7 +303,7 @@ namespace Erilipah
             int altarY = j - 10;
 
             WorldGen.Place3x2(altarX, altarY, T("Altar"));
-            AltarPosition = new Vector2(altarX * 16, altarY * 16);
+            AltarPosition = new Vector2(altarX * 16 + 8, altarY * 16);
         }
 
         private void LostChasmGen(GenerationProgress progress)
@@ -312,7 +312,7 @@ namespace Erilipah
             progress.Set(0f);
 
             Chasm.Width = 520;
-            Chasm.Height = (int)(0.13 * Main.maxTilesY);
+            Chasm.Height = (int)(0.1215 * Main.maxTilesY);
             Chasm.X = BiomeCenterX - Chasm.Width / 2;
             Chasm.Y = ChasmBottomY + 95;
 

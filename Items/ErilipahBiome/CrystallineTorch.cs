@@ -93,12 +93,14 @@ namespace Erilipah.Items.ErilipahBiome
             recipe.AddIngredient(ItemID.Torch, 6);
             recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 5);
             recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 1);
+            recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
             recipe.SetResult(this, 6);
             recipe.AddRecipe();
 
             recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Torch, 6);
             recipe.AddIngredient(mod.ItemType<BioluminescentSinew>(), 1);
+            recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
             recipe.SetResult(this, 6);
             recipe.AddRecipe();
         }

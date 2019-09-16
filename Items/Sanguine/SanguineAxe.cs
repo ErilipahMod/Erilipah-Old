@@ -10,13 +10,13 @@ namespace Erilipah.Items.Sanguine
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Heals you for 10% of damage dealt");
-            DisplayName.SetDefault("Sanguine Axe");
+            DisplayName.SetDefault("Sanguine Hammer");
         }
 
         public override void SetDefaults()
         {
             item.width =
-                item.height = 44;
+                item.height = 46;
 
             item.damage = 15;
             item.knockBack = 2;
@@ -30,7 +30,8 @@ namespace Erilipah.Items.Sanguine
             item.rare = 3;
             item.autoReuse = true;
 
-            item.axe = 70 / 5;
+            item.axe = 125 / 5;
+            item.hammer = 75;
         }
 
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)

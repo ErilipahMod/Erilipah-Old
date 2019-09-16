@@ -734,6 +734,7 @@ namespace Erilipah.NPCs.Taranys
                         Filters.Scene["TaranysPulse"].Deactivate();
                         npc.velocity = npc.GoTo(new Vector2(npc.Center.X, Target.Center.Y - 30), 0.1f, 3f);
                         npc.velocity *= 0.9f;
+                        npc.rotation = 0;
 
                         for (int i = 0; i < 255; i++)
                         {
@@ -768,7 +769,7 @@ namespace Erilipah.NPCs.Taranys
 
                 case 4:
                     Hover();
-                    npc.velocity /= 3f;
+                    npc.velocity *= 0.90f;
 
                     if (NPC.CountNPCS(mod.NPCType<OrbitMinion>()) < 13 && Timer % 600 * SpeedMult == 0)
                     {
@@ -1043,8 +1044,11 @@ namespace Erilipah.NPCs.Taranys
         }
         public override void SetDefaults()
         {
-            projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
-            projectile.scale = Main.rand.NextFloat(0.9f, 1.1f);
+            if (Main.rand != null)
+            {
+                projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
+                projectile.scale = Main.rand.NextFloat(0.9f, 1.1f);
+            }
             projectile.width = 8;
             projectile.height = 8;
             projectile.SetInfecting(2.8f);
@@ -1095,11 +1099,11 @@ namespace Erilipah.NPCs.Taranys
                 return;
             }
 
-            projectile.rotation += projectile.spriteDirection * 0.09f;
             if (projectile.ai[0] > 0)
             {
                 projectile.tileCollide = true;
                 projectile.velocity *= 0.95f;
+                projectile.rotation += projectile.spriteDirection * 0.12f;
             }
             else if (projectile.ai[0] > -120)
             {
@@ -1108,10 +1112,12 @@ namespace Erilipah.NPCs.Taranys
                     return;
                 Player target = Main.player[player];
                 projectile.velocity = projectile.GoTo(target.Center, 0.22f);
+                projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
             }
             else
             {
                 projectile.velocity.Y += 0.175f;
+                projectile.rotation += projectile.spriteDirection * 0.010f;
             }
         }
 

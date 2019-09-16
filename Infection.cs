@@ -28,6 +28,7 @@ namespace Erilipah
 
         private float alpha = 60f;
         private int counter = 0;
+        private int frameY = 0;
 
         private bool ActiveOther(Player p) => p.active && !p.dead && p.I().Infection > 0;
         private bool ActiveBar() => Main.LocalPlayer.active && Main.LocalPlayer.I().Infection > 0;
@@ -69,15 +70,14 @@ namespace Erilipah
                 float infectionMax = Main.LocalPlayer.I().infectionMax;
 
                 Texture2D texture2D = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Infection");
-                float amount = Math.Max(0, infection) / infectionMax;
-                int frameY = (int)Math.Round(MathHelper.Lerp(0, 20, amount));
+                float amount = Math.Max(0, infection);
 
                 if (amount > infectionMax)
                 {
                     counter++;
 
-                    float speedMult = infectionMax / infection / 4;
-                    int countModulo = (int)(7 * speedMult);
+                    float speedMult = infectionMax / infection / 2;
+                    int countModulo = (int)(10 * speedMult);
                     if (counter % countModulo == 0)
                     {
                         frameY++;
@@ -89,6 +89,7 @@ namespace Erilipah
                 }
                 else
                 {
+                    frameY = (int)Math.Round(MathHelper.Lerp(0, 20, amount / infectionMax));
                     counter = 0;
                 }
                 Rectangle frame = texture2D.Frame(1, 23, 0, frameY);
@@ -250,7 +251,7 @@ namespace Erilipah
                 darknessCounter++;
                 if (darknessCounter == 220)
                 {
-                    Main.PlaySound(15, (int)player.Center.X, (int)player.Center.Y, 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
+                    Main.PlaySound(15, (int)player.Center.X + Main.rand.Next(-150, 150), (int)player.Center.Y + Main.rand.Next(-150, 150), 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
                 }
                 if (darknessCounter >= 400 && darknessCounter % 120 == 0)
                 {
@@ -266,12 +267,12 @@ namespace Erilipah
             if (darknessCounter < 0)
                 darknessCounter = 0;
 
-            if (Infection > infectionMax * 0.8f)
+            if (Infection > infectionMax * 0.9f)
             {
                 player.buffImmune[BuffID.Weak] = false;
                 player.AddBuff(BuffID.Weak, 1);
             }
-            if (Infection > infectionMax * 0.9f)
+            if (Infection > infectionMax * 1.0f)
             {
                 player.buffImmune[BuffID.Slow] = false;
                 player.AddBuff(BuffID.Slow, 1);
