@@ -90,7 +90,7 @@ namespace Erilipah.Biomes.ErilipahBiome
             }
             Opacity = MathHelper.Clamp(Opacity, 0, 1f);
 
-            bool noAshes = Main.myPlayer < 0 || Main.gameMenu || !Main.LocalPlayer.active || Main.LocalPlayer.Center.Y > Main.rockLayer * 16;
+            bool noAshes = Main.myPlayer < 0 || Main.gameMenu || !Main.LocalPlayer.active || Main.LocalPlayer.Center.Y > Main.rockLayer;
             if (noAshes)
             {
                 ashes.Clear();

@@ -44,7 +44,7 @@ namespace Erilipah.Items.Sanguine
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Sanguine Ore");
-            AddMapEntry(new Microsoft.Xna.Framework.Color(200, 20, 0));
+            AddMapEntry(new Microsoft.Xna.Framework.Color(200, 20, 0), name);
 
             mineResist = 2f;
             minPick = 60;

@@ -1054,12 +1054,12 @@ namespace Erilipah.NPCs.Taranys
             {
                 projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
                 projectile.scale = Main.rand.NextFloat(0.9f, 1.1f);
+                projectile.rotation = Main.rand.NextFloat(6.28f);
             }
             projectile.width = 8;
             projectile.height = 8;
             projectile.SetInfecting(2.8f);
 
-            projectile.rotation = Main.rand.NextFloat(6.28f);
             projectile.tileCollide = false;
             projectile.aiStyle = 0;
             projectile.timeLeft = 600;
@@ -1096,6 +1096,7 @@ namespace Erilipah.NPCs.Taranys
 
             if (projectile.ai[1] != 0)
             {
+                projectile.tileCollide = true;
                 projectile.rotation += projectile.velocity.X / 16f;
                 projectile.frame = 1;
                 projectile.width = 10;
@@ -1107,7 +1108,7 @@ namespace Erilipah.NPCs.Taranys
 
             if (projectile.ai[0] > 0)
             {
-                projectile.tileCollide = true;
+                projectile.tileCollide = false;
                 projectile.velocity *= 0.95f;
                 projectile.rotation += projectile.spriteDirection * 0.12f;
             }

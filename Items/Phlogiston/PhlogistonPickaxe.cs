@@ -5,7 +5,7 @@ namespace Erilipah.Items.Phlogiston
     public class PhlogistonPickaxe : NewModItem
     {
         protected override int Damage => 15;
-        protected override int[] UseSpeedArray => new int[2] { 12, 29 };
+        protected override int[] UseSpeedArray => new int[2] { 10, 21 };
         protected override float Knockback => 5;
         protected override int Pick => 100;
 

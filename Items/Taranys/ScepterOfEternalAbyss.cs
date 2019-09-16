@@ -15,6 +15,7 @@ namespace Erilipah.Items.Taranys
     {
         public override void SetStaticDefaults()
         {
+            DisplayName.SetDefault("Scepter of Ethereal Abyss");
             Tooltip.SetDefault("Fires powerful ethereal knives");
             Item.staff[item.type] = true;
         }
@@ -28,36 +29,53 @@ namespace Erilipah.Items.Taranys
             item.crit = 8;
             item.magic = true;
 
-            item.reuseDelay = 5;
+            item.reuseDelay = 7;
             item.useTime = 12;
             item.useAnimation = 30;
             item.useStyle = ItemUseStyleID.HoldingOut;
 
             item.noMelee = true;
             item.autoReuse = true;
-            item.useTurn = true;
+            item.useTurn = false;
 
-            item.UseSound = SoundID.Item4;
+            item.UseSound = SoundID.Item43;
 
             item.maxStack = 1;
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
 
             item.shoot = mod.ProjectileType<ScepterProj1>();
-            item.shootSpeed = 12f;
+            item.shootSpeed = 13f;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            position.X += Main.rand.NextFloat(-15, 15);
-            position.Y += Main.rand.NextFloat(-7, 5);
+            position.X += Main.rand.NextFloat(-75, -30) * player.direction;
+            position.Y += Main.rand.NextFloat(-60, 60);
 
-            Vector2 to = position.To(Main.MouseWorld, new Vector2(speedX, speedY).Length());
+            Lighting.AddLight(position, 0.22f, 0.1f, 0.35f);
+
+            Vector2 to = position.To(Main.MouseWorld) * item.shootSpeed;
+            to = to.RotateRandom(0.15f);
+            speedX = to.X;
+            speedY = to.Y;
 
             if (Main.rand.NextBool())
                 type = mod.ProjectileType<ScepterProj2>();
 
-            return base.Shoot(player, ref position, ref to.X, ref to.Y, ref type, ref damage, ref knockBack);
+            for (int i = 0; i < 35; i++)
+            {
+                float rot = i / 35f * MathHelper.TwoPi;
+                bool shouldIncVel  = rot > MathHelper.Pi + MathHelper.PiOver4 && rot < MathHelper.TwoPi - MathHelper.PiOver4;
+                shouldIncVel |= rot > MathHelper.PiOver4 && rot < MathHelper.PiOver2 + MathHelper.PiOver4;
+
+                float mult = shouldIncVel ? 3f : 2f;
+
+                Dust.NewDustPerfect(position, mod.DustType<NPCs.ErilipahBiome.VoidParticle>(), Vector2.UnitX.RotatedBy(rot) * mult)
+                    .noGravity = true;
+            }
+
+            return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
 
@@ -86,6 +104,14 @@ namespace Erilipah.Items.Taranys
         {
             target.AddBuff(mod.BuffType<Wither>(), 300);
         }
+
+        // TODO
+        //public override void AI()
+        //{
+        //    projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
+        //    if (projectile.ai[0]++ > 120)
+        //        projectile.tileCollide = true;
+        //}
 
         public override void Kill(int timeLeft)
         {
@@ -122,7 +148,12 @@ namespace Erilipah.Items.Taranys
 
         public override void AI()
         {
-            projectile.rotation += projectile.velocity.X > 0 ? 0.2f : -0.2f;
+            int dir = Math.Sign(projectile.velocity.X);
+            projectile.spriteDirection = -dir;
+            projectile.rotation += dir * 0.4f;
+
+            if (projectile.ai[0]++ > 120)
+                projectile.tileCollide = true;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -132,7 +163,7 @@ namespace Erilipah.Items.Taranys
 
         public override void Kill(int timeLeft)
         {
-            Main.PlaySound(SoundID.NPCDeath14, projectile.Center);
+            Main.PlaySound(SoundID.NPCDeath3, projectile.Center);
             for (int i = 0; i < 10; i++)
             {
                 Dust.NewDustPerfect(projectile.Center, DustID.PurpleCrystalShard, 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi))

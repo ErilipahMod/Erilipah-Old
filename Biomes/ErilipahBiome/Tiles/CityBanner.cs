@@ -45,6 +45,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             {
                 Main.LocalPlayer.AddBuff(mod.BuffType<CityBannerBuff>(), 300);
             }
+
+            if (Main.rand.NextBool(16))
+            {
+                int dustInd = Dust.NewDust(new Vector2(i, j) * 16, 16, 16, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
+
+                Dust dust = Main.dust[dustInd];
+                dust.noGravity = false;
+                dust.velocity = Vector2.Zero;
+                dust.customData = 0.05f;
+            }
         }
 
         public override void SetSpriteEffects(int i, int j, ref Microsoft.Xna.Framework.Graphics.SpriteEffects spriteEffects)

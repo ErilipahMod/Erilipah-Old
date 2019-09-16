@@ -5,9 +5,9 @@ namespace Erilipah.Items.Phlogiston
     public class PhlogistonHamaxe : NewModItem
     {
         protected override int Damage => 23;
-        protected override int[] UseSpeedArray => new int[2] { 12, 24 };
+        protected override int[] UseSpeedArray => new int[2] { 12, 20 };
         protected override float Knockback => 4;
-        protected override int Axe => 90;
+        protected override int Axe => 130;
         protected override int Hammer => 65;
 
         protected override bool FiresProjectile => false;

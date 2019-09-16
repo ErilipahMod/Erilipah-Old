@@ -289,6 +289,7 @@ namespace Erilipah
             // Blocks to either side of the crystal
             WorldGen.PlaceTile(spotX - 1, j - 9, T("TaintedRubble"), forced: true);
             WorldGen.PlaceTile(spotX + 2, j - 9, T("TaintedRubble"), forced: true);
+            WorldGen.PlaceTile(spotX + 3, j - 9, T("TaintedRubble"), forced: true);
 
             // Supporting blocks for the side blocks
             WorldGen.PlaceTile(spotX - 1, j - 8, T("TaintedRubble"), forced: true);
@@ -353,13 +354,13 @@ namespace Erilipah
                     tile.wall = 0;
                 }
 
-                if (trueTop > chasmRoof)
-                    trueTop = chasmRoof;
+                if (trueTop > chasmRoof + 10)
+                    trueTop = chasmRoof + 10;
 
                 progress.Set(Chasm.Right - Chasm.X / (float)Chasm.Width);
             }
             Chasm.Width = chasmX - Chasm.X;
-            ChasmPosition = new Vector2(Chasm.X + Chasm.Width / 2, (trueTop + 6) * 16);
+            ChasmPosition = new Vector2((Chasm.X + Chasm.Width / 2) * 16, trueTop * 16);
         }
         private void LostCityGen(GenerationProgress progress)
         {
@@ -540,21 +541,7 @@ namespace Erilipah
                         continue;
 
                     Chest chest = Main.chest[index];
-                    switch (WorldGen.genRand.Next(5))
-                    {
-                        default:
-                            chest.item[0] = mod.GetItem("MadnessFocus").item;
-                            chest.item[0].stack = WorldGen.genRand.Next(4, 20);
-                            break;
-                        case 1:
-                            chest.item[0] = mod.GetItem("CrystallineTorch").item;
-                            chest.item[0].stack = WorldGen.genRand.Next(5, 16);
-                            break;
-                        case 2:
-                            chest.item[0] = mod.GetItem("BioluminescentSinew").item;
-                            chest.item[0].stack = WorldGen.genRand.Next(2, 7);
-                            break;
-                    }
+                    MakeChest(ref chest.item);
                 }
             }
 
@@ -1040,6 +1027,25 @@ namespace Erilipah
                     }
                 }
             }
+        }
+        private void MakeChest(ref Item[] loot)
+        {
+            int index = 0;
+
+            if (Main.rand.NextBool())
+            {
+                loot[index] = mod.GetItem("BioluminescentSinew").item;
+                loot[index].stack = WorldGen.genRand.Next(2, 7);
+                index++;
+            }
+
+            loot[index] = mod.GetItem("MadnessFocus").item;
+            loot[index].stack = WorldGen.genRand.Next(4, 20);
+            index++;
+
+            loot[index] = mod.GetItem("CrystallineTorch").item;
+            loot[index].stack = WorldGen.genRand.Next(5, 16);
+            index++;
         }
 
         private void Infect(int i, int j)

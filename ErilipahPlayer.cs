@@ -41,9 +41,9 @@ namespace Erilipah
             Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
             if (i != null && !target.immortal && !target.dontTakeDamage)
             {
-                int amount = damage / 2;
+                int amount = damage / 5;
                 if (amount < 1)
-                    amount = 1;
+                    return;
 
                 bankedDamage += amount;
                 if (bankedDamage > 500)

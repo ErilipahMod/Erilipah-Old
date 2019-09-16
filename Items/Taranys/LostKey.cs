@@ -31,18 +31,30 @@ namespace Erilipah.Items.Taranys
 
         public override bool UseItem(Player player)
         {
-            Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 6, 1, -0.6f);
-            if (player.itemAnimation < 20)
-            {
-                player.itemAnimation = 0;
-                player.itemTime = 0;
-                player.Center = ErilipahWorld.ChasmPosition;
 
-                // Make sure the player doesn't instantly fucking die
-                player.AddBuff(BuffID.Featherfall, 300);
-                player.immune = true;
-                player.immuneTime = 300;
+            Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 6, 1, -0.6f);
+            player.itemAnimation = 0;
+            player.itemTime = 0;
+            player.Center = ErilipahWorld.ChasmPosition;
+
+            // Carve out an area for the player to spawn
+            for (int i = -5; i <= 5; i++)
+            {
+                int x = (int)player.position.X / 16;
+                for (int j = -5; j <= 5; j++)
+                {
+                    int y = (int)player.position.Y / 16;
+                    Tile tile = Main.tile[x + i, y + j];
+
+                    if (tile.type != mod.TileType<Biomes.ErilipahBiome.Tiles.TaintedBrick>())
+                        WorldGen.KillTile(x + i, y + j);
+                }
             }
+
+            // Make sure the player doesn't instantly fucking die
+            player.AddBuff(BuffID.Featherfall, 300);
+            player.immune = true;
+            player.immuneTime = 300;
             return true;
         }
     }

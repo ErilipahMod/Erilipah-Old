@@ -32,16 +32,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Erilipian Chest");
+            name.SetDefault("Lost Chest");
             AddMapEntry(new Color(200, 84, 180), name, MapChestName);
             name = CreateMapEntryName(Name + "_Locked"); // With multiple map entries, you need unique translation keys.
-            name.SetDefault("Cursed Chest");
+            name.SetDefault("Spellbound Chest");
             AddMapEntry(new Color(190, 130, 180), name, MapChestName);
 
             dustType = mod.DustType("VoidParticle");
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Containers };
-            chest = "Erilipian Chest";
+            chest = "Lost Chest";
         }
 
         public override ushort GetMapOption(int i, int j) => (ushort)(Main.tile[i, j].frameX / 36);
@@ -144,7 +144,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             {
                 if (isLocked)
                 {
-                    int key = mod.ItemType<SoulRubble>();
+                    int key = mod.ItemType<Items.Taranys.LostKey>();
                     if (player.ConsumeItem(key) && Chest.Unlock(left, top))
                     {
                         if (Main.netMode == 1)
@@ -201,13 +201,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             }
             else
             {
-                player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Erilipah Chest";
-                if (player.showItemIconText == "Erilipah Chest")
-                {
-                    if (Main.tile[left, top].frameX / 36 == 1)
-                        player.showItemIcon2 = mod.ItemType<SoulRubble>();
-                }
-                player.showItemIconText = "";
+                player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Lost Chest";
             }
             player.noThrow = 2;
             player.showItemIcon = true;
