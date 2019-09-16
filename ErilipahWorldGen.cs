@@ -279,7 +279,7 @@ namespace Erilipah
 
             ChasmBottomY = j;
 
-            // When done, place a chest at the very bottom
+            // When done, place the altar at the very bottom
             for (int i = 6; i < 10; i++)
             {
                 WorldGen.PlaceTile(spotX, j - i, T("TaintedRubble"), forced: true);
