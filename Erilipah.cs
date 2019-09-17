@@ -1,4 +1,4 @@
-#define HANDOUT_BETA
+#undef HANDOUT_BETA
 using Erilipah.Items.Dracocide;
 using Erilipah.Items.Templar;
 using Microsoft.Xna.Framework;
