@@ -10,12 +10,13 @@ namespace Erilipah
     {
         public override bool InstancePerEntity => true;
 
-        public int WitherStack { private get; set; }
+        public int witherStack = 0;
+        public int WitherStack { private get; set; } // TODO REMOVE
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
             if (npc.HasBuff(mod.BuffType<Items.Weapons.Wither>()))
-                damage = WitherStack;
+                damage = witherStack;
         }
         public override void SetupShop(int type, Chest shop, ref int nextSlot)
         {

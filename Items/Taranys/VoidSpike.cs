@@ -101,7 +101,7 @@ namespace Erilipah.Items.Taranys
                         player.itemLocation,
                         new Vector2(player.direction * Main.rand.NextFloat(3, 5), Main.rand.NextFloat(-2, 2)),
                         mod.ProjectileType<VoidSpikeProj>(),
-                        item.damage, item.knockBack, player.whoAmI, target.whoAmI);
+                        55, item.knockBack, player.whoAmI, target.whoAmI);
                 }
             }
         }
@@ -156,14 +156,20 @@ namespace Erilipah.Items.Taranys
             }
             else if (Main.npc[Target].active)
             {
+                if (!ValidNPC(Main.npc[Target]))
+                {
+                    projectile.ai[0] = -1;
+                    return;
+                }
+
                 if (projectile.ai[1] < 20)
                 {
-                    projectile.velocity *= 0.97f;
+                    projectile.velocity *= 0.90f;
                     projectile.localAI[0] = 0;
                 }
                 else
                 {
-                    projectile.velocity = projectile.Center.To(Main.npc[Target].Center, 20);
+                    projectile.velocity = projectile.Center.To(Main.npc[Target].Center, 17);
                     projectile.localAI[0] = 3;
                 }
             }
@@ -172,7 +178,7 @@ namespace Erilipah.Items.Taranys
                 // Find next target; if none, return to player.
                 projectile.netUpdate = true;
                 var nextTargets = from n in Main.npc
-                                  where n.active && n.lifeMax > 200 && n.life < n.lifeMax * 0.20 && n.Distance(projectile.Center) < 350
+                                  where ValidNPC(n) && n.Distance(projectile.Center) < 300
                                   orderby n.life descending
                                   select n.whoAmI;
                 int? selection = nextTargets.FirstOrDefault();
@@ -183,17 +189,25 @@ namespace Erilipah.Items.Taranys
             }
         }
 
+        private static bool ValidNPC(NPC n)
+        {
+            return n.active && !n.friendly && !n.dontTakeDamage && (n.life < n.lifeMax * 0.20 || n.lifeMax < 200 && n.defense < 50);
+        }
+
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+            target.immune[projectile.owner] = 5;
+            if (damage <= 1)
+                projectile.ai[0] = -1;
             if (target.whoAmI == Target)
                 projectile.ai[1] = 0;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
+            Texture2D texture = Main.projectileTexture[projectile.type];
             if (projectile.localAI[0] > 0 && projectile.velocity.Length() > 0)
             {
-                Texture2D texture = Main.projectileTexture[projectile.type];
                 Rectangle rect = texture.Frame(1, Main.projFrames[projectile.type], 0, projectile.frame);
                 float variable = Math.Min(projectile.oldPos.Length, projectile.localAI[0]);
                 for (int i = 0; i < variable; i++)
@@ -208,7 +222,9 @@ namespace Erilipah.Items.Taranys
                         );
                 }
             }
-            return true;
+
+            spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White * 0.8f, projectile.rotation, texture.Size() / 2, 1, 0, 0);
+            return false;
         }
     }
 }

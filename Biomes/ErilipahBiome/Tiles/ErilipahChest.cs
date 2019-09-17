@@ -38,7 +38,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             name.SetDefault("Spellbound Chest");
             AddMapEntry(new Color(190, 130, 180), name, MapChestName);
 
-            dustType = mod.DustType("VoidParticle");
+            dustType = mod.DustType("CrystallineDust");
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Containers };
             chest = "Lost Chest";
@@ -145,8 +145,17 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 if (isLocked)
                 {
                     int key = mod.ItemType<Items.Taranys.LostKey>();
-                    if (player.ConsumeItem(key) && Chest.Unlock(left, top))
+                    if (player.HasItem(key))
                     {
+                        for (int x = left; x <= left + 1; x++)
+                            for (int y = top; y <= top + 1; y++)
+                            {
+                                Main.tile[x, y].frameX -= 36;
+                                Dust.NewDust(new Vector2(x * 16, y * 16), 16, 16, dustType);
+                            }
+
+                        Main.PlaySound(22, left * 16, top * 16);
+
                         if (Main.netMode == 1)
                         {
                             NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
@@ -200,8 +209,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 player.showItemIconText = Language.GetTextValue("LegacyChestType.0");
             }
             else
-            {
-                player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Lost Chest";
+            {                
+                if (tile.frameX >= 36)
+                    player.showItemIcon2 = mod.ItemType<Items.Taranys.LostKey>();
+                else
+                    player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Lost Chest";
             }
             player.noThrow = 2;
             player.showItemIcon = true;

@@ -59,9 +59,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override void SetSpriteEffects(int i, int j, ref Microsoft.Xna.Framework.Graphics.SpriteEffects spriteEffects)
         {
-            Tile tile = Main.tile[i, j];
-            if ((i - tile.frameX / 18) % 2 == 0)
-                spriteEffects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally;
         }
     }
     public class CityBannerBuff : ModBuff

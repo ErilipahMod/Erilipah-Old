@@ -59,20 +59,19 @@ namespace Erilipah.Items.Weapons
             Main.debuff[Type] = true;
         }
 
-        private int stack = 1;
+        private int Stack(NPC npc) => npc.GetGlobalNPC<ErilipahNPC>().witherStack;
+        private int stack = 1; // TODO REMOVE
         public override bool ReApply(NPC npc, int time, int buffIndex)
         {
-            stack++;
-            npc.buffTime[buffIndex] += time / stack;
+            npc.GetGlobalNPC<ErilipahNPC>().witherStack++;
+            npc.buffTime[buffIndex] += time / Stack(npc);
 
             return true;
         }
         public override void Update(NPC npc, ref int buffIndex)
         {
-            npc.GetGlobalNPC<ErilipahNPC>().WitherStack = stack;
-
             npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
-            npc.lifeRegen -= stack * 4 + 4;
+            npc.lifeRegen -= Stack(npc) * 4 + 4;
             if (Main.rand.NextBool(3))
             {
                 Main.dust[Dust.NewDust(npc.position, npc.width, npc.height, 109, newColor: Color.Black)].noGravity = true;
@@ -80,10 +79,10 @@ namespace Erilipah.Items.Weapons
 
             if (npc.buffTime[buffIndex] <= 1)
             {
-                if (stack > 1)
+                if (Stack(npc) > 1)
                 {
                     npc.buffTime[buffIndex] += 90;
-                    stack -= 1;
+                    npc.GetGlobalNPC<ErilipahNPC>().witherStack -= 1;
                 }
             }
         }

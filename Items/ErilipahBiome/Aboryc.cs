@@ -47,11 +47,12 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AI()
         {
             // Never die!
-            projectile.timeLeft = 60;
+            projectile.timeLeft = 180;
+            projectile.aiStyle = 0;
 
             if (projectile.frame > 0)
             {
-                Lighting.AddLight(projectile.Center, new Vector3(1.2f, 1.0f, 1.2f * projectile.scale) * projectile.scale);
+                Lighting.AddLight(projectile.Center, new Vector3(1.2f, 1.0f, 1.2f * projectile.scale) * projectile.scale * Math.Abs(pulse * 1.2f));
             }
 
             // Run shockwave. To start a shockwave set ShockTimer = 1
@@ -60,10 +61,10 @@ namespace Erilipah.Items.ErilipahBiome
                 ShockTimer++;
                 if (!Filters.Scene["AborycTake"].IsActive())
                 {
-                    Filters.Scene.Activate("AborycTake", projectile.Center).GetShader().UseColor(1, 5, 10).UseTargetPosition(projectile.Center);
+                    Filters.Scene.Activate("AborycTake", projectile.Center).GetShader().UseColor(2, 3, 20).UseTargetPosition(projectile.Center);
                 }
 
-                float progress = MathHelper.Lerp(0, 1, ShockTimer / 1500f);
+                float progress = MathHelper.Lerp(0, 1, ShockTimer / 60f);
                 Filters.Scene["AborycTake"].GetShader().UseProgress(progress).UseOpacity(125 * (1 - progress));
 
                 // Reset, eventually
@@ -95,8 +96,8 @@ namespace Erilipah.Items.ErilipahBiome
                 else if (SummonComplete && taranys > -1 && taranysIsDying)
                 {
                     projectile.velocity = Vector2.Zero;
-                    projectile.Center = Vector2.Lerp(projectile.Center, Main.npc[taranys].Center, 0.1f);
-                    projectile.scale += 0.015f;
+                    projectile.Center = Vector2.Lerp(projectile.Center, Main.npc[taranys].Center + new Vector2(0, 15), 0.08f);
+                    projectile.scale += 0.005f;
                     // Grow overtop Taranys as if to kill him
                 }
                 else if (SummonComplete && taranys > -1)
@@ -105,7 +106,7 @@ namespace Erilipah.Items.ErilipahBiome
                     projectile.velocity = Vector2.Zero;
                     projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.1f);
                 }
-                else 
+                else if (Timer >= 0)
                 {
                     Timer++;
                     Effects(new Vector2(player.Center.X, player.Center.Y - 100));
@@ -123,6 +124,8 @@ namespace Erilipah.Items.ErilipahBiome
 
         private int CheckForDash()
         {
+            if (ShockTimer > 0)
+                return 255;
             for (int i = 0; i < 255; i++)
             {
                 Player player = Main.player[i];
@@ -130,6 +133,8 @@ namespace Erilipah.Items.ErilipahBiome
                 if (playerCollision)
                 {
                     player.AddBuff(BuffID.Featherfall, 600);
+                    player.AddBuff(BuffID.Shine, 600);
+                    player.velocity.Y -= 3;
                     return player.whoAmI;
                 }
             }
@@ -142,8 +147,6 @@ namespace Erilipah.Items.ErilipahBiome
             const float scaleTime = 107;
             const float hoverTime = 180;
 
-            projectile.velocity = Vector2.Zero;
-
             if (ScaleTimer < scaleTime)
                 ScaleTimer++;
             else
@@ -153,22 +156,25 @@ namespace Erilipah.Items.ErilipahBiome
 
             if (scaleOnly) return;
 
+            projectile.velocity = Vector2.Zero;
+
             if (FloatTimer < hoverTime)
                 FloatTimer++;
             else
                 FloatTimer = -hoverTime;
 
-            if (Timer < 1100 && (Timer < 900 || Vector2.Distance(projectile.Center, pos) > 3))
+            if (Timer < 1100)
             {
                 Vector2 hoverPos = new Vector2(pos.X, MathHelper.SmoothStep(pos.Y - hoverDist, pos.Y + hoverDist, Math.Abs(FloatTimer) / hoverTime));
                 float distance = Vector2.Distance(projectile.Center, hoverPos);
 
-                if (distance > 10)
+                if (distance > 8)
                     projectile.Center = Vector2.Lerp(projectile.Center, hoverPos, 0.1f);
                 else
                     projectile.Center = hoverPos;
             }
-            else if (Timer < 1100)
+
+            if (Timer > 780 && Vector2.Distance(projectile.Center, pos) < 6)
             {
                 projectile.Center = pos;
             }
@@ -200,6 +206,7 @@ namespace Erilipah.Items.ErilipahBiome
             }
             else if (time == 80)
             {
+                ShockTimer = 3;
                 for (int i = 0; i < 50; i++)
                 {
                     Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
@@ -207,7 +214,6 @@ namespace Erilipah.Items.ErilipahBiome
                 }
                 projectile.frame = 1;
                 Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 29, 1, -0.4f);
-                ShockTimer = 1;
             }
 
             if (time < 430)
@@ -248,6 +254,7 @@ namespace Erilipah.Items.ErilipahBiome
             }
         }
 
+        float inc = 0;
         private void AlAltar()
         {
             float distanceToAltar = Vector2.Distance(projectile.Center, AboveAltar);
@@ -274,27 +281,32 @@ namespace Erilipah.Items.ErilipahBiome
                     ShockTimer = 1;
                     Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 29, 1, -0.35f);
                     SetDefaults();
+
+                    projectile.owner = 255;
                     return;
                 }
 
-                if (Timer < -90)
+                if (Timer < -60)
                 {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10 + Main.rand.NextVector2CircularEdge(50, 50), mod.DustType<CrystallineDust>(), Vector2.Zero);
-                    dust.customData = 100; // Make it start funneling inward automatically
+                    Dust dust = Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10 + Main.rand.NextVector2CircularEdge(55, 55), mod.DustType<CrystallineDust>(), Vector2.Zero);
+                    dust.customData = 100f; // Make it start funneling inward automatically
+                }
+
+                float dist = Vector2.Distance(projectile.Center, Main.LocalPlayer.Center);
+                // TODO: Add "if player can dash" check here
+                if (!ErilipahWorld.downedTaintedSkull && dist > 300 && Main.LocalPlayer.InErilipah())
+                {
+                    float numDust = dist / 50f;
+                    Vector2 pos = Vector2.Lerp(Main.LocalPlayer.Center, projectile.Center - Vector2.UnitY * 10, (inc += 0.25f / numDust) % 1);
+                    Dust.NewDustPerfect(pos, mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.35f)
+                        .noGravity = true;
                 }
             }
-            else if (distanceToAltar < 10)
+            else if (distanceToAltar < 4)
             {
                 projectile.velocity = Vector2.Zero;
                 projectile.Center = AboveAltar;
                 Timer = -1; // We're in the endgame now
-
-                if (!ErilipahWorld.downedTaintedSkull)
-                for (int i = 0; i < 30; i++)
-                {
-                    Dust.NewDustPerfect(Vector2.Zero, mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.35f)
-                        .customData = i / 30d;
-                }
             }
             else if (distanceToAltar < 200)
             {
@@ -302,7 +314,7 @@ namespace Erilipah.Items.ErilipahBiome
             }
             else if (projectile.velocity.Length() < 10)
             {
-                projectile.velocity += dirToAltar * 0.02f;
+                projectile.velocity += dirToAltar * 0.0225f;
             }
         }
 
@@ -326,13 +338,20 @@ namespace Erilipah.Items.ErilipahBiome
         float pulse = 1f;
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            float pulseSpeed = MathHelper.Lerp(0.01f, 0.25f, Timer / 600f);
+            float pulseSpeed;
+            if (Timer > 600)
+                pulseSpeed = 0.025f;
+            else
+                pulseSpeed = MathHelper.SmoothStep(0.005f, 0.20f, Timer / 600f);
+            pulseSpeed = MathHelper.Clamp(pulseSpeed, 0.01f, 0.25f);
+
             pulse += pulseSpeed;
             if (pulse >= +1)
                 pulse = -1 + (pulse - 1);
+            pulse = MathHelper.Clamp(pulse, -1f, 1f);
 
             float inputPulse;
-            if (Timer > 600 || Timer <= 0)
+            if (Timer <= 0)
                 inputPulse = 1;
             else
                 inputPulse = Math.Abs(pulse);

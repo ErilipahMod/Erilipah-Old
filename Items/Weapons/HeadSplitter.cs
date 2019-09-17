@@ -31,7 +31,7 @@ namespace Erilipah.Items.Weapons
         protected override TextureTypes TextureType => TextureTypes.ItemClone;
         protected override DamageTypes DamageType => DamageTypes.ItemCopy;
         protected override DustTrailTypes DustTrailType => DustTrailTypes.PerfectNoGravity;
-        protected override int TrailThickness => 30;
+        protected override int TrailThickness => 8;
 
         public override void SetDefaults()
         {

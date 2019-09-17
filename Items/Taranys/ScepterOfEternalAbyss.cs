@@ -24,7 +24,7 @@ namespace Erilipah.Items.Taranys
             item.width = 44;
             item.height = 46;
 
-            item.damage = 41;
+            item.damage = 33;
             item.knockBack = 4;
             item.crit = 8;
             item.magic = true;
@@ -69,7 +69,7 @@ namespace Erilipah.Items.Taranys
                 bool shouldIncVel  = rot > MathHelper.Pi + MathHelper.PiOver4 && rot < MathHelper.TwoPi - MathHelper.PiOver4;
                 shouldIncVel |= rot > MathHelper.PiOver4 && rot < MathHelper.PiOver2 + MathHelper.PiOver4;
 
-                float mult = shouldIncVel ? 3f : 2f;
+                float mult = shouldIncVel ? 4f : 2.5f;
 
                 Dust.NewDustPerfect(position, mod.DustType<NPCs.ErilipahBiome.VoidParticle>(), Vector2.UnitX.RotatedBy(rot) * mult)
                     .noGravity = true;
@@ -102,7 +102,8 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(mod.BuffType<Wither>(), 300);
+            target.AddBuff(mod.BuffType<Wither>(), 90);
+            projectile.Kill();
         }
 
         // TODO

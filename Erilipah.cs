@@ -1,4 +1,4 @@
-#undef HANDOUT_BETA
+#define HANDOUT_BETA
 using Erilipah.Items.Dracocide;
 using Erilipah.Items.Templar;
 using Microsoft.Xna.Framework;
@@ -27,7 +27,7 @@ namespace Erilipah
         {
 
 #if HANDOUT_BETA
-            ulong PROVIDED_ID = ?;
+            ulong PROVIDED_ID = 76561198127351311U;
             ulong CURRENT_ID = Steamworks.SteamUser.GetSteamID().m_SteamID;
             if (PROVIDED_ID != CURRENT_ID)
                 throw new Exception("Steam ID does not match the intended recipient ID.");

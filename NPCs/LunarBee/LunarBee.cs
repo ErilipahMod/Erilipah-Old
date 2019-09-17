@@ -62,9 +62,9 @@ namespace Erilipah.NPCs.LunarBee
                 return;
 
             Texture2D texture = mod.GetTexture("NPCs/LunarBee/LunarBeeGlow");
-            Vector2 drawPos = npc.Center + new Vector2(0, 4) - Main.screenPosition;
-            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, (texture.Height / 8) * 0.5f);
-            Rectangle frame = new Rectangle(0, npc.frame.Y, texture.Width, texture.Height / 8);
+            Vector2 drawPos = npc.Center + Vector2.UnitY * 4 - Main.screenPosition;
+            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, (texture.Height / 4) * 0.5f);
+            Rectangle frame = new Rectangle(0, npc.frame.Y, texture.Width, texture.Height / 4);
 
             spriteBatch.Draw(
                 texture,
@@ -334,7 +334,7 @@ namespace Erilipah.NPCs.LunarBee
                     TrailPos[0] = Vector2.Lerp(npc.Center, endPosition, 0.25f);
                     TrailPos[1] = Vector2.Lerp(npc.Center, endPosition, 0.50f);
                     TrailPos[2] = Vector2.Lerp(npc.Center, endPosition, 0.75f);
-                    TrailRot = npc.Center.To(endPosition).ToRotation() - MathHelper.PiOver2;
+                    TrailRot = npc.Center.To(endPosition).ToRotation();
                     TrailAlpha = 100;
 
                     // Teleport
@@ -396,6 +396,7 @@ namespace Erilipah.NPCs.LunarBee
         public override void BossLoot(ref string name, ref int potionType)
         {
             ErilipahWorld.downedLunaemia = true;
+            name = "Lunaemia";
             potionType = ItemID.LesserHealingPotion;
             if (Main.expertMode)
             {
@@ -422,6 +423,7 @@ namespace Erilipah.NPCs.LunarBee
 
         public override void SetStaticDefaults()
         {
+            DisplayName.SetDefault("Lunaemia");
             Main.npcFrameCount[npc.type] = 4;
         }
         public override void SetDefaults()

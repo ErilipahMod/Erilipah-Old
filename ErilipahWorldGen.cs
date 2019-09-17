@@ -449,7 +449,7 @@ namespace Erilipah
             // Floors. Go rightwards from left side and make each floor
             for (int floor = baseY; floor >= roofY; floor -= floorHeight)
             {
-                int insertionPoint = WorldGen.genRand.Next(leftX + 1, rightX);
+                int insertionPoint = WorldGen.genRand.Next(leftX + 1, rightX - 1);
                 for (int i = leftX + 1; i < rightX; i++)
                 {
                     if (!(floor == baseY || floor == roofY) &&

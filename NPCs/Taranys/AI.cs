@@ -99,9 +99,14 @@ namespace Erilipah.NPCs.Taranys
                 {
                     bool validType = proj.aiStyle == 0 || proj.aiStyle == 1 || proj.aiStyle == 2 || proj.aiStyle == 8 || 
                         proj.aiStyle == 21 || proj.aiStyle == 24 || proj.aiStyle == 28 || proj.aiStyle == 29 || proj.aiStyle == 131;
-                    validType &= !proj.WipableTurret && !proj.hide && !proj.minion;
 
-                    if (repel && validType)
+                    validType &= !proj.WipableTurret && !proj.hide && !proj.minion;
+                    validType &= proj.damage > 0 && !proj.netImportant;
+
+                    if (!validType)
+                        continue;
+
+                    if (repel)
                         proj.velocity = npc.Center.To(proj.Center, proj.velocity.Length());
 
                     if (proj.type != mod.ProjectileType<SharpCrystal>())
@@ -319,8 +324,8 @@ namespace Erilipah.NPCs.Taranys
 
                 if (Timer < -300)
                 {
-                    npc.life = 0;
-                    npc.HitEffect(0, 1);
+                    npc.dontTakeDamage = false;
+                    npc.StrikeNPC(1, 1, 0);
                 }
                 return;
             }
@@ -825,7 +830,7 @@ namespace Erilipah.NPCs.Taranys
             {
                 Timer = -1;
 
-                int Type(int t) => mod.GetGoreSlot("Gores/Taranys/Taranys" + t);
+                int Type(int t) => mod.GetGoreSlot("Gores/Taranys/TaranysGore" + t);
                 Gore.NewGore(npc.position, new Vector2(-2, -3), Type(0));
                 Gore.NewGore(npc.position + new Vector2(50, 0), new Vector2(2, -3), Type(1));
                 Gore.NewGore(npc.position + new Vector2(32, 74), new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), 1), Type(2));
@@ -839,12 +844,15 @@ namespace Erilipah.NPCs.Taranys
             {
                 npc.life = 0;
                 Filters.Scene["TaranysPulse"].Deactivate();
-                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, 0.6f);
+                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 0.8f, -0.525f);
+                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.7f);
+                Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.45f, -0.85f);
+                Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.35f, -0.99f);
 
-                int Type(int t) => mod.GetGoreSlot("Gores/Taranys/Taranys0" + t);
+                int Type(int t) => mod.GetGoreSlot("Gores/Taranys/TaranysGore0" + t);
                 for (int i = 0; i < 5; i++)
                 {
-                    Gore.NewGore(npc.position, Main.rand.NextVector2CircularEdge(3, 3), Type(i));
+                    Gore.NewGore(npc.Center, Main.rand.NextVector2CircularEdge(3, 3), Type(i));
                 }
                 return true;
             }
@@ -1096,7 +1104,7 @@ namespace Erilipah.NPCs.Taranys
 
             if (projectile.ai[1] != 0)
             {
-                projectile.tileCollide = true;
+                projectile.tileCollide = false;
                 projectile.rotation += projectile.velocity.X / 16f;
                 projectile.frame = 1;
                 projectile.width = 10;

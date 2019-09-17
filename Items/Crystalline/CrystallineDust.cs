@@ -28,7 +28,7 @@ namespace Erilipah.Items.Crystalline
                 else
                 {
                     dust.velocity += dust.position.To(sigil.Center - Vector2.UnitY * 10, 1 / 8f);
-                    dust.scale = Vector2.Distance(dust.position, sigil.Center) / 100f;
+                    dust.scale = Vector2.Distance(dust.position, sigil.Center) / 70f;
                     if (dust.scale > 1)
                         dust.scale = 1;
                 }

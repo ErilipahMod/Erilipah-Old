@@ -31,6 +31,8 @@ namespace Erilipah.Items.Taranys
 
         public override bool UseItem(Player player)
         {
+            if (player.InLostCity())
+                return false;
 
             Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 6, 1, -0.6f);
             player.itemAnimation = 0;
@@ -53,6 +55,7 @@ namespace Erilipah.Items.Taranys
 
             // Make sure the player doesn't instantly fucking die
             player.AddBuff(BuffID.Featherfall, 300);
+            player.AddBuff(BuffID.Shine, 300);
             player.immune = true;
             player.immuneTime = 300;
             return true;
