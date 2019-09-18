@@ -48,7 +48,6 @@ namespace Erilipah.Items.Taranys
                 }
             }
 
-            // TODO: Boss mask
             //if (Main.rand.NextFloat() < Loot.MaskChance)
             //    player.QuickSpawnItem(mod.ItemType("LunarBeeMask"));
         }

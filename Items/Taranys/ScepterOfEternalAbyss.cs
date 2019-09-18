@@ -106,13 +106,12 @@ namespace Erilipah.Items.Taranys
             projectile.Kill();
         }
 
-        // TODO
-        //public override void AI()
-        //{
-        //    projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
-        //    if (projectile.ai[0]++ > 120)
-        //        projectile.tileCollide = true;
-        //}
+        public override void AI()
+        {
+            projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            if (projectile.ai[0]++ > 120)
+                projectile.tileCollide = true;
+        }
 
         public override void Kill(int timeLeft)
         {

@@ -972,6 +972,8 @@ namespace Erilipah.NPCs.Taranys
 
             Dust.NewDustPerfect(Vector2.Lerp(npc.Center, mother.Center, Math.Abs(Timer) / (float)time),
                 mod.DustType<VoidParticle>(), Vector2.Zero).customData = 0;
+
+            npc.dontTakeDamage = mother.dontTakeDamage;
         }
 
         public override void NPCLoot()

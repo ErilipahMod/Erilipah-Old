@@ -73,8 +73,8 @@ namespace Erilipah.Items.Accessories
             player.jumpSpeedBoost += 2.3f;
             for (int i = 0; i < player.CountBuffs(); i++) // immune to all debuffs.
             {
-                if (Main.debuff[player.buffType[i]])
-                    player.DelBuff(i);
+                if (player.buffType[i] != Terraria.ID.BuffID.Horrified && Main.debuff[player.buffType[i]])
+                    player.buffImmune[player.buffTime[i]] = true;
             }
             player.blackBelt = true;
             player.manaFlower = true;

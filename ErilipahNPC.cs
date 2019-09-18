@@ -11,7 +11,6 @@ namespace Erilipah
         public override bool InstancePerEntity => true;
 
         public int witherStack = 0;
-        public int WitherStack { private get; set; } // TODO REMOVE
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {

@@ -22,6 +22,8 @@ namespace Erilipah
         public override void Initialize()
         {
             sanguineOreSpawned = NPC.downedBoss1;
+            downedLunaemia = false;
+            downedTaintedSkull = false;
         }
 
         public override TagCompound Save()
@@ -31,7 +33,9 @@ namespace Erilipah
                 [nameof(downedLunaemia)] = downedLunaemia,
                 [nameof(downedTaintedSkull)] = downedTaintedSkull,
                 ["AltarX"] = AltarPosition.X,
-                ["AltarY"] = AltarPosition.Y
+                ["AltarY"] = AltarPosition.Y,
+                ["LostCX"] = ChasmPosition.X,
+                ["LostCY"] = ChasmPosition.Y,
             };
         }
         public override void Load(TagCompound tag)
@@ -39,9 +43,8 @@ namespace Erilipah
             downedLunaemia = tag.ContainsKey(nameof(downedLunaemia));
             downedTaintedSkull = tag.ContainsKey(nameof(downedTaintedSkull));
 
-            AltarPosition = new Vector2(
-                tag.GetFloat("AltarX"), tag.GetFloat("AltarY")
-                );
+            AltarPosition = new Vector2(tag.GetFloat("AltarX"), tag.GetFloat("AltarY"));
+            ChasmPosition = new Vector2(tag.GetFloat("LostCX"), tag.GetFloat("LostCY"));
         }
 
         public override void PostUpdate()

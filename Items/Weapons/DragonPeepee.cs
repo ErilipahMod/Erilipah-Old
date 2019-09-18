@@ -60,7 +60,6 @@ namespace Erilipah.Items.Weapons
         }
 
         private int Stack(NPC npc) => npc.GetGlobalNPC<ErilipahNPC>().witherStack;
-        private int stack = 1; // TODO REMOVE
         public override bool ReApply(NPC npc, int time, int buffIndex)
         {
             npc.GetGlobalNPC<ErilipahNPC>().witherStack++;

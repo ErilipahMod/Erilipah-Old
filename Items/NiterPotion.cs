@@ -43,13 +43,15 @@ namespace Erilipah.Items
 
         public override bool CanUseItem(Player player)
         {
-            return !player.HasBuff(BuffID.PotionSickness);
+            return !player.HasBuff(BuffID.PotionSickness) && player.statLife > 50;
         }
 
         public override void OnConsumeItem(Player player)
         {
-            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " bursted with energy."),
-                (int)(50 + player.statDefense * (Main.expertMode ? 0.75 : 0.5)), 0);
+            CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, 50);
+            player.statLife -= 50;
+            player.netLife = true;
+
             player.AddBuff(BuffID.PotionSickness, 900);
         }
 

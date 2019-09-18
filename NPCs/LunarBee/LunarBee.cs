@@ -428,7 +428,7 @@ namespace Erilipah.NPCs.LunarBee
         }
         public override void SetDefaults()
         {
-            npc.lifeMax = 3500;
+            npc.lifeMax = 2800;
             npc.defense = 8;
             npc.damage = 16;
             npc.knockBackResist = 0f;
@@ -449,6 +449,12 @@ namespace Erilipah.NPCs.LunarBee
 
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/LunarBee");
             bossBag = mod.ItemType<LunarBeeBag>();
+        }
+
+        public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+        {
+            npc.lifeMax = (int)(npc.lifeMax * 0.6 * Math.Max(1, numPlayers * 0.8f));
+            npc.defense = (int)(npc.defense * 1.15);
         }
     }
 

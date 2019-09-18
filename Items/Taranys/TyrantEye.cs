@@ -247,10 +247,12 @@ namespace Erilipah.Items.Taranys
                             player.ApplyDamageToNPC(n, projectile.damage, projectile.knockBack, (projectile.Center.X > n.Center.X).ToDirectionInt(), false);
                             n.immune[player.whoAmI] = 20;
                         }
-                        if (n.boss && n.type != NPCID.CultistBoss)
-                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist + 2f * projectile.knockBack);
+
+                        float knockbackReduction = 1f - n.life / (n.life + 15000);
+                        if (n.boss && n.type != NPCID.CultistBoss && n.type != NPCID.WallofFlesh && n.type != NPCID.WallofFleshEye)
+                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist + 2f * projectile.knockBack) * knockbackReduction;
                         else
-                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist);
+                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist) * knockbackReduction;
                         n.netUpdate = true;
                     }
                 }

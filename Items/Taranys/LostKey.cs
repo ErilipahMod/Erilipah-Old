@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,8 +32,13 @@ namespace Erilipah.Items.Taranys
 
         public override bool UseItem(Player player)
         {
-            if (player.InLostCity())
+            if (player.InLostCity() || !player.InErilipah())
                 return false;
+            if (ErilipahWorld.ChasmPosition == Vector2.Zero)
+            {
+                Console.WriteLine("Lost City position not set");
+                return false;
+            }
 
             Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 6, 1, -0.6f);
             player.itemAnimation = 0;

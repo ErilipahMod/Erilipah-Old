@@ -8,41 +8,39 @@ using Terraria.ObjectData;
 
 namespace Erilipah.Items.ErilipahBiome
 {
-    public class CrystallineTorch : ModItem
+    public class ArkenTorch : ModItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Crystalline Stick");
-            Tooltip.SetDefault("Provides significant light while in Erilipah\nTakes twice as long to snuff in Erilipah");
+            DisplayName.SetDefault("Arken Torch");
+            Tooltip.SetDefault("An incredibly bright torch\nNever snuffs in Erilipah\n'I can't replicate this craftsmanship!'");
         }
 
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.Torch);
 
-            item.flame = false;
+            item.flame = true;
             item.width = 20;
             item.height = 20;
             item.holdStyle = 1;
 
-            item.noWet = true;
+            item.noWet = false;
             item.useTurn = true;
             item.autoReuse = true;
 
-            item.useAnimation = 15;
-            item.useTime = 10;
             item.useStyle = 1;
             item.consumable = true;
-            item.createTile = mod.TileType<CrystallineTorchTile>();
+            item.createTile = mod.TileType<ArkenTorchTile>();
 
-            item.value = 120;
+            item.value = 0;
         }
 
-        internal static readonly Color light = new Color(1.7f, 0.3f, 2f);
+        internal static readonly Color light = new Color(2.5f, 1f, 2f);
         public override void HoldItem(Player player)
         {
-            player.itemLocation.X -= 6 * player.direction;
-            player.itemLocation.Y += 4;
+            player.itemLocation.X -= 2 * player.direction;
+            player.itemLocation.Y += 2;
 
             if (Main.rand.Next(player.itemAnimation > 0 ? 20 : 40) == 0)
             {
@@ -65,14 +63,11 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override void PostUpdate()
         {
-            if (!item.wet && Main.LocalPlayer.InErilipah())
+            for (int i = -1; i < 2; i++)
             {
-                for (int i = -1; i < 2; i++)
+                for (int j = -1; j < 2; j++)
                 {
-                    for (int j = -1; j < 2; j++)
-                    {
-                        Lighting.AddLight(item.Center + new Vector2(i, j) * 20, light.ToVector3());
-                    }
+                    Lighting.AddLight(item.Center + new Vector2(i, j) * 20, light.ToVector3());
                 }
             }
         }
@@ -80,27 +75,10 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
         {
             dryTorch = true;
-        }
-
-        public override void AddRecipes()
-        {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Torch, 6);
-            recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 5);
-            recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 1);
-            recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
-            recipe.SetResult(this, 6);
-            recipe.AddRecipe();
-
-            recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Torch, 6);
-            recipe.AddIngredient(mod.ItemType<BioluminescentSinew>(), 1);
-            recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
-            recipe.SetResult(this, 6);
-            recipe.AddRecipe();
+            wetTorch = true;
         }
     }
-    public class CrystallineTorchTile : ModTile
+    public class ArkenTorchTile : ModTile
     {
         public override void SetDefaults()
         {

@@ -12,7 +12,7 @@ namespace Erilipah
     {
         public override void NearbyEffects(int i, int j, int type, bool closer)
         {
-            if (!Main.rand.Chance(ErilipahItem.LightSnuffRate))
+            if (!Main.rand.Chance(ErilipahItem.LightSnuffRate) || type == mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
                 return;
 
             Tile tile = Main.tile[i, j];

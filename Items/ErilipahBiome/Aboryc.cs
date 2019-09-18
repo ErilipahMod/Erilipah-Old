@@ -340,7 +340,7 @@ namespace Erilipah.Items.ErilipahBiome
         {
             float pulseSpeed;
             if (Timer > 600)
-                pulseSpeed = 0.025f;
+                pulseSpeed = 0f;
             else
                 pulseSpeed = MathHelper.SmoothStep(0.005f, 0.20f, Timer / 600f);
             pulseSpeed = MathHelper.Clamp(pulseSpeed, 0.01f, 0.25f);
@@ -351,7 +351,7 @@ namespace Erilipah.Items.ErilipahBiome
             pulse = MathHelper.Clamp(pulse, -1f, 1f);
 
             float inputPulse;
-            if (Timer <= 0)
+            if (Timer <= 0 || Timer > 600)
                 inputPulse = 1;
             else
                 inputPulse = Math.Abs(pulse);

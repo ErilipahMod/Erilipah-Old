@@ -23,6 +23,7 @@ namespace Erilipah
         public static ModHotKey Bandolier;
         public static ModHotKey SoulBank;
 
+        // TODO: Check pins in Moon's DMs and add everything there
         public override void Load()
         {
 
