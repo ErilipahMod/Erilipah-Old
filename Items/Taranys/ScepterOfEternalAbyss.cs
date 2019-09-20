@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Erilipah.Items.Weapons;
+using Erilipah.Items.ErilipahBiome;
 
 namespace Erilipah.Items.Taranys
 {

@@ -67,7 +67,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
                     if (woodWall || tile.wall == WallID.MudUnsafe || tile.wall == WallID.SnowWallUnsafe)
                         tile.wall = (ushort)mod.WallType<SpoiledClump.SpoiledClumpWall>();
-                    else if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>)
+                    else if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>())
                         tile.wall = (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>();
                     else
                         tile.wall = (ushort)mod.WallType<InfectedClumpWall>();
@@ -369,21 +369,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
     {
         public class TaintedBrickWallSafe : ModWall
         {
-            public class TaintedBrickWallItem : ModItem
-            {
-                public override void SetStaticDefaults()
-                {
-                    DisplayName.SetDefault("Tainted Brick Wall");
-                    Tooltip.SetDefault("'Faded and worn, but still strong'");
-                }
-
-                public override void SetDefaults()
-                {
-                    item.CloneDefaults(ItemID.GrayBrickWall);
-                    item.createWall = mod.WallType<TaintedBrick.TaintedBrickWall>();
-                    item.rare = 1;
-                }
-            }
             public override void SetDefaults()
             {
                 drop = mod.ItemType("TaintedBrickWallItem");

@@ -14,7 +14,7 @@ namespace Erilipah
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
-            if (npc.HasBuff(mod.BuffType<Items.Weapons.Wither>()))
+            if (npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>()))
                 damage = witherStack;
         }
         public override void SetupShop(int type, Chest shop, ref int nextSlot)
