@@ -35,7 +35,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     tile.type == mod.TileType<TaintedBrick>() ||
                     tile.type == mod.TileType<Items.Crystalline.CrystallineTileTile>()))
                 {
-                    bool brick = tile.type == TileID.GrayBrick || tile.type == TileID.RedBrick;
+                    bool brick = tile.type == TileID.GrayBrick || tile.type == TileID.RedBrick || tile.type == mod.TileType<TaintedBrickSafe>();
 
                     bool organic = TileID.Sets.Mud[tile.type] || TileID.Sets.Snow[tile.type] || TileID.Sets.Conversion.Sand[tile.type] ||
                         tile.type == TileID.Slush || tile.type == TileID.Silt || tile.type == TileID.JungleGrass;
@@ -67,7 +67,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
                     if (woodWall || tile.wall == WallID.MudUnsafe || tile.wall == WallID.SnowWallUnsafe)
                         tile.wall = (ushort)mod.WallType<SpoiledClump.SpoiledClumpWall>();
-                    else if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick)
+                    else if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>)
                         tile.wall = (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>();
                     else
                         tile.wall = (ushort)mod.WallType<InfectedClumpWall>();
@@ -281,7 +281,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 public override void SetDefaults()
                 {
                     item.CloneDefaults(ItemID.GrayBrickWall);
-                    item.createWall = mod.WallType<TaintedBrickWall>();
+                    item.createWall = mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>();
                     item.rare = 1;
                 }
             }
@@ -319,7 +319,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 item.CloneDefaults(ItemID.GrayBrick);
                 item.width = 16;
                 item.height = 16;
-                item.createTile = mod.TileType<TaintedBrick>();
+                item.createTile = mod.TileType<TaintedBrickSafe>();
                 item.rare = 1;
             }
         }
@@ -332,6 +332,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             Main.tileMerge[Type][mod.TileType<InfectedClump>()] = true;
             Main.tileMerge[Type][mod.TileType<SpoiledClump>()] = true;
             Main.tileMerge[Type][mod.TileType<TaintedRubble>()] = true;
+            Main.tileMerge[Type][mod.TileType<TaintedBrickSafe>()] = true;
 
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
@@ -352,6 +353,83 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         public override void RandomUpdate(int i, int j)
         {
             InfectedClump.Infect(i, j, mod);
+        }
+
+        public override bool CanExplode(int i, int j) => false;
+
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+        {
+            drawColor.R = (byte)(drawColor.R * 0.75f);
+            drawColor.G = (byte)(drawColor.G * 0.75f);
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 0 : 3;
+    }
+    public class TaintedBrickSafe : ModTile
+    {
+        public class TaintedBrickWallSafe : ModWall
+        {
+            public class TaintedBrickWallItem : ModItem
+            {
+                public override void SetStaticDefaults()
+                {
+                    DisplayName.SetDefault("Tainted Brick Wall");
+                    Tooltip.SetDefault("'Faded and worn, but still strong'");
+                }
+
+                public override void SetDefaults()
+                {
+                    item.CloneDefaults(ItemID.GrayBrickWall);
+                    item.createWall = mod.WallType<TaintedBrick.TaintedBrickWall>();
+                    item.rare = 1;
+                }
+            }
+            public override void SetDefaults()
+            {
+                drop = mod.ItemType("TaintedBrickWallItem");
+                dustType = DustID.PurpleCrystalShard;
+                AddMapEntry(new Color(15, 20, 45, 175));
+
+                soundType = 0;
+                soundStyle = 0;
+            }
+
+            public override void RandomUpdate(int i, int j)
+            {
+                InfectedClump.Infect(i, j, mod);
+            }
+            public override bool CanExplode(int i, int j)
+            {
+                return false;
+            }
+
+            public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 0 : 3;
+        }
+
+        public override void SetDefaults()
+        {
+            Main.tileSolid[Type] = true;
+            Main.tileMergeDirt[Type] = true;
+
+            Main.tileMerge[Type][mod.TileType<InfectedClump>()] = true;
+            Main.tileMerge[Type][mod.TileType<SpoiledClump>()] = true;
+            Main.tileMerge[Type][mod.TileType<TaintedRubble>()] = true;
+            Main.tileMerge[Type][mod.TileType<TaintedBrick>()] = true;
+
+            Main.tileBlockLight[Type] = true;
+            Main.tileLighted[Type] = false;
+
+            dustType = DustID.PurpleCrystalShard;
+            drop = mod.ItemType<TaintedBrick.TaintedBrickItem>();
+
+            //ModTranslation name = CreateMapEntryName();
+            //name.SetDefault("Crystalline Shards");
+            AddMapEntry(new Color(15, 20, 65, 255));
+
+            mineResist = 2.65f;
+            minPick = 101;
+            soundType = 21;
+            soundStyle = 2;
         }
 
         public override bool CanExplode(int i, int j) => false;
@@ -386,7 +464,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             AddMapEntry(new Color(30, 18, 35, 235));
 
             mineResist = 3f;
-            minPick = 201;
+            minPick = int.MaxValue;
             soundType = 21;
             soundStyle = 2;
         }

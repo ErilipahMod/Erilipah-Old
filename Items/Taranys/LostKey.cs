@@ -36,7 +36,7 @@ namespace Erilipah.Items.Taranys
                 return false;
             if (ErilipahWorld.ChasmPosition == Vector2.Zero)
             {
-                Console.WriteLine("Lost City position not set");
+                Console.WriteLine("Lost City position not set: Use in a new world");
                 return false;
             }
 

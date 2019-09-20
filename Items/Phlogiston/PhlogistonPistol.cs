@@ -17,12 +17,12 @@ namespace Erilipah.Items.Phlogiston
             item.width = 36;
             item.height = 66;
 
-            item.damage = 19;
+            item.damage = 16;
             item.ranged = true;
-            item.knockBack = 1.7f;
+            item.knockBack = 1.3f;
 
-            item.useTime = 15;
-            item.useAnimation = 15;
+            item.useTime = 16;
+            item.useAnimation = 16;
             item.useStyle = 5;
             item.UseSound = SoundID.Item5;
             item.autoReuse = true;

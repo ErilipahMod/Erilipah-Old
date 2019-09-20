@@ -12,8 +12,8 @@ namespace Erilipah.Items.Taranys
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Spirit Trapper");
-            Tooltip.SetDefault("Stores a fifth of damage dealt as life in a bank\nCannot store more than 200 life\nCannot store life while withdrawing life\nUse the Soul Bank key to withdraw life");
+            DisplayName.SetDefault("Soul Bank");
+            Tooltip.SetDefault("Stores 1/6 of damage dealt as life in a bank\nCannot store more than 200 life\nCannot store life while withdrawing life\nUse the Soul Bank key to withdraw life");
         }
 
         public override void SetDefaults()

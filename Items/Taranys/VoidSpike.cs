@@ -144,7 +144,7 @@ namespace Erilipah.Items.Taranys
             projectile.rotation += projectile.velocity.Length() / 20;
             projectile.timeLeft = 2;
 
-            if (Target == -1 || Main.npc[Target].dontTakeDamage)
+            if (Target == -1)
             {
                 // Slow down other velocities; accelerate to player
                 projectile.velocity = projectile.Center.To(Owner.Center, 8f);
@@ -154,14 +154,8 @@ namespace Erilipah.Items.Taranys
                 if (projectile.Distance(Owner.Center) < 20)
                     projectile.Kill();
             }
-            else if (Main.npc[Target].active)
+            else if (ValidNPC(Main.npc[Target]))
             {
-                if (!ValidNPC(Main.npc[Target]))
-                {
-                    projectile.ai[0] = -1;
-                    return;
-                }
-
                 if (projectile.ai[1] < 20)
                 {
                     projectile.velocity *= 0.90f;
@@ -174,19 +168,7 @@ namespace Erilipah.Items.Taranys
                 }
             }
             else
-            {
-                // Find next target; if none, return to player.
-                projectile.netUpdate = true;
-                var nextTargets = from n in Main.npc
-                                  where ValidNPC(n) && n.Distance(projectile.Center) < 300
-                                  orderby n.life descending
-                                  select n.whoAmI;
-                int? selection = nextTargets.FirstOrDefault();
-                if (selection == null)
-                    projectile.ai[0] = -1;
-                else
-                    projectile.ai[0] = (int)selection;
-            }
+                projectile.ai[0] = -1;
         }
 
         private static bool ValidNPC(NPC n)
@@ -196,7 +178,6 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.immune[projectile.owner] = 5;
             if (damage <= 1)
                 projectile.ai[0] = -1;
             if (target.whoAmI == Target)

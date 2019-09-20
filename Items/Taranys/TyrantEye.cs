@@ -257,7 +257,7 @@ namespace Erilipah.Items.Taranys
                     }
                 }
 
-                for (byte i = 1; i <= 4; i++)
+                for (byte i = 1; i == 1 || i == 2; i++)
                 {
                     // If it's not active and we don't have a shader, take it
                     if (!Filters.Scene["TyrantEye" + i].IsActive() && Shader == 0)

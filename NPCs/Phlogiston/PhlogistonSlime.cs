@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -19,24 +21,48 @@ namespace Erilipah.NPCs.Phlogiston
         }
         public override void SetDefaults()
         {
-            npc.lifeMax = 100;
-            npc.defense = 5;
-            npc.damage = 10;
-            npc.knockBackResist = 1f;
+            if (npc.scale == 1)
+                npc.scale = 1.25f;
+            npc.lifeMax = (int)(50 * npc.scale);
+            npc.defense = (int)(8 * npc.scale);
+            npc.damage = npc.scale < 1 ? 12 : 20;
+            npc.knockBackResist = 0.2f / npc.scale;
 
-            npc.aiStyle = 0;
+            npc.aiStyle = 1;
             npc.noGravity = false;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            // SoundID.NPCHit4 metal
-            // SoundID.NPCDeath14 grenade explosion
+            npc.HitSound = new LegacySoundStyle(SoundID.Lavafall, 0);
+            npc.DeathSound = SoundID.LiquidsWaterLava;
 
-            npc.width = 32;
-            npc.height = 32;
+            npc.width = 36;
+            npc.height = 26;
 
-            npc.value = Item.buyPrice(0, 0, 75, 0);
+            npc.value = 125 * npc.scale;
 
-            // npc.MakeBuffImmune(BuffID.OnFire);
+            npc.MakeBuffImmune(BuffID.OnFire);
+            npc.lavaImmune = true;
+        }
+
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            if (SpawnCondition.Underworld.Active)
+                return SpawnCondition.Underworld.Chance * 0.08f;
+            else if (SpawnCondition.Cavern.Active)
+                return SpawnCondition.Cavern.Chance * 0.08f;
+            return 0;
+        }
+
+        public override bool CheckDead()
+        {
+            if (npc.scale <= 0.2f)
+                return true;
+
+            for (int i = -1; i < 2; i += 2)
+            {
+                NPC child = Main.npc[NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, npc.type, Target: npc.target)];
+                child.scale = npc.scale * 0.65f;
+                child.velocity = new Vector2(i * 3, -2);
+            }
+            return true;
         }
 
         public override void AI()

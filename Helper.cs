@@ -11,7 +11,7 @@ namespace Erilipah
 {
     internal static class Helper
     {
-        internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => random.NextFloat() < chance;
+        internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => chance >= 1f || random.NextFloat() < chance;
         internal const string Invisible = "Terraria/Projectile_294";
 
         /// <summary>

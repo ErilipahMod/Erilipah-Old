@@ -1,22 +1,24 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 
-namespace Erilipah.Items.Weapons
+namespace Erilipah.Items.ErilipahBiome
 {
     public class HeadSplitter : NewModItem
     {
         protected override string Tooltip => "Throws extremely fast headsplitters";
         protected override UseTypes UseType => UseTypes.Thrown;
-        protected override int[] Dimensions => new int[] { 40, 40 };
-        protected override int Rarity => ItemRarityID.Orange;
+        protected override int[] Dimensions => new int[] { 32, 34 };
+        protected override int Rarity => ItemRarityID.Pink;
 
-        protected override int Damage => 30;
+        protected override int Damage => 45;
         protected override int[] UseSpeedArray => new int[] { 15, 15 };
-        protected override float Knockback => 3;
+        protected override float Knockback => 4.5f;
+        protected override int Crit => 20;
 
         protected override bool FiresProjectile => true;
-        protected override float ShootSpeed => 9;
+        protected override float ShootSpeed => 10;
     }
     public class HeadSplitterProj : NewModProjectile
     {
@@ -46,6 +48,18 @@ namespace Erilipah.Items.Weapons
             height = (int)(width / 1.25);
             return base.TileCollideStyle(ref width, ref height, ref fallThrough);
         }
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            if (IsStickingToTarget)
+                return false;
+
+            IsDead = true;
+
+            projectile.velocity = oldVelocity.SafeNormalize(Vector2.Zero) * -2.5f;
+
+            return false;
+        }
+
         #region Sticking in enemies
         protected override float? Rotation
         {
@@ -66,6 +80,7 @@ namespace Erilipah.Items.Weapons
         {
             if (IsStickingToTarget)
             {
+                projectile.tileCollide = false;
                 int npcIndex = (int)projectile.ai[1];
                 if (npcIndex >= 0 && npcIndex < 200 && Main.npc[npcIndex].active)
                 {
@@ -79,16 +94,22 @@ namespace Erilipah.Items.Weapons
             drawCacheProjsBehindProjectiles.Add(index);
         }
 
-        public bool IsStickingToTarget
+        private bool IsDead
         {
-            get { return projectile.ai[0] == 1f; }
-            set { projectile.ai[0] = value ? 1f : 0f; }
+            get => projectile.ai[0] == 2;
+            set => projectile.ai[0] = value ? 2f : 0f;
         }
 
-        public float targetWhoAmI
+        private bool IsStickingToTarget
         {
-            get { return projectile.ai[1]; }
-            set { projectile.ai[1] = value; }
+            get => projectile.ai[0] == 1f;
+            set => projectile.ai[0] = value ? 1f : 0f;
+        }
+
+        private float targetWhoAmI
+        {
+            get => projectile.ai[1];
+            set => projectile.ai[1] = value;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit,
@@ -110,7 +131,19 @@ namespace Erilipah.Items.Weapons
         {
             base.AI();
             DropItem = false;
-            if (IsStickingToTarget)
+
+            if (IsDead)
+            {
+                projectile.damage = 0;
+                projectile.friendly = projectile.hostile = false;
+                projectile.velocity.Y += 0.015f;
+                projectile.alpha++;
+
+                if (projectile.alpha >= 255)
+                    projectile.Kill();
+            }
+
+            else if (IsStickingToTarget)
             {
                 projectile.ignoreWater = true;
                 projectile.tileCollide = false;

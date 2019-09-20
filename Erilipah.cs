@@ -23,7 +23,6 @@ namespace Erilipah
         public static ModHotKey Bandolier;
         public static ModHotKey SoulBank;
 
-        // TODO: Check pins in Moon's DMs and add everything there
         public override void Load()
         {
 
@@ -67,8 +66,8 @@ namespace Erilipah
                 RegisterShockwave("TaranysPulse");
                 RegisterShockwave("TyrantEye1");
                 RegisterShockwave("TyrantEye2");
-                RegisterShockwave("TyrantEye3");
-                RegisterShockwave("TyrantEye4");
+                RegisterShockwave("Nidorose1");
+                RegisterShockwave("Nidorose2");
                 RegisterShockwave("AborycTake");
 
                 SkyManager.Instance["Erilipah:ErilipahBiome"] = new Biomes.ErilipahBiome.ErilipahSky();

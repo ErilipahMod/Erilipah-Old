@@ -23,7 +23,8 @@ namespace Erilipah
             if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
                 return;
 
-            bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == item.createTile) || item.flame;
+            bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == item.createTile) || item.flame || 
+                item.type == ItemID.Glowstick || item.type == ItemID.BouncyGlowstick || item.type == ItemID.StickyGlowstick || item.type == ItemID.SpelunkerGlowstick;
             if (player.InErilipah() && light)
             {
                 if (item.type == mod.ItemType<CrystallineTorch>() && Main.rand.NextBool())

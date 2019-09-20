@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Erilipah.Items.ErilipahBiome;
 
 namespace Erilipah
 {
@@ -18,7 +19,7 @@ namespace Erilipah
         public int extraItemReach = 0;
         public bool canMove = true;
         public bool canJump = true;
-        public bool healingSoulTorch = false;
+        public bool soulBankHealing = false;
 
         private bool pressedSoulBank = false;
 
@@ -31,26 +32,30 @@ namespace Erilipah
 
         void TorchOfSoul(NPC target, int damage)
         {
+            Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
+            Item i2 = player.FindEquip(mod.ItemType<SoulHearth>());
+
+            if (i == null && i2 == null)
+                return;
+
+            if (i2 != null && bankedDamage >= 500)
+            {
+                bankedDamage = 500;
+                return;
+            }
             if (bankedDamage >= 200)
             {
                 bankedDamage = 200;
                 return;
             }
-            if (healingSoulTorch) return;
 
-            Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
-            if (i != null && !target.immortal && !target.dontTakeDamage)
+            if (soulBankHealing) return;
+
+            if (!target.immortal && !target.dontTakeDamage)
             {
                 int amount = damage / 5;
                 if (amount < 1)
                     return;
-
-                bankedDamage += amount;
-                if (bankedDamage > 500)
-                {
-                    bankedDamage = 500;
-                    amount = 500 - amount;
-                }
 
                 Rectangle loc = player.getRect();
                 loc.Y -= 30;
@@ -67,19 +72,43 @@ namespace Erilipah
             TorchOfSoul(target, damage);
         }
 
+        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        {
+            if (player.FindEquip(mod.ItemType<SoulHearth>()) == null)
+                return;
+
+            if (bankedDamage <= 0)
+            {
+                if (!pressedSoulBank)
+                    CombatText.NewText(player.getRect(), Main.errorColor, "Empty bank", true);
+                pressedSoulBank = true;
+            }
+            else
+            {
+                bool highDamage = damage > player.statLifeMax2 * 0.25;
+                bool halfLife = player.statLife < player.statLifeMax2 * 0.5;
+                bool quarterLife = player.statLife < player.statLifeMax2 * 0.25;
+
+                if (bankedDamage > 100 && halfLife || highDamage || quarterLife)
+                {
+                    soulBankHealing = true;
+                }
+            }
+        }
+
         public override void UpdateLifeRegen()
         {
-            if (healingSoulTorch)
+            if (soulBankHealing)
             {
                 if (player.statLife >= player.statLifeMax2)
                 {
-                    player.GetModPlayer<ErilipahPlayer>().healingSoulTorch = false;
+                    player.GetModPlayer<ErilipahPlayer>().soulBankHealing = false;
                     CombatText.NewText(player.getRect(), Main.errorColor, "Full life");
                     return;
                 }
-                if (bankedDamage == 0)
+                if (bankedDamage <= 0)
                 {
-                    player.GetModPlayer<ErilipahPlayer>().healingSoulTorch = false;
+                    player.GetModPlayer<ErilipahPlayer>().soulBankHealing = false;
                     CombatText.NewText(player.getRect(), Main.errorColor, "Empty bank", true);
                     return;
                 }
@@ -106,7 +135,7 @@ namespace Erilipah
                         CombatText.NewText(player.getRect(), Main.errorColor, "Full life");
                     pressedSoulBank = true;
                 }
-                else if (bankedDamage == 0)
+                else if (bankedDamage <= 0)
                 {
                     if (!pressedSoulBank)
                         CombatText.NewText(player.getRect(), Main.errorColor, "Empty bank", true);
@@ -115,7 +144,7 @@ namespace Erilipah
                 else
                 {
                     Main.PlaySound(SoundID.Item4, player.Center);
-                    healingSoulTorch = !healingSoulTorch;
+                    soulBankHealing = !soulBankHealing;
                     pressedSoulBank = false;
                 }
             }

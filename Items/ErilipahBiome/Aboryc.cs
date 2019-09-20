@@ -219,10 +219,8 @@ namespace Erilipah.Items.ErilipahBiome
             if (time < 430)
             {
                 // Lock the player in
-                player.itemTime = 2;
-                player.itemAnimation = 2;
-                player.heldProj = projectile.whoAmI;
                 player.GetModPlayer<ErilipahPlayer>().canMove = false;
+                player.velocity = Vector2.Zero;
 
                 player.immune = true;
                 player.immuneTime = 30;

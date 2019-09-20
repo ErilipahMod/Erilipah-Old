@@ -4,26 +4,27 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah.Items.Weapons
+namespace Erilipah.Items.ErilipahBiome
 {
     public class DragonPeepee : NewModItem
     {
         protected override UseTypes UseType => UseTypes.SwordSwing;
-        protected override int[] Dimensions => new int[] { 44, 46 };
-        protected override int Rarity => 3;
+        protected override int[] Dimensions => new int[] { 36, 44 };
+        protected override int Rarity => 5;
 
-        protected override int Damage => 36;
-        protected override int UseSpeed => 24;
-        protected override int Crit => 12;
+        protected override int Damage => 38;
+        protected override int UseSpeed => 19;
+        protected override int Crit => 18;
         protected override float Knockback => 5;
 
         protected override string DisplayName => "Seeping Death";
         protected override string Tooltip => "Inflicts struck enemies with Wither" +
             "\nThe more they are struck, the deadlier and longer lasting the effect is" +
-            "\n'Locked in chests found where the earth begins to melt and demons lurk...and for good reason'";
+            "\nThe wither effect jumps to new targets after the target dies" +
+            "\n'Locked away where light fades and reality crumbles... for good reason'";
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
-            target.AddBuff(mod.BuffType<Wither>(), 300);
+            target.AddBuff(mod.BuffType<Wither>(), 360);
         }
 
         public override void AddRecipes()

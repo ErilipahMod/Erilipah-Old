@@ -1,5 +1,7 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Erilipah.Items.Crystalline;
+using Erilipah.Items.ErilipahBiome;
+using Erilipah.Items.ErilipahBiome.Potions;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -541,7 +543,7 @@ namespace Erilipah
                         continue;
 
                     Chest chest = Main.chest[index];
-                    MakeChest(ref chest.item);
+                    MakeChest(chest.item);
                 }
             }
 
@@ -1028,24 +1030,58 @@ namespace Erilipah
                 }
             }
         }
-        private void MakeChest(ref Item[] loot)
+        private void MakeChest(Item[] loot)
         {
+            // All  One     Primary item: Nidorose, Dragon Peepee, Soul Hearth, Soul Splitter
+            // 50%  1-3     Dynamite 
+            // 70%  4-12    Greater healing pots
+            // 30%  12-22   Mythril or Orch. bars
+            // 50%  15-29   Cobalt or Palladium bars
+            // 50%  65-100  Hellfire arrows, Phlogiston arrows, silver bullets
+            // All  1-3     Effulgence, Inhibitor, Antihemic, or Purity potions
+            // 75%  2-3     Shine, Water Walking, Lifeforce, Heartreach
+            // 60%  1-2     Magic Power, Regeneration, Ironskin, Inferno
+            // 50%  1-4     Arken Torch
+            // 50%  12-20   Crystalline Torch
+            // All  2-4     Gold Coin
+            // 75%  1-99    Silver Coin
+
             int index = 0;
 
-            if (Main.rand.NextBool())
+            if (Main.expertMode)
+                AddItem(1, 1, 1, mod.ItemType<DragonPeepee>(), mod.ItemType<Nidorose>(), mod.ItemType<HeadSplitter>(), mod.ItemType<SoulCleanser>());
+            else
+                AddItem(1, 1, 1, mod.ItemType<DragonPeepee>(), mod.ItemType<Nidorose>(), mod.ItemType<HeadSplitter>());
+
+            void AddItem(float chance, int minimum, int maximum, params int[] itemTypes)
             {
-                loot[index] = mod.GetItem("BioluminescentSinew").item;
-                loot[index].stack = WorldGen.genRand.Next(2, 7);
-                index++;
+                if (chance >= 1f || WorldGen.genRand.Chance(chance))
+                {
+                    loot[index].stack = WorldGen.genRand.Next(minimum, maximum+1);
+                    loot[index].SetDefaults(itemTypes.Length > 1 ? WorldGen.genRand.Next(itemTypes) : itemTypes[0]);
+                    index++;
+                }
             }
 
-            loot[index] = mod.GetItem("MadnessFocus").item;
-            loot[index].stack = WorldGen.genRand.Next(4, 20);
-            index++;
+            AddItem(0.5f, 1, 3, ItemID.Dynamite);
+            AddItem(0.7f, 4, 12, ItemID.GreaterHealingPotion);
 
-            loot[index] = mod.GetItem("CrystallineTorch").item;
-            loot[index].stack = WorldGen.genRand.Next(5, 16);
-            index++;
+            int barType = WorldGen.genRand.Next(2) == 0 ? ItemID.MythrilBar : ItemID.OrichalcumBar;
+            AddItem(0.3f, 4, 12, barType);
+            barType = barType == ItemID.MythrilBar ? ItemID.CobaltBar : ItemID.PalladiumBar;
+            AddItem(0.5f, 15, 29, barType);
+
+            AddItem(0.5f, 65, 100, ItemID.HellfireArrow, ItemID.SilverBullet, mod.ItemType<Items.Phlogiston.PhlogistonArrow>());
+
+            AddItem(1.0f,  1, 3, mod.ItemType<EffulgencePot>(), mod.ItemType<SlowingPot>(), mod.ItemType<ReductionPot>(), mod.ItemType<PurityPot>());
+            AddItem(0.75f, 1, 3, ItemID.ShinePotion, ItemID.WaterWalkingPotion, ItemID.LifeforcePotion, ItemID.HeartreachPotion);
+            AddItem(0.6f,  1, 3, ItemID.MagicPowerPotion, ItemID.RegenerationPotion, ItemID.IronskinPotion, ItemID.EndurancePotion);
+
+            AddItem(0.50f, 1, 4, mod.ItemType<ArkenTorch>());
+            AddItem(0.50f, 12, 20, mod.ItemType<CrystallineTorch>());
+
+            AddItem(1f, 2, 4, ItemID.GoldCoin);
+            AddItem(0.75f, 1, 99, ItemID.SilverCoin);
         }
 
         private void Infect(int i, int j)
@@ -1053,6 +1089,11 @@ namespace Erilipah
             Tile tile = Main.tile[i, j];
             if (tile.type == TileID.LihzahrdAltar || tile.type == TileID.LihzahrdBrick || tile.wall == WallID.LihzahrdBrickUnsafe)
                 return;
+
+            if (tile.type == 21)
+            {
+                tile.type = (ushort)mod.TileType<ErilipahChest>();
+            }
 
             if (WorldGen.SolidOrSlopedTile(tile) || tile.wall == WallID.EbonstoneUnsafe || tile.wall == WallID.CrimstoneUnsafe)
             {
@@ -1143,25 +1184,11 @@ namespace Erilipah
             ChestItem[] possibleItems = new ChestItem[]
             {
                 new ChestItem(
-                    I("HeadSplitter"),
-                    1,
-                    1,
-                    0.35f,
-                    4), // Hell chest
-
-                new ChestItem(
                     I("ForestsWrath"),
                     1,
                     1,
                     0.5f,
                     0), // Living tree chest
-
-                new ChestItem(
-                    I("DragonPeepee"),
-                    1,
-                    1,
-                    0.35f,
-                    4) // Hell chest
             };
             ChestItem[] addedItems = new ChestItem[]
             {

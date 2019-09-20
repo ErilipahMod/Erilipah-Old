@@ -123,6 +123,9 @@ namespace Erilipah.NPCs.Taranys
                         {
                             proj.friendly = false;
                             proj.hostile = true;
+
+                            if (proj.damage > npc.damage)
+                                proj.damage = npc.damage;
                         }
                     }
                 }
@@ -170,6 +173,8 @@ namespace Erilipah.NPCs.Taranys
                 UseOpacity(115 * (1 - progress));
         }
 
+        const float intoEating = 0.32f;
+
         public override void AI()
         {
             // Run spawning code on the first tick
@@ -187,7 +192,7 @@ namespace Erilipah.NPCs.Taranys
                 TempTimer = 0;
                 Attack = Main.rand.Next(5);
 
-                if (npc.life < npc.lifeMax * 0.365)
+                if (npc.life < npc.lifeMax * intoEating)
                 {
                     IncrementPhase();
                 }
@@ -221,8 +226,11 @@ namespace Erilipah.NPCs.Taranys
             }
 
             // Force a switch if we're really low and aren't switching already
-            if (npc.life < npc.lifeMax * 0.3 && Phase == 1)
+            if (npc.life < npc.lifeMax * intoEating && Phase == 1)
+            {
                 SwitchAttacks();
+                return;
+            }
 
             if (!Target.InErilipah())
                 npc.dontTakeDamage = true;
@@ -734,7 +742,7 @@ namespace Erilipah.NPCs.Taranys
 
                         Pulse(TempTimer * 12, 12, true);
                     }
-                    else if (npc.life > 0.175f * npc.lifeMax)
+                    else if (npc.life > 0.1f * npc.lifeMax)
                     {
                         Filters.Scene["TaranysPulse"].Deactivate();
                         npc.velocity = npc.GoTo(new Vector2(npc.Center.X, Target.Center.Y - 30), 0.1f, 3f);
@@ -746,8 +754,9 @@ namespace Erilipah.NPCs.Taranys
                             Player p = Main.player[i];
                             float distance = p.Distance(npc.position + new Vector2(50, 78));
                             float speed = MathHelper.SmoothStep(8f, 0, distance / 1000f);
+                            Vector2 vel = new Vector2(p.Center.X < npc.Center.X ? speed : -speed, 0);
 
-                            p.position.X += (p.Center.X < npc.Center.X ? speed : -speed);
+                            p.position = Collision.TileCollision(p.position, vel, p.width, p.height);
                         }
 
                         for (int i = 0; i < 30; i++)
@@ -885,7 +894,16 @@ namespace Erilipah.NPCs.Taranys
             if (Attack == 1 && TempTimer >= 60 && TempTimer < 160 * SpeedMult)
                 if (projectile.friendly)
                 {
-                    projectile.Reflect(1f);
+                    if (projectile.Reflect(1f))
+                    {
+                        if (Main.netMode != 1)
+                        {
+                            projectile.netUpdate = true;
+                            projectile.velocity = projectile.velocity.RotateRandom(0.2);
+                        }
+                        if (projectile.damage > npc.damage)
+                            projectile.damage = npc.damage;
+                    }
                     damage = 0;
                 }
         }
