@@ -517,6 +517,13 @@ namespace Erilipah
                             );
                 }
 
+                // Torches
+                if (floor != baseY)
+                {
+                    WorldGen.Place1x1(leftX + 2,  floor + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.Place1x1(rightX - 2, floor + 2, mod.TileType<ArkenTorchTile>());
+                }
+
                 // Don't do any of this on the roof
                 if (floor == roofY) continue;
 
@@ -695,6 +702,10 @@ namespace Erilipah
                                 TileID.Painting3X3, WorldGen.genRand.Next(13, 21)
                                 );
                     }
+
+                    // Torches
+                    WorldGen.Place1x1(relLeft + 2,  extensionRoof + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.Place1x1(relRight - 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
 
                     // Pots
                     for (int i = 0; i < potsPerFloor; i++)
@@ -1039,12 +1050,10 @@ namespace Erilipah
             // 50%  15-29   Cobalt or Palladium bars
             // 50%  65-100  Hellfire arrows, Phlogiston arrows, silver bullets
             // All  1-3     Effulgence, Inhibitor, Antihemic, or Purity potions
-            // 75%  2-3     Shine, Water Walking, Lifeforce, Heartreach
-            // 60%  1-2     Magic Power, Regeneration, Ironskin, Inferno
-            // 50%  1-4     Arken Torch
-            // 50%  12-20   Crystalline Torch
+            // 50%  2-3     Shine, Water Walking, Lifeforce, Heartreach
+            // 50%  1-2     Magic Power, Regeneration, Ironskin, Inferno
+            // 75%  1-4     Arken Torch     or    12-20   Crystalline Torch
             // All  2-4     Gold Coin
-            // 75%  1-99    Silver Coin
 
             int index = 0;
 
@@ -1057,8 +1066,8 @@ namespace Erilipah
             {
                 if (chance >= 1f || WorldGen.genRand.Chance(chance))
                 {
-                    loot[index].stack = WorldGen.genRand.Next(minimum, maximum+1);
                     loot[index].SetDefaults(itemTypes.Length > 1 ? WorldGen.genRand.Next(itemTypes) : itemTypes[0]);
+                    loot[index].stack = WorldGen.genRand.Next(minimum, maximum + 1);
                     index++;
                 }
             }
@@ -1074,14 +1083,15 @@ namespace Erilipah
             AddItem(0.5f, 65, 100, ItemID.HellfireArrow, ItemID.SilverBullet, mod.ItemType<Items.Phlogiston.PhlogistonArrow>());
 
             AddItem(1.0f,  1, 3, mod.ItemType<EffulgencePot>(), mod.ItemType<SlowingPot>(), mod.ItemType<ReductionPot>(), mod.ItemType<PurityPot>());
-            AddItem(0.75f, 1, 3, ItemID.ShinePotion, ItemID.WaterWalkingPotion, ItemID.LifeforcePotion, ItemID.HeartreachPotion);
-            AddItem(0.6f,  1, 3, ItemID.MagicPowerPotion, ItemID.RegenerationPotion, ItemID.IronskinPotion, ItemID.EndurancePotion);
+            AddItem(0.50f, 1, 3, ItemID.ShinePotion, ItemID.WaterWalkingPotion, ItemID.LifeforcePotion, ItemID.HeartreachPotion);
+            AddItem(0.50f,  1, 3, ItemID.MagicPowerPotion, ItemID.RegenerationPotion, ItemID.IronskinPotion, ItemID.EndurancePotion);
 
-            AddItem(0.50f, 1, 4, mod.ItemType<ArkenTorch>());
-            AddItem(0.50f, 12, 20, mod.ItemType<CrystallineTorch>());
+            if (WorldGen.genRand.NextBool())
+                AddItem(0.75f, 1, 4, mod.ItemType<ArkenTorch>());
+            else
+                AddItem(0.75f, 12, 20, mod.ItemType<CrystallineTorch>());
 
-            AddItem(1f, 2, 4, ItemID.GoldCoin);
-            AddItem(0.75f, 1, 99, ItemID.SilverCoin);
+            AddItem(1f, 2, 5, ItemID.GoldCoin);
         }
 
         private void Infect(int i, int j)

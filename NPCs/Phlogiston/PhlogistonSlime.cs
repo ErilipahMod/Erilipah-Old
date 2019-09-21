@@ -18,6 +18,7 @@ namespace Erilipah.NPCs.Phlogiston
     {
         public override void SetStaticDefaults()
         {
+            DisplayName.SetDefault("Phlogiston Sludge");
             Main.npcFrameCount[npc.type] = 2;
         }
         public override void SetDefaults()
