@@ -45,6 +45,11 @@ namespace Erilipah.NPCs.Phlogiston
             drawColor.G += 40;
         }
 
+        public override void NPCLoot()
+        {
+            Loot.DropItem(npc, mod.ItemType<Items.Phlogiston.StablePhlogiston>(), 1, 3, 100);
+        }
+
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             return Math.Max(SpawnCondition.Underworld.Chance * 0.065f, SpawnCondition.Cavern.Chance * 0.05f);
