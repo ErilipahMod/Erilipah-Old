@@ -22,8 +22,8 @@ namespace Erilipah.NPCs.Phlogiston
         {
             npc.lifeMax = 40;
             npc.defense = 12;
-            npc.damage = 38;
-            npc.knockBackResist = 0f;
+            npc.damage = 30;
+            npc.knockBackResist = 0.5f;
 
             npc.lavaImmune = true;
             npc.aiStyle = 0;
@@ -41,8 +41,9 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void DrawEffects(ref Color drawColor)
         {
-            drawColor.R += 80;
-            drawColor.G += 40;
+            drawColor.R = Math.Max(drawColor.R, (byte)50);
+            drawColor.G = Math.Max(drawColor.G, (byte)50);
+            drawColor.B = Math.Max(drawColor.B, (byte)50);
         }
 
         public override void NPCLoot()
@@ -52,7 +53,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return Math.Max(SpawnCondition.Underworld.Chance * 0.065f, SpawnCondition.Cavern.Chance * 0.05f);
+            return SpawnCondition.Underworld.Chance * 0.07f;
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -61,10 +62,6 @@ namespace Erilipah.NPCs.Phlogiston
             for (int i = 0; i < 4; i++)
             {
                 Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), 1.15f);
-            }
-            else
-            {
-                Teleport();
             }
 
             Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), Math.Min(1.2f, (float)damage / npc.lifeMax));
@@ -176,7 +173,7 @@ namespace Erilipah.NPCs.Phlogiston
                 if (Main.netMode != 1)
                 {
                     Vector2 to = DustBallPosition.To(HeldPosition);
-                    int damage = (int)(Main.expertMode ? npc.damage * 1.1 : npc.damage * 1.6);
+                    int damage = Main.expertMode ? 40 : 50;
 
                     Projectile.NewProjectile(DustBallPosition, to * 6.5f, mod.ProjectileType<Fireball>(), damage, 1, 255, HeldPosition.X, HeldPosition.Y);
                 }

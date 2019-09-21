@@ -14,7 +14,7 @@ namespace Erilipah.Items.Taranys
     {
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("One of the last keys to a place long forgotten\n'It bears the markings of a throne'");
+            Tooltip.SetDefault("Usable at only the Erilipah altar\nOne of the last keys to a place long forgotten\n'It bears the markings of a throne'");
         }
         public override void SetDefaults()
         {
@@ -32,7 +32,7 @@ namespace Erilipah.Items.Taranys
 
         public override bool UseItem(Player player)
         {
-            if (player.InLostCity() || !player.InErilipah())
+            if (player.Distance(ErilipahWorld.AltarPosition) > 100)
                 return false;
             if (ErilipahWorld.ChasmPosition == Vector2.Zero)
             {
@@ -43,21 +43,22 @@ namespace Erilipah.Items.Taranys
             Main.PlaySound(2, (int)player.Center.X, (int)player.Center.Y, 6, 1, -0.6f);
             player.itemAnimation = 0;
             player.itemTime = 0;
-            player.Center = ErilipahWorld.ChasmPosition;
 
             // Carve out an area for the player to spawn
             for (int i = -5; i <= 5; i++)
             {
-                int x = (int)player.position.X / 16;
+                int x = (int)ErilipahWorld.ChasmPosition.X / 16;
                 for (int j = -5; j <= 5; j++)
                 {
-                    int y = (int)player.position.Y / 16;
+                    int y = (int)ErilipahWorld.ChasmPosition.Y / 16;
                     Tile tile = Main.tile[x + i, y + j];
 
                     if (tile.type != mod.TileType<Biomes.ErilipahBiome.Tiles.TaintedBrick>())
                         WorldGen.KillTile(x + i, y + j);
                 }
             }
+
+            player.Center = ErilipahWorld.ChasmPosition;
 
             // Make sure the player doesn't instantly fucking die
             player.AddBuff(BuffID.Featherfall, 300);

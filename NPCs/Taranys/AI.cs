@@ -747,7 +747,7 @@ namespace Erilipah.NPCs.Taranys
                         Filters.Scene["TaranysPulse"].Deactivate();
                         Rotate(false);
 
-                        if (npc.Distance(Target.Center) < 800)
+                        if (npc.Distance(Target.Center) < 600)
                             npc.velocity = npc.GoTo(new Vector2(npc.Center.X, Target.Center.Y - 30), 0.2f, 3f);
                         else
                             npc.velocity = npc.GoTo(new Vector2(Target.Center.X, Target.Center.Y - 30), 0.2f, 3f);
@@ -998,10 +998,10 @@ namespace Erilipah.NPCs.Taranys
             npc.dontTakeDamage = !Main.player[mother.target].InErilipah();
         }
 
-        //public override bool CheckActive()
-        //{
-        //    return !NPC.AnyNPCs(mod.NPCType<Taranys>());
-        //}
+        public override bool CheckActive()
+        {
+            return !NPC.AnyNPCs(mod.NPCType<Taranys>());
+        }
 
         public override void NPCLoot()
         {

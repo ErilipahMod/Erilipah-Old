@@ -30,49 +30,7 @@ namespace Erilipah
             canJump = true;
         }
 
-        void TorchOfSoul(NPC target, int damage)
-        {
-            Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
-            Item i2 = player.FindEquip(mod.ItemType<SoulHearth>());
-
-            if (i == null && i2 == null)
-                return;
-
-            if (i2 != null && bankedDamage >= 500)
-            {
-                bankedDamage = 500;
-                return;
-            }
-            if (bankedDamage >= 200)
-            {
-                bankedDamage = 200;
-                return;
-            }
-
-            if (soulBankHealing) return;
-
-            if (!target.immortal && !target.dontTakeDamage)
-            {
-                int amount = damage / 5;
-                if (amount < 1)
-                    return;
-
-                Rectangle loc = player.getRect();
-                loc.Y -= 30;
-                CombatText.NewText(loc, new Color(247, 202, 166), amount);
-            }
-        }
-
-        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
-        {
-            TorchOfSoul(target, damage);
-        }
-        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
-        {
-            TorchOfSoul(target, damage);
-        }
-
-        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        void AutoHeal(int damage)
         {
             if (player.FindEquip(mod.ItemType<SoulHearth>()) == null)
                 return;
@@ -95,6 +53,55 @@ namespace Erilipah
                 }
             }
         }
+        void TorchOfSoul(NPC target, int damage)
+        {
+            Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
+            Item i2 = player.FindEquip(mod.ItemType<SoulHearth>());
+
+            if (i == null && i2 == null || target.immortal || target.dontTakeDamage || soulBankHealing)
+                return;
+
+            if (i2 != null)
+            {
+                AutoHeal(0);
+                if (bankedDamage >= 500)
+                {
+                    bankedDamage = 500;
+                    return;
+                }
+            }
+            if (bankedDamage >= 200)
+            {
+                bankedDamage = 200;
+                return;
+            }
+
+            // Prevent from gaining > npc life in benefits
+            int amount = Math.Min(target.life + damage, damage) / 6;
+            if (i2 != null)
+                amount = Math.Min(target.life + damage, damage) / 4;
+            if (amount < 1)
+                return;
+
+            bankedDamage += amount;
+            Rectangle loc = player.getRect();
+            loc.Y -= 30;
+            CombatText.NewText(loc, new Color(247, 202, 166), amount);
+        }
+
+        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+        {
+            TorchOfSoul(target, damage);
+        }
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            TorchOfSoul(target, damage);
+        }
+
+        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        {
+            AutoHeal((int)damage);
+        }
 
         public override void UpdateLifeRegen()
         {
@@ -102,13 +109,13 @@ namespace Erilipah
             {
                 if (player.statLife >= player.statLifeMax2)
                 {
-                    player.GetModPlayer<ErilipahPlayer>().soulBankHealing = false;
+                    soulBankHealing = false;
                     CombatText.NewText(player.getRect(), Main.errorColor, "Full life");
                     return;
                 }
                 if (bankedDamage <= 0)
                 {
-                    player.GetModPlayer<ErilipahPlayer>().soulBankHealing = false;
+                    soulBankHealing = false;
                     CombatText.NewText(player.getRect(), Main.errorColor, "Empty bank", true);
                     return;
                 }

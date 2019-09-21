@@ -208,7 +208,7 @@ namespace Erilipah.Items.Accessories.Medallions
     public class ShortswordMedallion : Medallion
     { override protected int i => ItemID.GoldShortsword; override protected int i2 => ItemID.PlatinumShortsword; }
     public class MeleeProjectileMedallion : Medallion
-    { override protected int i => ItemID.WoodenBoomerang; override protected int i2 => ItemID.EnchantedBoomerang; }
+    { override protected int i => ItemID.EnchantedBoomerang; }
     public class PickaxeMedallion : Medallion
     { override protected int i => ItemID.GoldPickaxe; override protected int i2 => ItemID.PlatinumPickaxe; }
     public class AxeMedallion : Medallion

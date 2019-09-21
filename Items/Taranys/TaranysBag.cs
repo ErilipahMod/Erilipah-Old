@@ -2,6 +2,7 @@
 using Terraria.ModLoader;
 using Erilipah.Items.Taranys;
 using Erilipah.Items.ErilipahBiome;
+using System.Collections.Generic;
 
 namespace Erilipah.Items.Taranys
 {
@@ -37,15 +38,12 @@ namespace Erilipah.Items.Taranys
             player.QuickSpawnItem(mod.ItemType<ShellChunk>(), Main.rand.Next(6, 15));
             player.QuickSpawnItem(mod.ItemType<MadnessFocus>(), Main.rand.Next(15, 23));
 
+            List<int> types = new List<int>() { mod.ItemType<TyrantEye>(), mod.ItemType<VoidSpike>(), mod.ItemType<TorchOfSoul>(), mod.ItemType<ScepterOfEternalAbyss>() };
             for (int i = 0; i < 2; i++)
             {
-                switch (Main.rand.Next(4))
-                {
-                    default: player.QuickSpawnItem(mod.ItemType<TyrantEye>()); break;
-                    case 1: player.QuickSpawnItem(mod.ItemType<VoidSpike>()); break;
-                    case 2: player.QuickSpawnItem(mod.ItemType<TorchOfSoul>()); break;
-                    case 3: player.QuickSpawnItem(mod.ItemType<ScepterOfEternalAbyss>()); break;
-                }
+                int chosen = Main.rand.Next(types);
+                player.QuickSpawnItem(chosen);
+                types.Remove(chosen);
             }
 
             //if (Main.rand.NextFloat() < Loot.MaskChance)

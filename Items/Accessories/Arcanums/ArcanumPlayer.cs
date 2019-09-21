@@ -100,7 +100,7 @@ namespace Erilipah.Items.Accessories.Arcanums
                 playSound = false;
                 genGore = false;
 
-                player.statLife = player.statLifeMax2 - ((int)damage - player.statLife);
+                player.statLife = player.statLifeMax2;
 
                 player.immune = true;
                 player.immuneTime = 30;

@@ -131,16 +131,16 @@ namespace Erilipah.NPCs.LunarBee
                 Vector2 goTo = Target.Center - new Vector2(0, 150);
 
                 // Move away from the player quickly if the player gets close
-                if (npc.Distance(goTo) < 50)
+                if (npc.Distance(goTo) < 40)
                 {
-                    npc.velocity = -npc.GoTo(goTo, 0.22f, 4f);
+                    npc.velocity = -npc.GoTo(goTo, 0.2f, 4f);
                 }
 
                 // And if too far away / can't see, get closer
                 bool canSee = Collision.CanHit(npc.Center, 1, 1, Target.position, Target.width, Target.height);
                 if (npc.Distance(goTo) > 100 || !canSee)
                 {
-                    npc.velocity = npc.GoTo(goTo, 0.15f, 3f);
+                    npc.velocity = npc.GoTo(goTo, 0.15f, 6f);
                 }
 
                 // As life decreases, increase fire speed
@@ -190,9 +190,9 @@ namespace Erilipah.NPCs.LunarBee
 
                 // And if too far away / can't see, get closer
                 bool canSee = Collision.CanHit(npc.Center, 1, 1, Target.position, Target.width, Target.height);
-                if (npc.Distance(goTo) > 80 || !canSee)
+                if (npc.Distance(goTo) > 50 || !canSee)
                 {
-                    npc.velocity = npc.GoTo(goTo, 0.18f, 5f);
+                    npc.velocity = npc.GoTo(goTo, 0.2f, 6f);
                 }
 
                 // As life decreases, increase fire speed
@@ -258,7 +258,7 @@ namespace Erilipah.NPCs.LunarBee
                     }
                 }
 
-                npc.velocity *= 0.988f;
+                npc.velocity *= 0.97f;
             }
 
             else if (Phase == dashing)
@@ -362,7 +362,7 @@ namespace Erilipah.NPCs.LunarBee
                 bool canSee = Collision.CanHit(npc.Center, 1, 1, Target.position, Target.width, Target.height);
                 if (npc.Distance(goTo) > 50 || !canSee)
                 {
-                    npc.velocity = npc.GoTo(goTo, 0.18f, 5f);
+                    npc.velocity = npc.GoTo(goTo, 0.2f, 6f);
                 }
 
                 // As life decreases, increase fire speed

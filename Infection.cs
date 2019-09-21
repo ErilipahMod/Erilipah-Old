@@ -167,6 +167,8 @@ namespace Erilipah
         public override void UpdateDead()
         {
             Infection = 0;
+            infectionRate = 0;
+            darknessCounter = 0;
         }
         public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {

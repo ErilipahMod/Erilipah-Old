@@ -295,7 +295,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 // spawn dusts
                 for (int i = 0; i < 15; i++)
                 {
-                    Dust dust = Dust.NewDustPerfect(Eye, mod.DustType<VoidParticle>(), Main.rand.NextVector2Unit() * 13);
+                    Dust dust = Dust.NewDustPerfect(Eye, mod.DustType<CrystallineDust>(), Main.rand.NextVector2Unit() * 13);
                     dust.customData = new Vector3(Eye, size + 10);
                 }
 

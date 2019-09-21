@@ -109,7 +109,7 @@ namespace Erilipah.Items.Taranys
 
         public override void AI()
         {
-            projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver4;
             if (projectile.ai[0]++ > 120)
                 projectile.tileCollide = true;
         }

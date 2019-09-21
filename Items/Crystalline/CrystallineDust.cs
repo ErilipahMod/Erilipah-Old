@@ -11,6 +11,16 @@ namespace Erilipah.Items.Crystalline
     {
         public override bool Update(Dust dust)
         {
+            if (dust.customData is Vector3 position)
+            {
+                if (Vector2.Distance(dust.position, new Vector2(position.X, position.Y)) > position.Z)
+                {
+                    dust.velocity = Vector2.Zero;
+                    dust.alpha += 6;
+                    if (dust.alpha >= 255)
+                        dust.active = false;
+                }
+            }
             if (dust.customData is float timer)
             {
                 Projectile sigil = Main.projectile.FirstOrDefault(p => p.active && p.type == mod.ProjectileType<AbProj>());

@@ -12,6 +12,18 @@ namespace Erilipah
 
         public int witherStack = 0;
 
+        public override bool CheckDead(NPC npc)
+        {
+            if (witherStack > 0)
+            {
+                int closestNPC = npc.FindClosestNPC(1000);
+                if (closestNPC == -1)
+                    return true;
+
+                Main.npc[closestNPC].GetGlobalNPC<ErilipahNPC>().witherStack += this.witherStack;
+            }
+            return true;
+        }
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
             if (npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>()))
@@ -58,7 +70,11 @@ namespace Erilipah
 
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
         {
-            base.EditSpawnRate(player, ref spawnRate, ref maxSpawns);
+            if (player.InErilipah())
+            {
+                spawnRate = (int)(spawnRate * 0.5);
+                maxSpawns = (int)(maxSpawns * 0.8);
+            }
         }
     }
 }

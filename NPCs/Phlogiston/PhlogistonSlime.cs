@@ -49,8 +49,9 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void DrawEffects(ref Color drawColor)
         {
-            drawColor.R += 80;
-            drawColor.G += 40;
+            drawColor.R = Math.Max(drawColor.R, (byte)50);
+            drawColor.G = Math.Max(drawColor.G, (byte)50);
+            drawColor.B = Math.Max(drawColor.B, (byte)50);
         }
 
         public override void NPCLoot()
