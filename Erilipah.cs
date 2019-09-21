@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -27,10 +28,12 @@ namespace Erilipah
         {
 
 #if HANDOUT_BETA
-            ulong PROVIDED_ID = 76561198127351311U;
+            ulong[] PROVIDED_IDs = { 76561198127351311U };
             ulong CURRENT_ID = Steamworks.SteamUser.GetSteamID().m_SteamID;
-            if (PROVIDED_ID != CURRENT_ID)
+            if (PROVIDED_IDs.Contains(CURRENT_ID))
+            {
                 throw new Exception("Steam ID does not match the intended recipient ID.");
+            }
 #endif
 
             Bandolier = RegisterHotKey("Bondolier", "U");
