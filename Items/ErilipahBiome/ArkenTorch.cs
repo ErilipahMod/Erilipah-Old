@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+//using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -13,7 +14,7 @@ namespace Erilipah.Items.ErilipahBiome
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Arken Torch");
-            Tooltip.SetDefault("An incredibly bright torch\nNever snuffs in Erilipah\n'I can't replicate this craftsmanship!'");
+            Tooltip.SetDefault("Never snuffs in Erilipah\n'Don't stare at it, you'll go blind!'");
         }
 
         public override void SetDefaults()
@@ -39,37 +40,35 @@ namespace Erilipah.Items.ErilipahBiome
         internal static readonly Color light = new Color(2.5f, 1f, 2f);
         public override void HoldItem(Player player)
         {
-            player.itemLocation.X -= 2 * player.direction;
-            player.itemLocation.Y += 2;
+            player.itemLocation.X -= 4 * player.direction;
+            player.itemLocation.Y += 4;
 
-            if (Main.rand.Next(player.itemAnimation > 0 ? 20 : 40) == 0)
-            {
-                if (Main.LocalPlayer.InErilipah())
-                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<Crystalline.CrystallineDust>());
-                else
-                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
-            }
             Vector2 position = player.RotatedRelativePoint(new Vector2(player.itemLocation.X + 12f * player.direction + player.velocity.X, player.itemLocation.Y - 14f + player.velocity.Y), true);
 
             if (Main.LocalPlayer.InErilipah()) // if I am in Erilipah, then light er up
-                for (int i = -1; i < 2; i++)
+                for (int i = -2; i < 3; i++)
                 {
-                    for (int j = -1; j < 2; j++)
+                    for (int j = -2; j < 3; j++)
                     {
-                        Lighting.AddLight(position + new Vector2(i, j) * 16, light.ToVector3());
+                        Lighting.AddLight(position + new Vector2(i, j) * 20, light.ToVector3());
                     }
                 }
+            else
+                Lighting.AddLight(position, light.ToVector3());
         }
 
         public override void PostUpdate()
         {
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
+            if (Main.LocalPlayer.InErilipah())
+                for (int i = -2; i < 3; i++)
                 {
-                    Lighting.AddLight(item.Center + new Vector2(i, j) * 20, light.ToVector3());
+                    for (int j = -2; j < 3; j++)
+                    {
+                        Lighting.AddLight(item.Center + new Vector2(i, j) * 14, light.ToVector3());
+                    }
                 }
-            }
+            else
+                Lighting.AddLight(item.Center, light.ToVector3());
         }
 
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
@@ -87,7 +86,6 @@ namespace Erilipah.Items.ErilipahBiome
             Main.tileSolid[Type] = false;
             Main.tileNoAttach[Type] = true;
             Main.tileNoFail[Type] = true;
-            Main.tileWaterDeath[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.StyleTorch);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
@@ -108,8 +106,7 @@ namespace Erilipah.Items.ErilipahBiome
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Torch");
             AddMapEntry(new Color(200, 120, 215), name);
-            dustType = mod.DustType<Crystalline.CrystallineDust>();
-            drop = mod.ItemType<CrystallineTorch>();
+            drop = mod.ItemType<ArkenTorch>();
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Torches };
             torch = true;
@@ -123,29 +120,20 @@ namespace Erilipah.Items.ErilipahBiome
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Main.tile[i, j];
-
-            if (!Main.LocalPlayer.InErilipah() && tile.frameX < 66)
-            {
-                tile.frameX += 66;
-            }
-            if (Main.LocalPlayer.InErilipah() && tile.frameX >= 66)
-            {
-                tile.frameX -= 66;
-            }
+            r = g = b = 0;
 
             if (tile.frameX < 66)
             {
-                r = CrystallineTorch.light.R / 255f;
-                g = CrystallineTorch.light.G / 255f;
-                b = CrystallineTorch.light.B / 255f;
-
-                for (int x = -1; x < 2; x++)
-                {
-                    for (int y = -1; y < 2; y++)
+                if (Main.LocalPlayer.InErilipah())
+                    for (int x = -2; x < 3; x++)
                     {
-                        Lighting.AddLight(new Vector2(i, j) * 16 + new Vector2(x, y) * 16, CrystallineTorch.light.ToVector3());
+                        for (int y = -2; y < 3; y++)
+                        {
+                            Lighting.AddLight(new Vector2(i, j) * 16 + new Vector2(x, y) * 14, ArkenTorch.light.ToVector3());
+                        }
                     }
-                }
+                else
+                    Lighting.AddLight(new Vector2(i, j) * 16, ArkenTorch.light.ToVector3());
             }
         }
 

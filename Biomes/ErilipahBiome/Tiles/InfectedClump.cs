@@ -367,8 +367,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
     }
     public class TaintedBrickSafe : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "Erilipah/Biomes/ErilipahBiome/Tiles/TaintedBrick";
+            return true;
+        }
         public class TaintedBrickWallSafe : ModWall
         {
+            public override bool Autoload(ref string name, ref string texture)
+            {
+                texture = "Erilipah/Biomes/ErilipahBiome/Tiles/TaintedBrickWall";
+                return true;
+            }
             public override void SetDefaults()
             {
                 drop = mod.ItemType("TaintedBrickWallItem");

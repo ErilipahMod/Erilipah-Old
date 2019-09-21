@@ -20,7 +20,7 @@ namespace Erilipah
 
         public override void HoldItem(Item item, Player player)
         {
-            if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
+            if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.ItemType<Items.ErilipahBiome.ArkenTorch>())
                 return;
 
             bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == item.createTile) || item.flame || 
@@ -51,7 +51,7 @@ namespace Erilipah
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
-            if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
+            if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.ItemType<Items.ErilipahBiome.ArkenTorch>())
                 return;
 
             int ind = item.FindClosestPlayer(5000);

@@ -14,9 +14,6 @@ namespace Erilipah.NPCs.Phlogiston
 {
     public class PhlogistonCaster : ModNPC
     {
-        // TODO: check source code for caster AI
-        // TODO: telegraphs with orange line, fires a fast, large fire proj (dust)
-        // TODO: inferno ball explodes on contact, MASSIVE damage and sends you flying, small ripple
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[npc.type] = 1;
@@ -25,20 +22,32 @@ namespace Erilipah.NPCs.Phlogiston
         {
             npc.lifeMax = 40;
             npc.defense = 12;
-            npc.damage = 16;
+            npc.damage = 38;
             npc.knockBackResist = 0f;
 
+            npc.lavaImmune = true;
             npc.aiStyle = 0;
             npc.noGravity = false;
             npc.HitSound = SoundID.NPCHit2;
             npc.DeathSound = SoundID.LiquidsWaterLava;
 
             npc.width = 32;
-            npc.height = 52;
+            npc.height = 48;
 
             npc.value = Item.buyPrice(0, 0, 4, 80);
 
-            npc.MakeBuffImmune(BuffID.OnFire);
+            npc.buffImmune[BuffID.OnFire] = true;
+        }
+
+        public override void DrawEffects(ref Color drawColor)
+        {
+            drawColor.R += 80;
+            drawColor.G += 40;
+        }
+
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            return Math.Max(SpawnCondition.Underworld.Chance * 0.065f, SpawnCondition.Cavern.Chance * 0.05f);
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -48,17 +57,12 @@ namespace Erilipah.NPCs.Phlogiston
             {
                 Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), 1.15f);
             }
+            else
+            {
+                Teleport();
+            }
 
             Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), Math.Min(1.2f, (float)damage / npc.lifeMax));
-        }
-
-        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
-        {
-            Teleport();
-        }
-        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
-        {
-            Teleport();
         }
 
         private void Teleport()
@@ -73,9 +77,11 @@ namespace Erilipah.NPCs.Phlogiston
                     Main.rand.NextFloat(player.Center.Y - 500, player.Center.Y + 500));
                 Point tilePos = worldPos.ToTileCoordinates();
 
-                if (!Collision.SolidTiles(tilePos.X - 1, tilePos.Y - 1, tilePos.X + 1, tilePos.Y + 1))
+                if (Main.tile[tilePos.X, tilePos.Y].liquid < 10 &&
+                    !Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y - 1, tilePos.Y + 2) &&
+                    Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y + 3, tilePos.Y + 3))
                 {
-                    newPosition = worldPos;
+                    newPosition = tilePos.ToWorldCoordinates() + new Vector2(0, 16);
                     break;
                 }
             }
@@ -89,12 +95,11 @@ namespace Erilipah.NPCs.Phlogiston
 
             for (int i = 0; i < 22; i++)
             {
-                Vector2 spawnPosition = npc.Center + Main.rand.NextVector2CircularEdge(40, 40);
-                Vector2 direction = spawnPosition.To(npc.Center);
-                Dust.NewDustPerfect(spawnPosition, mod.DustType<PhlogistonDust>(), direction * 4);
+                Vector2 spawnPosition = npc.Center + Main.rand.NextVector2CircularEdge(20, 20);
+                Vector2 direction = (i / 22f * MathHelper.TwoPi).ToRotationVector2();
+                Dust.NewDustPerfect(spawnPosition, mod.DustType<PhlogistonDust>(), direction * 2.5f);
 
-                direction = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2();
-                Dust.NewDustPerfect(newPosition, mod.DustType<PhlogistonDust>(), direction * 4);
+                Dust.NewDustPerfect(newPosition + Main.rand.NextVector2CircularEdge(100, 100), mod.DustType<PhlogistonDust>(), new Vector2(2.5f)).customData = newPosition;
             }
 
             npc.Center = newPosition;
@@ -108,8 +113,8 @@ namespace Erilipah.NPCs.Phlogiston
             for (int i = 0; i < 3; i++)
             {
                 float rotation  = percent * MathHelper.TwoPi;
-                      rotation += i / 3 * MathHelper.TwoPi;
-                float distance  = MathHelper.SmoothStep(600, 9, Math.Min(1, percent * 3f)); // At 33%, the dusts will circling already
+                      rotation += i / 3f * MathHelper.TwoPi;
+                float distance  = MathHelper.SmoothStep(200, 20, Math.Min(1, percent * 3f)); // At 33%, the dusts will circling already
 
                 Dust.NewDustPerfect(DustBallPosition + new Vector2(distance, 0).RotatedBy(rotation), mod.DustType<DeepFlames>(), Vector2.Zero).noGravity = true;
             }
@@ -118,14 +123,14 @@ namespace Erilipah.NPCs.Phlogiston
             if (percent > 0.33f)
             {
                 if (Main.rand.NextFloat(percent) > 0.2f)
-                Dust.NewDustPerfect(DustBallPosition + Main.rand.NextVector2CircularEdge(9, 9), mod.DustType<PhlogistonDust>(), Vector2.One).customData = DustBallPosition;
+                Dust.NewDustPerfect(DustBallPosition + Main.rand.NextVector2CircularEdge(15, 15), mod.DustType<PhlogistonDust>(), Vector2.One).customData = DustBallPosition;
             }
 
             // Spawns dust that goes to where the fireball will go
             if (percent > 0.5f)
             {
-                float speed = 60 * (1 - percent) + 1; // + 1 to prevent DbZ exception
-                Vector2 position = Vector2.Lerp(DustBallPosition, HeldPosition, currentTime / speed % 1);
+                float speed = 40;
+                Vector2 position = Vector2.Lerp(DustBallPosition, HeldPosition + (HeldPosition - DustBallPosition), currentTime / speed % 1);
                 Dust.NewDustPerfect(position, mod.DustType<DeepFlames>(), Vector2.Zero).noGravity = true;
             }
         }
@@ -153,7 +158,8 @@ namespace Erilipah.NPCs.Phlogiston
             {
                 DustFx((int)npc.ai[0] - restTime, cycleTime - restTime);
 
-                if (npc.ai[0] < cycleTime - 60)
+                int leeway = (Main.expertMode ? cycleTime - 8 : cycleTime - 15);
+                if (npc.ai[0] < leeway)
                 {
                     npc.ai[1] = Main.player[npc.target].Center.X;
                     npc.ai[2] = Main.player[npc.target].Center.Y;
@@ -161,12 +167,13 @@ namespace Erilipah.NPCs.Phlogiston
             }
             else
             {
+                Main.PlaySound(SoundID.Item45, npc.Center);
                 if (Main.netMode != 1)
                 {
                     Vector2 to = DustBallPosition.To(HeldPosition);
                     int damage = (int)(Main.expertMode ? npc.damage * 1.1 : npc.damage * 1.6);
 
-                    Projectile.NewProjectile(DustBallPosition, to * 5.5f, mod.ProjectileType<Fireball>(), damage, 1, 255, HeldPosition.X, HeldPosition.Y);
+                    Projectile.NewProjectile(DustBallPosition, to * 6.5f, mod.ProjectileType<Fireball>(), damage, 1, 255, HeldPosition.X, HeldPosition.Y);
                 }
 
                 Teleport();
@@ -174,24 +181,30 @@ namespace Erilipah.NPCs.Phlogiston
                 npc.ai[0] = 0;
             }
         }
+
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            target.AddBuff(BuffID.OnFire, 180);
+        }
     }
 
     public class Fireball : ModProjectile
     {
+        public override string Texture => Helper.Invisible;
         public override void SetStaticDefaults()
         {
             //DisplayName.SetDefault("Name");
         }
         public override void SetDefaults()
         {
-            projectile.width = 18;
-            projectile.height = 18;
+            projectile.width = 20;
+            projectile.height = 20;
 
             projectile.tileCollide = false;
             projectile.aiStyle = 0;
             projectile.timeLeft = 300;
 
-            projectile.extraUpdates = 2;
+            projectile.extraUpdates = 3;
             projectile.maxPenetrate = 1;
             projectile.hostile = !
                 (projectile.friendly = false);
@@ -200,7 +213,15 @@ namespace Erilipah.NPCs.Phlogiston
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
             if (target.statDefense < 100)
-                target.velocity -= target.Center.To(projectile.Center, (100 - target.statDefense) / 100f * 7.5f);
+            {
+                float reduction = Math.Max(200 - target.statDefense, 0) / 200f;
+                reduction *= target.noKnockback ? 0.7f : 1;
+
+                target.velocity -= target.Center.To(projectile.Center, reduction * 8f);
+                if (!target.noKnockback)
+                    target.velocity.Y -= 1.5f;
+            }
+            target.AddBuff(BuffID.OnFire, 180);
             projectile.Kill();
         }
 
@@ -208,27 +229,22 @@ namespace Erilipah.NPCs.Phlogiston
         {
             projectile.netUpdate = true;
 
-            Vector2 targetLocation = new Vector2(projectile.ai[0], projectile.ai[1]);
-            if (Vector2.Distance(projectile.Center, targetLocation) < 10)
-            {
-                projectile.timeLeft = 10;
-            }
-
             for (int i = 0; i < 3; i++)
             {
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(9, 9), mod.DustType<PhlogistonDust>(), Vector2.Zero).noGravity = true;
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(15, 15), mod.DustType<PhlogistonDust>(), Vector2.Zero).noGravity = true;
             }
         }
 
         public override void Kill(int timeLeft)
         {
-            const int count = 35;
+            Main.PlaySound(SoundID.NPCDeath14, projectile.Center);
+            const int count = 60;
             for (int i = 0; i < count; i++)
             {
                 bool alt    = i % 2 == 0;
                 int type    = alt ? mod.DustType<PhlogistonDust>() : mod.DustType<Drone.DeepFlames>();
                 float speed = alt ? 3f : 5f;
-                float angle = i / (float)count * MathHelper.PiOver2;
+                float angle = i / (float)count * MathHelper.TwoPi;
 
                 Dust.NewDustPerfect(projectile.Center, type, angle.ToRotationVector2() * speed, 0);
             }

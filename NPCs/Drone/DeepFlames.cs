@@ -9,7 +9,7 @@ namespace Erilipah.NPCs.Drone
         public override bool MidUpdate(Dust dust)
         {
             if (!dust.noGravity) dust.velocity.Y -= 0.09f;
-            else dust.velocity = Vector2.Zero;
+            else dust.velocity *= 0.89f;
             if (!dust.noLight)
             {
                 float strength = dust.scale * 0.5f;

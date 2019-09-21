@@ -60,7 +60,7 @@ namespace Erilipah.Items.Dracocide
             var tooltip = tooltips.Find(x => x.Name == "UseMana");
             if (tooltip == null)
                 return;
-            tooltip.text = "Uses 5 mana per arc per second";
+            tooltip.text = "Uses 3 mana per arc per second";
         }
 
         public override bool CanUseItem(Player player)
@@ -119,18 +119,18 @@ namespace Erilipah.Items.Dracocide
             List<Projectile> Friends = LikeMe;
             Friends.Remove(projectile);
 
-            if (player.statMana < 6 && LikeMe[0] == projectile)
+            if (projectile.localAI[1]++ % 20 == 0 && projectile.ai[0] == 1) // reduce mana
+            {
+                player.manaRegenDelay = 180;
+                player.statMana--;
+            }
+
+            if (player.statMana < 6 && projectile.ai[0] == 1 && LikeMe[0] == projectile)
             {
                 if (player.manaFlower) // If they have a mana flower, use it
                     player.QuickMana();
                 if (player.statMana < 5) // If they're still low mana, d i e
                     projectile.Kill();
-            }
-
-            if (projectile.localAI[1]++ % 12 == 0 && projectile.ai[0] == 1) // reduce mana
-            {
-                player.manaRegenDelay = 180;
-                player.statMana--;
             }
 
             projectile.velocity *= 0.95f;
@@ -155,7 +155,7 @@ namespace Erilipah.Items.Dracocide
                 }
             }
 
-            if (projectile.ai[0] == 2 || player.Distance(projectile.Center) > 5000) // KILL YOURSELF.
+            if (projectile.ai[0] == 2 || player.Distance(projectile.Center) > 2200) // KILL YOURSELF.
                 projectile.Kill();
 
             foreach (var friend in Friends)

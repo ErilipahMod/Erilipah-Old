@@ -72,7 +72,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 top--;
             }
             int chest = Chest.FindChest(left, top);
-            if (Main.chest[chest].name == "")
+            if (chest == -1 || Main.chest[chest].name == "")
             {
                 return name;
             }
