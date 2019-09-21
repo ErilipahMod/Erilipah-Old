@@ -653,7 +653,7 @@ namespace Erilipah
                     SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                     spriteBatch.Draw(
-                        texture: texture, position: drawPos, sourceRectangle: rect, color: color, rotation: projectile.oldRot[i],
+                        texture: texture, position: drawPos, sourceRectangle: rect, color: color * ((255 - projectile.alpha) / 255f), rotation: projectile.oldRot[i],
                         origin: drawOrigin, scale: projectile.scale, effects: effects, layerDepth: 0
                         );
                 }

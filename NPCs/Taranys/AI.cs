@@ -745,9 +745,13 @@ namespace Erilipah.NPCs.Taranys
                     else if (npc.life > 0.1f * npc.lifeMax)
                     {
                         Filters.Scene["TaranysPulse"].Deactivate();
-                        npc.velocity = npc.GoTo(new Vector2(npc.Center.X, Target.Center.Y - 30), 0.1f, 3f);
+                        Rotate(false);
+
+                        if (npc.Distance(Target.Center) < 800)
+                            npc.velocity = npc.GoTo(new Vector2(npc.Center.X, Target.Center.Y - 30), 0.2f, 3f);
+                        else
+                            npc.velocity = npc.GoTo(new Vector2(Target.Center.X, Target.Center.Y - 30), 0.2f, 3f);
                         npc.velocity *= 0.9f;
-                        npc.rotation = 0;
 
                         for (int i = 0; i < 255; i++)
                         {
@@ -756,7 +760,7 @@ namespace Erilipah.NPCs.Taranys
                             float speed = MathHelper.SmoothStep(8f, 0, distance / 1000f);
                             Vector2 vel = new Vector2(p.Center.X < npc.Center.X ? speed : -speed, 0);
 
-                            p.position = Collision.TileCollision(p.position, vel, p.width, p.height);
+                            p.position += Collision.TileCollision(p.position, vel, p.width, p.height);
                         }
 
                         for (int i = 0; i < 30; i++)
@@ -991,8 +995,13 @@ namespace Erilipah.NPCs.Taranys
             Dust.NewDustPerfect(Vector2.Lerp(npc.Center, mother.Center, Math.Abs(Timer) / (float)time),
                 mod.DustType<VoidParticle>(), Vector2.Zero).customData = 0;
 
-            npc.dontTakeDamage = mother.dontTakeDamage;
+            npc.dontTakeDamage = !Main.player[mother.target].InErilipah();
         }
+
+        //public override bool CheckActive()
+        //{
+        //    return !NPC.AnyNPCs(mod.NPCType<Taranys>());
+        //}
 
         public override void NPCLoot()
         {

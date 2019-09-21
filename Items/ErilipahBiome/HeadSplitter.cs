@@ -32,7 +32,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         protected override TextureTypes TextureType => TextureTypes.ItemClone;
         protected override DamageTypes DamageType => DamageTypes.ItemCopy;
-        protected override DustTrailTypes DustTrailType => DustTrailTypes.PerfectNoGravity;
+        protected override DustTrailTypes DustTrailType => IsDead ? DustTrailTypes.None : DustTrailTypes.PerfectNoGravity;
         protected override int TrailThickness => 8;
 
         public override void SetDefaults()
@@ -55,12 +55,11 @@ namespace Erilipah.Items.ErilipahBiome
 
             IsDead = true;
 
-            projectile.velocity = oldVelocity.SafeNormalize(Vector2.Zero) * -2.5f;
+            projectile.velocity = oldVelocity.SafeNormalize(Vector2.Zero) * -2f;
 
             return false;
         }
 
-        #region Sticking in enemies
         protected override float? Rotation
         {
             get
@@ -74,7 +73,8 @@ namespace Erilipah.Items.ErilipahBiome
         public override void Kill(int timeLeft)
         {
             base.Kill(timeLeft);
-            Main.PlaySound(SoundID.NPCDeath14, projectile.Center);
+            if (projectile.alpha < 250)
+                Main.PlaySound(SoundID.NPCDeath14, projectile.Center);
         }
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
         {
@@ -102,7 +102,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         private bool IsStickingToTarget
         {
-            get => projectile.ai[0] == 1f;
+            get => projectile.ai[0] == 1f && !IsDead;
             set => projectile.ai[0] = value ? 1f : 0f;
         }
 
@@ -134,10 +134,11 @@ namespace Erilipah.Items.ErilipahBiome
 
             if (IsDead)
             {
+                MotionBlurActive = false;
                 projectile.damage = 0;
                 projectile.friendly = projectile.hostile = false;
-                projectile.velocity.Y += 0.015f;
-                projectile.alpha++;
+                projectile.velocity.Y += 0.04f;
+                projectile.alpha += 3;
 
                 if (projectile.alpha >= 255)
                     projectile.Kill();
@@ -177,6 +178,5 @@ namespace Erilipah.Items.ErilipahBiome
                 }
             }
         }
-        #endregion
     }
 }

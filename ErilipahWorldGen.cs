@@ -297,7 +297,10 @@ namespace Erilipah
             WorldGen.PlaceTile(spotX - 1, j - 8, T("TaintedRubble"), forced: true);
             WorldGen.SlopeTile(spotX - 1, j - 8, 4);
             WorldGen.PlaceTile(spotX + 2, j - 8, T("TaintedRubble"), forced: true);
-            WorldGen.SlopeTile(spotX + 2, j - 8, 3);
+            WorldGen.PlaceTile(spotX + 2, j - 7, T("TaintedRubble"), forced: true);
+            WorldGen.SlopeTile(spotX + 2, j - 7, 3);
+            WorldGen.PlaceTile(spotX + 3, j - 8, T("TaintedRubble"), forced: true);
+            WorldGen.SlopeTile(spotX + 3, j - 8, 3);
 
             WorldGen.PlaceTile(spotX + 1, j - 5, T("TaintedRubble"), forced: true);
             WorldGen.SlopeTile(spotX, j - 4, 4);
