@@ -48,7 +48,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return new Color(lightColor.R + 100, lightColor.G + 80, lightColor.B, lightColor.A + 30);
+            return new Color(lightColor.R + 135, lightColor.G + 90, lightColor.B, 90);
         }
     }
 }

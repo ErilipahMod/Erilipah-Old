@@ -463,7 +463,7 @@ namespace Erilipah.NPCs.LunarBee
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             npc.DrawNPC(spriteBatch, drawColor);
-            npc.DrawGlowmask(spriteBatch, "NPCs/LunarBee/LunacritaGlow", Color.White * 0.5f, Vector2.UnitY * 4);
+            npc.DrawGlowmask(spriteBatch, "NPCs/LunarBee/LunacritaGlow", Color.White * 0.5f);
             return false;
         }
 

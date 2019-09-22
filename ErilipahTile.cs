@@ -12,10 +12,21 @@ namespace Erilipah
     {
         public override void NearbyEffects(int i, int j, int type, bool closer)
         {
-            if (!Main.rand.Chance(ErilipahItem.LightSnuffRate) || type == mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
-                return;
-
             Tile tile = Main.tile[i, j];
+
+            bool onScreenX = i < Main.screenPosition.X / 16 || i > (Main.screenPosition.X + Main.screenWidth) / 16;
+            bool onScreenY = j < Main.screenPosition.Y / 16 || j > (Main.screenPosition.Y + Main.screenHeight) / 16;
+            bool onScreen = onScreenX && onScreenY;
+
+            if (Main.netMode != 1 && tile.IsErilipahTile() && Main.rand.Chance(0.007f) && !onScreen)
+                ErilipahWorld.PlaceHazard(i, j, mod);
+
+            if (Main.rand.Chance(ErilipahItem.LightSnuffRate) && type != mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
+                Snuff(i, j, type, tile);
+        }
+
+        private void Snuff(int i, int j, int type, Tile tile)
+        {
             if (TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == type) ||
                 TileObjectData.GetTileData(tile) == TileObjectData.GetTileData(TileID.Torches, 0) ||
                 TileObjectData.GetTileData(tile) == TileObjectData.GetTileData(TileID.Campfire, 0))

@@ -82,35 +82,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 npc.velocity = npc.GoTo(Target.Center + new Vector2(0, 220).RotatedBy(npc.ai[0] / 100f), 0.17f, 2.25f);
             }
 
-            if (npc.ai[1] != 1 && !HasSeenTarget)
-            {
-                if (Collision.CanHit(npc.Center, 1, 1, Target.Center, 1, 1))
-                {
-                    HasSeenTarget = true;
-                    return;
-                }
-
-                // Go to the direction it's facing.
-                npc.velocity.X += 0.2f * Direction.ToDirectionInt();
-                npc.velocity.X = MathHelper.Clamp(npc.velocity.X, -1.8f, 1.8f);
-                if (npc.collideX)
-                {
-                    npc.velocity.X *= -0.2f;
-                    Direction = !Direction;
-                    npc.netUpdate = true;
-                }
-                if (npc.collideY || !Collision.CanHit(npc.position, npc.width, npc.height, npc.position + new Vector2(30 * Direction.ToDirectionInt(), 200), npc.width + 10, npc.height + 10))
-                {
-                    npc.velocity.Y -= 0.15f;
-                    npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y, -2.5f, 2.5f);
-                }
-
-                npc.rotation = npc.velocity.ToRotation();
-                npc.spriteDirection = npc.velocity.X < 0 ? 1 : -1;
-                return;
-            }
-
-            if (npc.ai[0] % 160 == 0 && Main.netMode != 1)
+            if (Main.netMode != 1 && npc.ai[0] % 160 == 0 && Collision.CanHit(npc.Center, 1, 1, Target.Center, 1, 1))
             {
                 Vector2 to = npc.Center.To(Target.Center);
                 Projectile.NewProjectile(npc.Center + to * 30, to * 6, mod.ProjectileType<Zoub>(), npc.damage / 2, 1f, 255);

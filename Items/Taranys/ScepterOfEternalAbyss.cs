@@ -82,6 +82,7 @@ namespace Erilipah.Items.Taranys
 
     public class ScepterProj2 : ModProjectile
     {
+        public override string GlowTexture => Texture;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Scepter");
@@ -127,6 +128,7 @@ namespace Erilipah.Items.Taranys
 
     public class ScepterProj1 : ModProjectile
     {
+        public override string GlowTexture => Texture;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Scepter");

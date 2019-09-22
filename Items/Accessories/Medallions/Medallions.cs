@@ -12,15 +12,15 @@ namespace Erilipah.Items.Accessories.Medallions
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
 
-        private bool i(Player p, string s) => p.armor.Take(10).Any(i => i.type == mod.ItemType(s + "Medallion"));
+        private bool I(Player p, string s) => p.armor.Take(10).Any(i => i.type == mod.ItemType(s + "Medallion"));
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            speedX *= stats(item, player, out a, out b, out a, out a);
-            speedY *= stats(item, player, out a, out b, out a, out a);
+            speedX *= Stats(item, player, out _, out _, out _, out _);
+            speedY *= Stats(item, player, out _, out _, out _, out _);
             return base.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
 
-        private float stats(Item I, Player p, out float damage, out int crit, out float useTime, out float kb)
+        private float Stats(Item I, Player p, out float damage, out int crit, out float useTime, out float kb)
         {
             damage = 0;
             crit = 0;
@@ -31,31 +31,31 @@ namespace Erilipah.Items.Accessories.Medallions
             if (I.melee)
             {
                 bool notTool = I.pick == 0 && I.axe == 0 && I.hammer == 0;
-                if (i(p, "Broadsword") && use == 1 && !I.noMelee && !I.noUseGraphic
+                if (this.I(p, "Broadsword") && use == 1 && !I.noMelee && !I.noUseGraphic
                     && notTool)
                 {
                     damage = 0.135f;
                     crit = 5;
                 }
-                if (i(p, "Shortsword") && use == 3
+                if (this.I(p, "Shortsword") && use == 3
                     && notTool)
                 {
                     damage = 0.175f;
                     useTime = 1.2f;
                     crit = 5;
                 }
-                if (i(p, "MeleeProjectile") && I.shoot > 0 && I.noMelee && I.noUseGraphic
+                if (this.I(p, "MeleeProjectile") && I.shoot > 0 && I.noMelee && I.noUseGraphic
                     && notTool)
                 {
                     damage = 0.175f;
                     kb = 1.10f;
                 }
-                if (i(p, "Pickaxe") && use == 1
+                if (this.I(p, "Pickaxe") && use == 1
                     && I.pick > 0 && I.hammer == 0)
                 {
                     useTime = 1.15f;
                 }
-                if (i(p, "Axe") && use == 1
+                if (this.I(p, "Axe") && use == 1
                     && I.axe > 0 && I.hammer == 0)
                 {
                     useTime = 1.15f;
@@ -64,17 +64,17 @@ namespace Erilipah.Items.Accessories.Medallions
 
             if (I.ranged)
             {
-                if (i(p, "Bow") && use == 5 && I.useAmmo == AmmoID.Arrow && I.shoot > 0)
+                if (this.I(p, "Bow") && use == 5 && I.useAmmo == AmmoID.Arrow && I.shoot > 0)
                 {
                     damage = 0.15f;
                     return 1.10f;
                 }
-                if (i(p, "RocketLauncher") && use == 5 && I.useAmmo == AmmoID.Rocket && I.shoot > 0)
+                if (this.I(p, "RocketLauncher") && use == 5 && I.useAmmo == AmmoID.Rocket && I.shoot > 0)
                 {
                     crit = 10;
                     damage = 0.20f;
                 }
-                if (i(p, "Gun") && use == 5 && I.useAmmo == AmmoID.Bullet && I.shoot > 0)
+                if (this.I(p, "Gun") && use == 5 && I.useAmmo == AmmoID.Bullet && I.shoot > 0)
                 {
                     damage = 0.12f;
                     useTime = 1.1f;
@@ -85,12 +85,12 @@ namespace Erilipah.Items.Accessories.Medallions
 
             if (I.magic)
             {
-                if (i(p, "Staff") && use == 5 && Item.staff[I.type])
+                if (this.I(p, "Staff") && use == 5 && Item.staff[I.type])
                 {
                     damage = 0.135f;
                     return 1.20f;
                 }
-                if (i(p, "Tome") && use == 5 && I.width < 40 && I.height < 40 && !Item.staff[I.type])
+                if (this.I(p, "Tome") && use == 5 && I.width < 40 && I.height < 40 && !Item.staff[I.type])
                 {
                     damage = 0.175f;
                     return 1.20f;
@@ -98,35 +98,29 @@ namespace Erilipah.Items.Accessories.Medallions
             }
 
             if (I.sentry)
-                if (i(p, "Sentry"))
+                if (this.I(p, "Sentry"))
                     damage = 0.2f;
             return 1;
         }
 
-        private float a;
-        private int b;
         public override void ModifyWeaponDamage(Item item, Player player, ref float add, ref float mult, ref float flat)
         {
-            float c;
-            stats(item, player, out c, out b, out a, out a);
+            Stats(item, player, out float c, out _, out _, out _);
             add += c;
         }
         public override void GetWeaponKnockback(Item item, Player player, ref float knockback)
         {
-            float c;
-            stats(item, player, out a, out b, out a, out c);
+            Stats(item, player, out _, out _, out _, out float c);
             knockback *= c;
         }
         public override void GetWeaponCrit(Item item, Player player, ref int crit)
         {
-            int c;
-            stats(item, player, out a, out c, out a, out a);
+            Stats(item, player, out _, out int c, out _, out _);
             crit += c;
         }
         public override float UseTimeMultiplier(Item item, Player player)
         {
-            float c;
-            stats(item, player, out a, out b, out c, out a);
+            Stats(item, player, out _, out _, out float c, out _);
             return c;
         }
 
@@ -180,8 +174,10 @@ namespace Erilipah.Items.Accessories.Medallions
             }
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         protected abstract int i { get; }
         protected virtual int i2 => 0;
+#pragma warning restore IDE1006 // Naming Styles
         public override void AddRecipes()
         {
             ModRecipe r = new ModRecipe(mod);

@@ -34,12 +34,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         }
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
+            const int min = 125;
             drawColor *= 3;
 
-            if (drawColor.R < 100) drawColor.R = 100;
-            if (drawColor.G < 100) drawColor.G = 100;
-            if (drawColor.B < 100) drawColor.B = 100;
-            if (drawColor.A < 100) drawColor.A = 100;
+            if (drawColor.R < min) drawColor.R = min;
+            if (drawColor.G < min) drawColor.G = min;
+            if (drawColor.B < min) drawColor.B = min;
+            if (drawColor.A < min) drawColor.A = min;
         }
 
         private float fluctuant = 0;

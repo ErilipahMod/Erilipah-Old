@@ -62,9 +62,7 @@ namespace Erilipah.Items.ErilipahBiome
                 Main.projectile[index].timeLeft = 2;
             }
 
-            player.itemLocation.X -= item.width / 2;
             player.itemLocation.X -= item.width / 2 * player.direction;
-            player.itemLocation.Y -= item.height;
             player.itemLocation += new Vector2(6 * -player.direction, 6);
             // Add projectile spawn here
 

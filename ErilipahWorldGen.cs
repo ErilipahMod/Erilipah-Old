@@ -1,4 +1,5 @@
-﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
+﻿using Erilipah.Biomes.ErilipahBiome.Hazards;
+using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Erilipah.Items.Crystalline;
 using Erilipah.Items.ErilipahBiome;
 using Erilipah.Items.ErilipahBiome.Potions;
@@ -128,6 +129,9 @@ namespace Erilipah
 
             index = tasks.FindIndex(genpass => genpass.Name == "Final Cleanup");
             tasks.Insert(index, new PassLegacy("[Erilipah] The Lost City", LostCityGen));
+
+            index = tasks.FindIndex(genpass => genpass.Name == "Hazards");
+            tasks.Insert(index, new PassLegacy("[Erilipah] Hazards", HazardGen));
 
             index = tasks.FindIndex(genpass => genpass.Name == "Shinies");
             tasks.Insert(index, new PassLegacy("[Erilipah] Sacracite", SacraciteOre));
@@ -523,8 +527,8 @@ namespace Erilipah
                 // Torches
                 if (floor != baseY)
                 {
-                    WorldGen.Place1x1(leftX + 2,  floor + 2, mod.TileType<ArkenTorchTile>());
-                    WorldGen.Place1x1(rightX - 2, floor + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(leftX + 2,  floor + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(rightX - 2, floor + 2, mod.TileType<ArkenTorchTile>());
                 }
 
                 // Don't do any of this on the roof
@@ -707,8 +711,8 @@ namespace Erilipah
                     }
 
                     // Torches
-                    WorldGen.Place1x1(relLeft + 2,  extensionRoof + 2, mod.TileType<ArkenTorchTile>());
-                    WorldGen.Place1x1(relRight - 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(relLeft + 2,  extensionRoof + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(relRight - 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
 
                     // Pots
                     for (int i = 0; i < potsPerFloor; i++)
@@ -1095,6 +1099,34 @@ namespace Erilipah
                 AddItem(0.75f, 12, 20, mod.ItemType<CrystallineTorch>());
 
             AddItem(1f, 2, 5, ItemID.GoldCoin);
+        }
+        private void HazardGen(GenerationProgress progress)
+        {
+            int halfWidth = (int)(Main.maxTilesX * 0.05f);
+            for (int i = BiomeCenterX - halfWidth; i < Main.maxTilesX + halfWidth; i++)
+            {
+                for (int j = 0; j < Main.maxTilesY; j++)
+                {
+                    Tile tile = Main.tile[i, j];
+                    if (!tile.IsErilipahTile())
+                        continue;
+
+                    if (!WorldGen.genRand.Chance(0.001f))
+                        continue;
+
+                    PlaceHazard(i, j, mod);
+                }
+            }
+        }
+        public static void PlaceHazard(int i, int j, Mod mod)
+        {
+            switch (WorldGen.genRand.Next(5))
+            {
+                default:
+                    WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
+                    break;
+
+            }
         }
 
         private void Infect(int i, int j)

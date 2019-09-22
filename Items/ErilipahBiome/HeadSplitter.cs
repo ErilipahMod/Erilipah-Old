@@ -106,7 +106,7 @@ namespace Erilipah.Items.ErilipahBiome
             set => projectile.ai[0] = value ? 1f : 0f;
         }
 
-        private float targetWhoAmI
+        private float TargetWhoAmI
         {
             get => projectile.ai[1];
             set => projectile.ai[1] = value;
@@ -119,7 +119,7 @@ namespace Erilipah.Items.ErilipahBiome
             projectile.velocity =
                 (target.Center - projectile.Center);
             IsStickingToTarget = true;
-            targetWhoAmI = target.whoAmI;
+            TargetWhoAmI = target.whoAmI;
             projectile.netUpdate = true; // netUpdate this javelin
         }
         public override bool? CanHitNPC(NPC target)
@@ -150,7 +150,7 @@ namespace Erilipah.Items.ErilipahBiome
                 projectile.tileCollide = false;
                 projectile.localAI[0]++;
 
-                int projTargetIndex = (int)targetWhoAmI;
+                int projTargetIndex = (int)TargetWhoAmI;
                 bool killProj = false;
 
                 if ((projTargetIndex < 0 || projTargetIndex >= 200))

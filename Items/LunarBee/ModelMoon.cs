@@ -34,7 +34,7 @@ namespace Erilipah.Items.LunarBee
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
-            Tooltip.SetDefault("Usable at night\n'It seems awfully pristine for the Merchant to be selling'");
+            Tooltip.SetDefault("Usable at night\n'Beautiful, even for a space rock'");
             DisplayName.SetDefault("Model Moon");
         }
 

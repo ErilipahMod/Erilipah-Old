@@ -119,13 +119,9 @@ namespace Erilipah
         internal static void DrawGlowmask(this ModNPC npc, SpriteBatch spriteBatch, Color color)
         {
             string texture = npc.Texture.Remove(0, 9) + "_Glow";
-            DrawGlowmask(npc.npc, spriteBatch, texture, color, default);
+            DrawGlowmask(npc.npc, spriteBatch, texture, color);
         }
         internal static void DrawGlowmask(this NPC npc, SpriteBatch spriteBatch, string texture, Color color)
-        {
-            DrawGlowmask(npc, spriteBatch, texture, color, default);
-        }
-        internal static void DrawGlowmask(this NPC npc, SpriteBatch spriteBatch, string texture, Color color, Vector2 offset = default)
         {
             Texture2D texture2d = ModContent.GetTexture("Erilipah/" + texture);
             Vector2 drawOrigin = npc.frame.Size() / 2;
