@@ -26,7 +26,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 Vector2 tilePos = new Vector2(i, j) + Main.rand.NextVector2Circular(10, 10);
                 Tile tile = Main.tile[(int)tilePos.X, (int)tilePos.Y];
 
-                if (WorldGen.SolidOrSlopedTile(tile) && !(
+                if (!Main.tileFrameImportant[tile.type] &&
+                    WorldGen.SolidOrSlopedTile(tile) && !(
                     tile.type == TileID.LihzahrdBrick ||
                     tile.type == TileID.LihzahrdAltar ||
                     tile.type == mod.TileType<InfectedClump>() ||

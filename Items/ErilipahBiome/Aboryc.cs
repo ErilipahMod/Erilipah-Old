@@ -21,8 +21,8 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override void SetDefaults()
         {
-            projectile.width = 24;
-            projectile.height = 20;
+            projectile.width = 36;
+            projectile.height = 32;
             projectile.tileCollide = false;
             projectile.netImportant = true;
 
@@ -109,7 +109,8 @@ namespace Erilipah.Items.ErilipahBiome
                 else if (Timer >= 0)
                 {
                     Timer++;
-                    Effects(new Vector2(player.Center.X, player.Center.Y - 100));
+                    Effects(Vector2.Zero, true);
+                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X, player.Center.Y - 100), 0.165f);
 
                     if (Timer > 600)
                         Ritual(player, (int)Timer - 600);

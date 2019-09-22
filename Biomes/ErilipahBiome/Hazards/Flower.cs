@@ -24,6 +24,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             return new Color(lightColor.R + 10, lightColor.G + 20, lightColor.B + 50);
         }
     }
+
     class Flower : HazardTile
     {
         public override string MapName => "Cursed Flower";
@@ -77,22 +78,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            Vector2 wouldBeVel = Collision.AnyCollision(projectile.position, projectile.velocity, projectile.width, projectile.height);
-            if (wouldBeVel.X == 0)
-                projectile.velocity.X *= -1;
-            if (wouldBeVel.Y == 0)
-                projectile.velocity.Y *= -1;
+            Collision.HitTiles(projectile.position + projectile.velocity, projectile.velocity, projectile.width, projectile.height);
+            if (projectile.velocity.X != oldVelocity.X)
+                projectile.velocity.X = -oldVelocity.X;
+            if (projectile.velocity.Y != oldVelocity.Y)
+                projectile.velocity.Y = -oldVelocity.Y;
+
             return false;
         }
 
         public override void AI()
         {
-            projectile.velocity.Y += 0.06f;
-            if (projectile.velocity.Y > 0)
-                projectile.tileCollide = true;
-            if (projectile.velocity.Y > 1)
-                projectile.velocity.Y = 1;
-
+            Dust.NewDustPerfect(projectile.Center, mod.DustType<FlowerDust>(), projectile.velocity * -1);
             if (projectile.timeLeft < 60)
                 projectile.scale -= 1 / 90f;
         }

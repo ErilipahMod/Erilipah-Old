@@ -1125,7 +1125,21 @@ namespace Erilipah
                 default:
                     WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
                     break;
+                case 1:
+                    WorldGen.Place2x2(i, j - 1, (ushort)mod.TileType<Flower>(), 0);
+                    break;
+                case 2:
+                    if (!WorldGen.SolidOrSlopedTile(Main.tile[i, j + 1]) && !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 2]))
+                    {
+                        Tile vine = Main.tile[i, j + 1];
+                        vine.active(true);
+                        vine.type = (ushort)mod.TileType<Vine>();
 
+                        vine.active(true);
+                        vine.frameX = Main.rand.Next(new short[] { 0, 18, 36 });
+                        vine.frameY = 0;
+                    }
+                    break;
             }
         }
 

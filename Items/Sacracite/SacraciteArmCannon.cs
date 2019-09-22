@@ -20,9 +20,7 @@ namespace Erilipah.Items.Sacracite
         protected override int[] Dimensions => new int[] { 42, 22 };
         protected override int Rarity => 2;
         protected override UseTypes UseType => UseTypes.Gun;
-        protected override string Tooltip => "'The all-new multi-purpose arm cannon from the BCDC!\n" +
-            "Now with flaks.\n" +
-            "Use responsibly.'";
+        protected override string Tooltip => "'Now with flaks!'";
 
         protected override int[,] CraftingIngredients => new int[,] { { mod.ItemType("SacraciteIngot"), 4 }, { ItemID.Sandgun, 1 } };
         protected override int CraftingTile => TileID.Anvils;
@@ -37,7 +35,14 @@ namespace Erilipah.Items.Sacracite
         {
             base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
             if (player.ownedProjectileCounts[mod.ProjectileType<SacraciteArmCannonProj>()] < 1)
+            {
                 Projectile.NewProjectile(position, Vector2.Zero, mod.ProjectileType<SacraciteArmCannonProj>(), 0, 0, player.whoAmI);
+            }
+
+            if (type == ItemID.MusketBall)
+            {
+                type = mod.ProjectileType<SacraciteArmCannonFlak>();
+            }
             position += Vector2.UnitY * 2;
             return true;
         }

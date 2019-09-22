@@ -1,0 +1,148 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.ModLoader;
+using Terraria.ID;
+using Terraria.ObjectData;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.DataStructures;
+using Erilipah.Biomes.ErilipahBiome.Tiles;
+using Terraria.Enums;
+using Erilipah.NPCs.ErilipahBiome;
+
+namespace Erilipah.Biomes.ErilipahBiome.Hazards
+{
+    class Vine : HazardTile
+    {
+        public override string MapName => "Cursed Vine";
+        public override int DustType => mod.DustType<VoidParticle>();
+        public override TileObjectData Style
+        {
+            get
+            {
+                TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+                TileObjectData.newTile.Height = 1;
+                TileObjectData.newTile.CoordinateHeights = new[] { 16 };
+                TileObjectData.newTile.StyleHorizontal = true;
+                TileObjectData.newTile.LinkedAlternates = true;
+                TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Vine>() };
+                TileObjectData.newTile.AnchorValidTiles = new int[] 
+                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<TaintedBrick>(), mod.TileType<Vine>() };
+                TileObjectData.newTile.AnchorTop = new AnchorData(
+                    AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
+                TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
+
+                return TileObjectData.newTile;
+            }
+        }
+
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            Main.tileCut[Type] = true;
+            soundType = 6;
+        }
+
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+        {
+            resetFrame = false;
+            return false;
+        }
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+            Texture2D texture = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/Vine_Glowmask");
+            spriteBatch.Draw(
+                texture, new Vector2(i, j) * 16 - new Vector2(Main.tile[i, j].frameX, Main.tile[i, j].frameY) - Main.screenPosition,
+                new Rectangle(Main.tile[i, j].frameX, Main.tile[i, j].frameY, 16, 16), Color.White * 0.8f);
+        }
+        public override void RandomUpdate(int i, int j)
+        {
+            Tile tile = Main.tile[i, j];
+            if (Main.netMode == 1 || tile.frameX == 18 || tile.frameX == 36)
+                return;
+
+            if (tile.frameX == 54)
+            {
+                if (Main.npc.Any(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[1] == i))
+                    return;
+
+                if (Main.netMode != 1)
+                {
+                    NPC.NewNPC(i * 16 + 8, j * 16 + 8, mod.NPCType<Bulb>(), ai1: i);
+                }
+            }
+            else if (!WorldGen.SolidOrSlopedTile(Main.tile[i, j + 1]) && !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 2]))
+            { 
+                bool endTile = Main.rand.Chance(0.12f);
+
+                Tile vineEx = Main.tile[i, j + 1];
+                vineEx.active(true);
+                vineEx.type = Type;
+                vineEx.frameX = tile.frameX;
+
+                if (!endTile || tile.frameY == 0)
+                    vineEx.frameY = Main.rand.NextBool() ? (short)18 : (short)36;
+                else
+                    vineEx.frameY = 54;
+            }
+        }
+    }
+    public class Bulb : ModNPC
+    {
+        public override string Texture => Helper.Invisible;
+        public override void SetStaticDefaults()
+        {
+            //DisplayName.SetDefault("Name");
+        }
+        public override void SetDefaults()
+        {
+            npc.lifeMax = 50;
+            npc.defense = 5;
+            npc.knockBackResist = 0;
+
+            npc.width = 20;
+            npc.height = 26;
+
+            npc.noTileCollide = true;
+            npc.timeLeft = 90;
+
+            npc.damage = 0;
+            npc.dontCountMe = true;
+            npc.dontTakeDamageFromHostiles = true;
+            npc.friendly = false;
+        }
+
+        public override void DrawEffects(ref Color drawColor)
+        {
+            drawColor = new Color(Vector3.Max(drawColor.ToVector3(), new Vector3(170)));
+        }
+
+        public override void AI()
+        {
+            npc.ai[2] += 0.001f;
+            if (npc.ai[2] > 0.15f)
+                npc.ai[2] = -0.15f;
+
+            float s = 0.925f + Math.Abs(npc.ai[2]);
+            npc.scale = s;
+            npc.timeLeft = 2;
+            npc.velocity = Vector2.Zero;
+
+            Lighting.AddLight(npc.Center, 1f * s, 0.8f * s, 1f * s);
+
+            if (Main.rand.NextBool(30))
+            {
+                int dustInd = Dust.NewDust(npc.position, 20, 26, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
+
+                Dust dust = Main.dust[dustInd];
+                dust.noGravity = false;
+                dust.velocity = Vector2.Zero;
+                dust.customData = 0.1f;
+            }
+        }
+    }
+}

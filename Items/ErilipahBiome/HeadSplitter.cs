@@ -55,7 +55,13 @@ namespace Erilipah.Items.ErilipahBiome
 
             IsDead = true;
 
-            projectile.velocity = oldVelocity.SafeNormalize(Vector2.Zero) * -2f;
+            projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * 2f;
+            Collision.HitTiles(projectile.position + projectile.velocity, projectile.velocity, projectile.width, projectile.height);
+
+            if (projectile.velocity.X != oldVelocity.X)
+                projectile.velocity.X = -oldVelocity.X;
+            if (projectile.velocity.Y != oldVelocity.Y)
+                projectile.velocity.Y = -oldVelocity.Y;
 
             return false;
         }
