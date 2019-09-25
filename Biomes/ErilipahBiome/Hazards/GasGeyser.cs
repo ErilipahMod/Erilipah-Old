@@ -15,7 +15,17 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     {
         public override string MapName => "Gas Geyser";
         public override int DustType => DustID.Stone;
-        public override TileObjectData Style => TileObjectData.Style2x1;
+        public override TileObjectData Style
+        {
+            get
+            {
+                TileObjectData.newTile = TileObjectData.Style3x2;
+                TileObjectData.newTile.Height = 1;
+                TileObjectData.newTile.CoordinateHeights = new int[] { 18 };
+
+                return TileObjectData.newTile;
+            }
+        }
 
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -25,14 +35,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            if (tile.frameX > 0)
+            if (tile.frameX != 18)
                 return;
 
-            if (Main.projectile.Any(x => x.active && x.type == mod.ProjectileType<GasSpew>() && x.ai[1] == i))
+            if (Main.projectile.Any(x => x.active && x.type == mod.ProjectileType<GasSpew>() && x.localAI[0] == i))
                 return;
 
             if (Main.netMode != 1)
-                Projectile.NewProjectile(i * 16f + 16 + 8, j * 16f + 8, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1, ai1: i);
+            {
+                Projectile p = Main.projectile[Projectile.NewProjectile(i * 16f + 6, j * 16f + 6, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1)];
+                p.ai[1] = Main.rand.Next(3);
+                p.localAI[0] = i;
+            }
         }
     }
 
@@ -65,7 +79,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 Projectile.NewProjectile(
                     projectile.Center.X, projectile.Center.Y,
                     Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-6f, -5f),
-                    mod.ProjectileType<GasSpewProj>(), Main.expertMode ? projectile.damage / 2 : projectile.damage, 1);
+                    mod.ProjectileType<GasSpewProj>(), Main.expertMode ? projectile.damage / 2 : projectile.damage, 1, 255);
+            }
+
+            if (projectile.ai[0] % 4 == 0)
+            {
+                Dust dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
+                dust.noGravity = false;
+                dust.velocity = new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-9f, -7f));
+                dust.customData = 0.05f;
+
+                Dust.NewDustPerfect(projectile.Center, mod.DustType<Items.Crystalline.CrystallineDust>(),
+                    new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-10f, -8f)), Scale: 1.5f).noGravity = false;
             }
 
             if (projectile.ai[0] % 10 == 0)
@@ -90,7 +115,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             projectile.tileCollide = false;
             projectile.aiStyle = 0;
-            projectile.timeLeft = 300;
+            projectile.timeLeft = 280;
 
             projectile.hostile = projectile.friendly = true;
             projectile.SetInfecting(1.5f);
@@ -101,8 +126,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             projectile.velocity.Y += 0.06f;
             if (projectile.velocity.Y > 0)
                 projectile.tileCollide = true;
-            if (projectile.velocity.Y > 1)
-                projectile.velocity.Y = 1;
+            if (projectile.velocity.Y > 1.4f)
+                projectile.velocity.Y = 1.4f;
 
             if (projectile.timeLeft < 60)
                 projectile.scale -= 1 / 90f;

@@ -57,7 +57,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return new Color(50, 50, 50, 255);
+            return new Color(100, 100, 100, 220);
         }
     }
 }

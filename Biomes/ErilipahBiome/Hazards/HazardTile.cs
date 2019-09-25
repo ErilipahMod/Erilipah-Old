@@ -35,13 +35,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override bool CanExplode(int i, int j) => false;
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            const int min = 100;
             drawColor *= 2;
-
-            if (drawColor.R < min) drawColor.R = min;
-            if (drawColor.G < min) drawColor.G = min;
-            if (drawColor.B < min) drawColor.B = min;
-            if (drawColor.A < min) drawColor.A = min;
         }
 
         private float fluctuant = 0;

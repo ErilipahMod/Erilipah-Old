@@ -222,6 +222,7 @@ namespace Erilipah.Items.ErilipahBiome
                 // Lock the player in
                 player.GetModPlayer<ErilipahPlayer>().canMove = false;
                 player.velocity = Vector2.Zero;
+                player.maxFallSpeed = 0;
 
                 player.immune = true;
                 player.immuneTime = 30;

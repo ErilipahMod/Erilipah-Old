@@ -21,7 +21,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return new Color(lightColor.R + 10, lightColor.G + 20, lightColor.B + 50);
+            return new Color(200, 150, 180);
         }
     }
 
@@ -29,29 +29,31 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     {
         public override string MapName => "Cursed Flower";
         public override int DustType => mod.DustType<FlowerDust>();
-        public override TileObjectData Style => TileObjectData.Style2x2;
+        public override TileObjectData Style => TileObjectData.Style2x1;
 
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = Helper.Invisible;
             return true;
         }
+
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            if (tile.frameX > 0)
-                return;
 
-            if (Main.projectile.Any(x => x.active && x.type == mod.ProjectileType<FlowerProj>() && x.ai[1] == i))
-                return;
-
-            if (Main.netMode != 1)
+            if (tile.frameX == 0 && tile.frameY == 0 && Main.netMode != 1)
             {
-                Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
-                Projectile.NewProjectile(
-                    i * 16f + 16 + 8, j * 16f + 4,
-                    rand.X, rand.Y,
-                    mod.ProjectileType<GasSpew>(), 25, 1, ai1: i);
+                tile.frameY = 18;
+                if (Main.tile[i + 1, j].type == Type)
+                    Main.tile[i + 1, j].frameY = 18;
+                for (int a = 0; a < 3; a++)
+                {
+                    Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
+                    Projectile.NewProjectile(
+                        i * 16f + 16 + 8, j * 16f + 4,
+                        rand.X, rand.Y,
+                        mod.ProjectileType<FlowerProj>(), 25, 1);
+                }
             }
         }
     }
@@ -70,7 +72,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             projectile.tileCollide = true;
             projectile.aiStyle = 0;
-            projectile.timeLeft = 300;
+            projectile.timeLeft = 1000;
 
             projectile.hostile = projectile.friendly = true;
             projectile.SetInfecting(2f);
@@ -89,7 +91,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center, mod.DustType<FlowerDust>(), projectile.velocity * -1);
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<FlowerDust>());
             if (projectile.timeLeft < 60)
                 projectile.scale -= 1 / 90f;
         }

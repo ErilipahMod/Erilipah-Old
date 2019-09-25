@@ -73,7 +73,7 @@ namespace Erilipah.Items.Crystalline
 
         public override bool MidUpdate(Dust dust)
         {
-            if (!dust.noGravity) dust.velocity.Y += 0.003f;
+            if (!dust.noGravity) dust.velocity.Y += 0.006f;
             else dust.velocity *= 0.88f;
 
             return false;

@@ -130,8 +130,7 @@ namespace Erilipah
             index = tasks.FindIndex(genpass => genpass.Name == "Final Cleanup");
             tasks.Insert(index, new PassLegacy("[Erilipah] The Lost City", LostCityGen));
 
-            index = tasks.FindIndex(genpass => genpass.Name == "Hazards");
-            tasks.Insert(index, new PassLegacy("[Erilipah] Hazards", HazardGen));
+            tasks.Add(new PassLegacy("[Erilipah] Hazards", HazardGen));
 
             index = tasks.FindIndex(genpass => genpass.Name == "Shinies");
             tasks.Insert(index, new PassLegacy("[Erilipah] Sacracite", SacraciteOre));
@@ -1103,7 +1102,7 @@ namespace Erilipah
         private void HazardGen(GenerationProgress progress)
         {
             int halfWidth = (int)(Main.maxTilesX * 0.05f);
-            for (int i = BiomeCenterX - halfWidth; i < Main.maxTilesX + halfWidth; i++)
+            for (int i = BiomeCenterX - halfWidth; i < BiomeCenterX + halfWidth; i++)
             {
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
@@ -1111,10 +1110,8 @@ namespace Erilipah
                     if (!tile.IsErilipahTile())
                         continue;
 
-                    if (!WorldGen.genRand.Chance(0.001f))
-                        continue;
-
-                    PlaceHazard(i, j, mod);
+                    if (WorldGen.genRand.Chance(0.001f))
+                        PlaceHazard(i, j, mod);
                 }
             }
         }
@@ -1123,22 +1120,35 @@ namespace Erilipah
             switch (WorldGen.genRand.Next(5))
             {
                 default:
-                    WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
+                    WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
                     break;
                 case 1:
-                    WorldGen.Place2x2(i, j - 1, (ushort)mod.TileType<Flower>(), 0);
+                    WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<Flower>());
                     break;
                 case 2:
-                    if (!WorldGen.SolidOrSlopedTile(Main.tile[i, j + 1]) && !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 2]))
+                    if (WorldGen.SolidOrSlopedTile(Main.tile[i, j]) && Main.tile[i, j].slope() == 0 &&
+                        !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 1]) && !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 2]))
                     {
                         Tile vine = Main.tile[i, j + 1];
                         vine.active(true);
                         vine.type = (ushort)mod.TileType<Vine>();
-
-                        vine.active(true);
                         vine.frameX = Main.rand.Next(new short[] { 0, 18, 36 });
                         vine.frameY = 0;
                     }
+                    break;
+                case 3:
+                    bool valid = !Collision.SolidTiles(i, i, j - 10, j) && Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 1].wall == 0;
+                    if (valid)
+                    {
+                        Tile vine = Main.tile[i, j + 1];
+                        vine.active(true);
+                        vine.type = (ushort)mod.TileType<Stalk>();
+                        vine.frameX = (short)(Main.rand.Next(3) * 18);
+                        vine.frameY = 0;
+                    }
+                    break;
+                case 4:
+                    WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<GiantPF>());
                     break;
             }
         }

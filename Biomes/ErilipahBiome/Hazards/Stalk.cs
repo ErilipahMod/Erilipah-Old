@@ -17,25 +17,26 @@ using Erilipah.Items.Crystalline;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
-    class Vine : HazardTile
+    class Stalk : HazardTile
     {
-        public override string MapName => "Cursed Vine";
+        public override string MapName => "Crystalline Stalk";
         public override int DustType => mod.DustType<CrystallineDust>();
         public override TileObjectData Style
         {
             get
             {
-                TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+                TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
                 TileObjectData.newTile.Height = 1;
                 TileObjectData.newTile.CoordinateHeights = new[] { 16 };
+                TileObjectData.newTile.StyleMultiplier = 2;
                 TileObjectData.newTile.StyleHorizontal = true;
                 TileObjectData.newTile.LinkedAlternates = true;
-                TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Vine>() };
+                TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Stalk>() };
                 TileObjectData.newTile.AnchorValidTiles = new int[] 
                 { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<TaintedBrick>(), mod.TileType<Vine>() };
-                TileObjectData.newTile.AnchorTop = new AnchorData(
+                TileObjectData.newTile.AnchorBottom = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
-                TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
+                TileObjectData.newTile.AnchorTop = AnchorData.Empty;
 
                 return TileObjectData.newTile;
             }
@@ -44,25 +45,35 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void SetDefaults()
         {
             base.SetDefaults();
-            Main.tileCut[Type] = true;
-            soundType = 3;
-            soundStyle = 13;
+            soundType = 2;
+            soundStyle = 27;
+            drop = mod.ItemType<CrystallineTileItem>();
+        }
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Helper.Invisible;
+            return true;
         }
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if (!Main.tile[i, j - 1].IsErilipahTile() && Main.tile[i, j - 1].type != Type)
+            if (!Main.tile[i, j - 1].IsErilipahTile() && Main.tile[i, j + 1].type != Type)
             {
                 WorldGen.KillTile(i, j, Main.rand.NextBool());
-                WorldGen.TileFrame(i, j + 1);
+                WorldGen.TileFrame(i, j - 1);
+                WorldGen.TileFrame(i + 1, j);
+                WorldGen.TileFrame(i - 1, j);
             }
             resetFrame = false;
             return false;
         }
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
+            return;
+
             Tile tile = Main.tile[i, j];
-            Texture2D texture = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/Vine_Glowmask");
+            Texture2D texture = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/Crystalline_Glowmask");
             Vector2 zero = new Vector2(Main.offScreenRange, Main.offScreenRange);
             if (Main.drawToScreen)
             {
@@ -76,17 +87,14 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            if (Main.netMode == 1)
+            if (Main.netMode == 1 && tile.frameX % 36 != 0)
                 return;
 
             if (tile.frameY == 54)
             {
-                if (Main.npc.Any(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[1] == i))
-                    return;
-
                 NPC.NewNPC(i * 16 + 8, j * 16 + 8, mod.NPCType<Bulb>(), ai1: i);
             }
-            else if (!Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
+            else if (Valid(i, j))
             { 
                 bool endTile = Main.rand.Chance(0.12f);
 
@@ -101,59 +109,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     vineEx.frameY = 54;
             }
         }
-    }
-    public class Bulb : ModNPC
-    {
-        public override string Texture => Helper.Invisible;
-        public override void SetStaticDefaults()
+
+        bool Valid(int i, int j)
         {
-            //DisplayName.SetDefault("Name");
-        }
-        public override void SetDefaults()
-        {
-            npc.lifeMax = 50;
-            npc.defense = 5;
-            npc.knockBackResist = 0;
-
-            npc.width = 20;
-            npc.height = 26;
-
-            npc.noTileCollide = true;
-            npc.timeLeft = 90;
-
-            npc.damage = 0;
-            npc.dontCountMe = true;
-            npc.dontTakeDamageFromHostiles = true;
-            npc.friendly = false;
-        }
-
-        public override void DrawEffects(ref Color drawColor)
-        {
-            drawColor = new Color(Vector3.Max(drawColor.ToVector3(), new Vector3(170, 170, 170)));
-        }
-
-        public override void AI()
-        {
-            npc.ai[2] += 0.001f;
-            if (npc.ai[2] > 0.15f)
-                npc.ai[2] = -0.15f;
-
-            float s = 0.925f + Math.Abs(npc.ai[2]);
-            npc.scale = s;
-            npc.timeLeft = 2;
-            npc.velocity = Vector2.Zero;
-
-            Lighting.AddLight(npc.Center, 1f * s, 0.8f * s, 1f * s);
-
-            if (Main.rand.NextBool(30))
-            {
-                int dustInd = Dust.NewDust(npc.position, 20, 26, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
-
-                Dust dust = Main.dust[dustInd];
-                dust.noGravity = false;
-                dust.velocity = Vector2.Zero;
-                dust.customData = 0.1f;
-            }
+            bool noRoof = !Collision.SolidTiles(i, i, j - 10, j);
+            bool noWall = Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 1].wall == 0;
+            return noRoof && noWall;
         }
     }
 }

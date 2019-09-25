@@ -12,6 +12,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
     {
         public override void SetDefaults()
         {
+            Main.tileSpelunker[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileCut[Type] = true;
 
@@ -26,7 +27,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             soundStyle = 0;
         }
 
-        public override bool Dangersense(int i, int j, Player player) => true;
         public override bool CreateDust(int i, int j, ref int type) => false;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
