@@ -7,15 +7,11 @@ namespace Erilipah.Items.ErilipahBiome
 {
     internal class PureFlower : ModItem
     {
-        public override string Texture => "Terraria/Item_" + ItemID.Daybloom;
-
         public override void SetDefaults()
         {
-            item.color = Color.LawnGreen;
-
             item.maxStack = 1;
             item.width = 32;
-            item.height = 32;
+            item.height = 30;
             item.rare = 0;
         }
 

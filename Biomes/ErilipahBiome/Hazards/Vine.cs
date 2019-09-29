@@ -79,11 +79,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             if (Main.netMode == 1)
                 return;
 
-            if (tile.frameY == 54)
+            bool anyBulb = Main.npc.Any(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[1] == i);
+            if (tile.frameY == 54 && !anyBulb)
             {
-                if (Main.npc.Any(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[1] == i))
-                    return;
-
+                Main.LocalPlayer.position = new Vector2(i, j) * 16; // TODO REMOVE
                 NPC.NewNPC(i * 16 + 8, j * 16 + 8, mod.NPCType<Bulb>(), ai1: i);
             }
             else if (!Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
@@ -102,6 +101,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             }
         }
     }
+
     public class Bulb : ModNPC
     {
         public override string Texture => Helper.Invisible;

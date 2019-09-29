@@ -31,12 +31,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override int DustType => mod.DustType<FlowerDust>();
         public override TileObjectData Style => TileObjectData.Style2x1;
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = Helper.Invisible;
-            return true;
-        }
-
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];

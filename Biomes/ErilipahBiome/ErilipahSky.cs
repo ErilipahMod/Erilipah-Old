@@ -76,7 +76,7 @@ namespace Erilipah.Biomes.ErilipahBiome
 
         private bool _active = false;
         private float Intensity => MathHelper.SmoothStep(0, 0.5f, Opacity);
-        private List<FallingAsh> ashes = new List<FallingAsh>();
+        private readonly List<FallingAsh> ashes = new List<FallingAsh>();
 
         public override void Update(GameTime gameTime)
         {

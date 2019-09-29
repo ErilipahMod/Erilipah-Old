@@ -17,7 +17,7 @@ using Erilipah.Items.Crystalline;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
-    class Stalk : HazardTile
+    public class Stalk : HazardTile
     {
         public override string MapName => "Crystalline Stalk";
         public override int DustType => mod.DustType<CrystallineDust>();
@@ -28,8 +28,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
                 TileObjectData.newTile.Height = 1;
                 TileObjectData.newTile.CoordinateHeights = new[] { 16 };
-                TileObjectData.newTile.StyleMultiplier = 2;
-                TileObjectData.newTile.StyleHorizontal = true;
                 TileObjectData.newTile.LinkedAlternates = true;
                 TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Stalk>() };
                 TileObjectData.newTile.AnchorValidTiles = new int[] 
@@ -50,12 +48,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             drop = mod.ItemType<CrystallineTileItem>();
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = Helper.Invisible;
-            return true;
-        }
-
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
             if (!Main.tile[i, j - 1].IsErilipahTile() && Main.tile[i, j + 1].type != Type)
@@ -68,52 +60,103 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             resetFrame = false;
             return false;
         }
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            return;
 
-            Tile tile = Main.tile[i, j];
-            Texture2D texture = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/Crystalline_Glowmask");
-            Vector2 zero = new Vector2(Main.offScreenRange, Main.offScreenRange);
-            if (Main.drawToScreen)
-            {
-                zero = Vector2.Zero;
-            }
-            Main.spriteBatch.Draw(
-                texture, 
-                new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, 
-                new Rectangle(tile.frameX, tile.frameY + 2, 16, 16), Color.White * 0.7f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = 4;
         }
+
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+        {
+            drawColor *= 3;
+        }
+
+        public override bool CanPlace(int i, int j) => IsValid(i, j);
+
         public override void RandomUpdate(int i, int j)
         {
-            Tile tile = Main.tile[i, j];
-            if (Main.netMode == 1 && tile.frameX % 36 != 0)
+            if (Main.netMode == 1)
                 return;
 
-            if (tile.frameY == 54)
+            Tile tile = Main.tile[i, j];
+
+            bool isTip = (tile.frameX == 54 && tile.frameY <= 18) || tile.frameY == 0;
+            if (isTip)
+                return;
+
+            bool isBase  =  tile.frameX >= 54 && tile.frameY >= 90;
+            bool isTop = tile.frameX >= 54 && tile.frameY <= 72;
+            bool isStalk = (tile.frameX == 00 && tile.frameY >= 54) || (tile.frameX <= 36 && tile.frameY >= 72);
+
+            if (isBase)
             {
-                NPC.NewNPC(i * 16 + 8, j * 16 + 8, mod.NPCType<Bulb>(), ai1: i);
+                // Grow a tile in the middle of the base
+                int middleX = i - (tile.frameX - 54) / 18 + 1;
+                if (IsValid(middleX, j))
+                {
+                    Tile above = Main.tile[middleX, j - 1];
+                    above.type = Type;
+                    above.active(true);
+                    GetStalkFrame(out above.frameX, out above.frameY);
+                }
             }
-            else if (Valid(i, j))
-            { 
-                bool endTile = Main.rand.Chance(0.12f);
+            else if (isStalk)
+            {
+                Tile above = Main.tile[i, j - 1];
 
-                Tile vineEx = Main.tile[i, j + 1];
-                vineEx.active(true);
-                vineEx.type = Type;
-                vineEx.frameX = (short)(Main.rand.Next(3) * 18);
+                // 8% chance to start the tip of the cane. Also starts the tip of there's a tile that will prevent it
+                // Otherwise, continue growing the stalk
+                if (Main.rand.Chance(0.08f) || Main.tile[i, j - 6].active())
+                {
+                    above.type = Type;
+                    above.active(true);
+                    above.frameX = (short)(Main.rand.Next(3, 6) * 18);
+                    above.frameY = 72;
+                } 
+                else 
+                {
+                    above.type = Type;
+                    above.active(true);
+                    GetStalkFrame(out above.frameX, out above.frameY);
+                }
+            }
+            else if (isTop)
+            {
+                Tile above = Main.tile[i, j - 1];
+                
+                if (!above.active())
+                {
+                    above.type = Type;
+                    above.active(true);
+                    above.frameY = (short)(tile.frameY - 18);
+                }
+            }
+#if DEBUG
+            else
+            {
+                Main.LocalPlayer.Center = new Vector2(i, j) * 16;
+                throw new Exception($"Invalid Crystalline Stalk frame: ({i}, {j})");
+            }
+#endif
+        }
 
-                if (!endTile || tile.frameY == 0)
-                    vineEx.frameY = Main.rand.NextBool() ? (short)18 : (short)36;
-                else
-                    vineEx.frameY = 54;
+        private void GetStalkFrame(out short x, out short y)
+        {
+            x = (short)(Main.rand.Next(3) * 18);
+            if (x == 0)
+            {
+                y = (short)(Main.rand.Next(3, 8) * 18);
+            }
+            else
+            {
+                y = (short)(Main.rand.Next(4, 8) * 18);
             }
         }
 
-        bool Valid(int i, int j)
+        public static bool IsValid(int i, int j)
         {
-            bool noRoof = !Collision.SolidTiles(i, i, j - 10, j);
-            bool noWall = Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 1].wall == 0;
+            bool noRoof = !Collision.SolidTiles(i, i, j - 8, j) && !Main.tile[i, j - 1].active() && !Main.tile[i, j].active();
+            bool noWall = Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 2].wall == 0;
             return noRoof && noWall;
         }
     }

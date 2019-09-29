@@ -1117,14 +1117,14 @@ namespace Erilipah
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            switch (WorldGen.genRand.Next(5))
+            switch (WorldGen.genRand.Next(6))
             {
                 default:
-                    WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
-                    break;
+                    WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
+
                 case 1:
-                    WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<Flower>());
-                    break;
+                    WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<Flower>()); break;
+
                 case 2:
                     if (WorldGen.SolidOrSlopedTile(Main.tile[i, j]) && Main.tile[i, j].slope() == 0 &&
                         !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 1]) && !WorldGen.SolidOrSlopedTile(Main.tile[i, j + 2]))
@@ -1134,22 +1134,26 @@ namespace Erilipah
                         vine.type = (ushort)mod.TileType<Vine>();
                         vine.frameX = Main.rand.Next(new short[] { 0, 18, 36 });
                         vine.frameY = 0;
-                    }
-                    break;
+                    } break;
+
                 case 3:
-                    bool valid = !Collision.SolidTiles(i, i, j - 10, j) && Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 1].wall == 0;
-                    if (valid)
+                    if (Stalk.IsValid(i, j))
                     {
-                        Tile vine = Main.tile[i, j + 1];
-                        vine.active(true);
-                        vine.type = (ushort)mod.TileType<Stalk>();
-                        vine.frameX = (short)(Main.rand.Next(3) * 18);
-                        vine.frameY = 0;
-                    }
-                    break;
+                        short frameY = (short)(Main.rand.Next(5, 8) * 18);
+                        for (int n = -1; n <= 1; n++)
+                        {
+                            Main.tile[n, j - 1].active(true);
+                            Main.tile[n, j - 1].type = (ushort)mod.TileType<Stalk>();
+                            Main.tile[n, j - 1].frameX = (short)(72 + i * 18);
+                            Main.tile[n, j - 1].frameY = frameY;
+                        }
+                    } break;
+
                 case 4:
-                    WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<GiantPF>());
-                    break;
+                    WorldGen.Place3x2(i, j - 1, (ushort)mod.TileType<GiantPF>()); break;
+
+                case 5:
+                    WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<Vent>()); break;
             }
         }
 

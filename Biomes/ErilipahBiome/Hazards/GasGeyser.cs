@@ -27,15 +27,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             }
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = Helper.Invisible;
-            return true;
-        }
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            if (tile.frameX != 18)
+            if (tile.frameX != 0)
                 return;
 
             if (Main.projectile.Any(x => x.active && x.type == mod.ProjectileType<GasSpew>() && x.localAI[0] == i))
@@ -43,7 +38,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (Main.netMode != 1)
             {
-                Projectile p = Main.projectile[Projectile.NewProjectile(i * 16f + 6, j * 16f + 6, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1)];
+                Projectile p = Main.projectile[Projectile.NewProjectile(i * 16f + 16 + 6, j * 16f + 6, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1)];
                 p.ai[1] = Main.rand.Next(3);
                 p.localAI[0] = i;
             }
