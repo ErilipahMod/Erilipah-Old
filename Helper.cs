@@ -58,7 +58,6 @@ namespace Erilipah
         {
             var mod = ModLoader.GetMod("Erilipah");
             return tile.wall == mod.WallType<InfectedClump.InfectedClumpWall>() ||
-                tile.wall == mod.WallType<SpoiledClump.SpoiledClumpWall>() ||
                 tile.wall == mod.WallType<TaintedBrick.TaintedBrickWall>();
         }
 

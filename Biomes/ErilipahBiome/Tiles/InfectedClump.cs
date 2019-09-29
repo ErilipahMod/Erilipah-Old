@@ -58,7 +58,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 if (tile.wall > 0 && !(
                     tile.wall == WallID.LihzahrdBrickUnsafe ||
                     tile.wall == (ushort)mod.WallType<InfectedClumpWall>() ||
-                    tile.wall == (ushort)mod.WallType<SpoiledClump.SpoiledClumpWall>() ||
                     tile.wall == (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>()))
                 {
                     bool woodWall = tile.wall == WallID.Wood || tile.wall == WallID.BorealWood || tile.wall == WallID.RichMaogany ||
@@ -66,9 +65,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                         tile.wall == WallID.SpookyWood || tile.wall == WallID.Shadewood || tile.wall == WallID.Ebonwood ||
                         tile.wall == WallID.LivingLeaf || tile.wall == WallID.LivingWood;
 
-                    if (woodWall || tile.wall == WallID.MudUnsafe || tile.wall == WallID.SnowWallUnsafe)
-                        tile.wall = (ushort)mod.WallType<SpoiledClump.SpoiledClumpWall>();
-                    else if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>())
+                    if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>())
                         tile.wall = (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>();
                     else
                         tile.wall = (ushort)mod.WallType<InfectedClumpWall>();
@@ -181,29 +178,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
     }
     public class SpoiledClump : ModTile
     {
-        public class SpoiledClumpWall : ModWall
-        {
-            public override void SetDefaults()
-            {
-                drop = 0;
-                dustType = DustID.PurpleCrystalShard;
-                AddMapEntry(new Color(65, 0, 45, 200));
-
-                soundType = 0;
-                soundStyle = 0;
-            }
-
-            public override void RandomUpdate(int i, int j)
-            {
-                InfectedClump.Infect(i, j, mod);
-            }
-            public override bool CanExplode(int i, int j)
-            {
-                return true;
-            }
-
-            public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 0 : 3;
-        }
         public class SpoiledClumpItem : ModItem
         {
             public override void SetStaticDefaults()
@@ -220,7 +194,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 item.createTile = mod.TileType<SpoiledClump>();
             }
         }
-
 
         public override void SetDefaults()
         {

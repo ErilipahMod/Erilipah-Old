@@ -1178,15 +1178,7 @@ namespace Erilipah
 
             if (tile.wall > 0)
             {
-                bool woodWall = tile.wall == WallID.Wood || tile.wall == WallID.BorealWood || tile.wall == WallID.RichMaogany ||
-                    tile.wall == WallID.PalmWood || tile.wall == WallID.LivingWood ||
-                    tile.wall == WallID.SpookyWood || tile.wall == WallID.Shadewood || tile.wall == WallID.Ebonwood ||
-                    tile.wall == WallID.LivingLeaf || tile.wall == WallID.LivingWood;
-
-                if (tile.wall == WallID.MudUnsafe || tile.wall == WallID.SnowWallUnsafe || woodWall)
-                    tile.wall = (ushort)mod.WallType<SpoiledClump.SpoiledClumpWall>();
-                else
-                    tile.wall = (ushort)mod.WallType<InfectedClump.InfectedClumpWall>();
+                tile.wall = (ushort)mod.WallType<InfectedClump.InfectedClumpWall>();
 
                 WorldGen.SquareWallFrame(i, j);
             }
