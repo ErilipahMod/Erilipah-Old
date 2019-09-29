@@ -52,7 +52,7 @@ namespace Erilipah.Items.Crystalline
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16 };
-            TileObjectData.newTile.Height = 1;
+            TileObjectData.newTile.Height = 2;
             TileObjectData.addTile(Type);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
 

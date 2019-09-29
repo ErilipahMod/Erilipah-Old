@@ -73,19 +73,23 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 projectile.netUpdate = true;
                 Projectile.NewProjectile(
                     projectile.Center.X, projectile.Center.Y,
-                    Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-6f, -5f),
+                    Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-8f, -7f),
                     mod.ProjectileType<GasSpewProj>(), Main.expertMode ? projectile.damage / 2 : projectile.damage, 1, 255);
             }
 
-            if (projectile.ai[0] % 4 == 0)
+            if (projectile.ai[0] % 2 == 0)
             {
-                Dust dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
-                dust.noGravity = false;
-                dust.velocity = new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-9f, -7f));
-                dust.customData = 0.05f;
+                if (projectile.ai[0] % 4 == 0)
+                {
+                    Dust dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<AshDust>());
+                    dust.noGravity = false;
+                    dust.velocity = new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-11f, -9f));
+                    dust.customData = 0.05f;
+                }
 
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<Items.Crystalline.CrystallineDust>(),
-                    new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-10f, -8f)), Scale: 1.5f).noGravity = false;
+                else
+                    Dust.NewDustPerfect(projectile.Center, mod.DustType<Items.Crystalline.CrystallineDust>(),
+                        new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-10f, -8f)), Scale: 1.5f).noGravity = false;
             }
 
             if (projectile.ai[0] % 10 == 0)
@@ -121,8 +125,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             projectile.velocity.Y += 0.06f;
             if (projectile.velocity.Y > 0)
                 projectile.tileCollide = true;
-            if (projectile.velocity.Y > 1.4f)
-                projectile.velocity.Y = 1.4f;
+            if (projectile.velocity.Y > 1.7f)
+                projectile.velocity.Y = 1.7f;
 
             if (projectile.timeLeft < 60)
                 projectile.scale -= 1 / 90f;
