@@ -21,8 +21,8 @@ namespace Erilipah.Items.Phlogiston
             item.ranged = true;
             item.knockBack = 1.3f;
 
-            item.useTime = 16;
-            item.useAnimation = 16;
+            item.useTime = 19;
+            item.useAnimation = 19;
             item.useStyle = 5;
             item.UseSound = SoundID.Item5;
             item.autoReuse = true;

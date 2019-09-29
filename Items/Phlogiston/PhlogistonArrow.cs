@@ -20,6 +20,7 @@ namespace Erilipah.Items.Phlogiston
         };
         protected override int CraftingTile => TileID.Anvils;
     }
+
     public class PhlogistonArrowProj : NewModProjectile
     {
         public override void ModifyDamageHitbox(ref Rectangle hitbox)
@@ -47,45 +48,39 @@ namespace Erilipah.Items.Phlogiston
 
         protected override float? Rotation => projectile.velocity.ToRotation() - Degrees90;
 
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void Kill(int timeLeft)
         {
-            target.AddBuff(BuffID.OnFire, 300);
-            Helper.FireInCircle(projectile.Center, 4, mod.ProjectileType<PhlogistonArrowProjProj>(),
-                projectile.damage - 1, 7, projectile.knockBack, owner: projectile.owner);
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-            Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
-               projectile.damage - 1, 7, projectile.knockBack, owner: projectile.owner);
-            return true;
+            if (Main.netMode != 1)
+                for (int i = 0; i < 3; i++)
+                {
+                    Projectile.NewProjectile(projectile.Center, Main.rand.NextVector2CircularEdge(3, 3), 
+                        ProjectileID.MolotovFire, projectile.damage, 0, projectile.owner);
+                }
         }
     }
-    public class PhlogistonArrowProjProj : NewModProjectile
-    {
-        protected override TextureTypes TextureType => TextureTypes.Invisible;
-        protected override int[] Dimensions => new int[] { 12, 16 };
-        protected override int DustType => mod.DustType("DeepFlames");
 
-        protected override int Pierce => 0;
-        protected override int Bounce => 0;
-        protected override float Gravity => 0;
-        public override void AI()
-        {
-            base.AI();
-            if (projectile.timeLeft > 150)
-                projectile.friendly = false;
-            else
-                projectile.friendly = true;
+    //public class PhlogistonArrowProjProj : NewModProjectile
+    //{
+    //    protected override TextureTypes TextureType => TextureTypes.Invisible;
+    //    protected override int[] Dimensions => new int[] { 12, 16 };
+    //    protected override int DustType => mod.DustType("DeepFlames");
 
-            Vector2 pos = new Vector2(
-                (float)System.Math.Sin(projectile.position.X),
-                (float)System.Math.Cos(projectile.position.Y)) * 8;
-            Dust.NewDustPerfect(projectile.Center + pos, mod.DustType("DeepFlames")).noGravity = true;
-        }
+    //    protected override int Pierce => 0;
+    //    protected override int Bounce => 0;
+    //    protected override float Gravity => 0;
+    //    public override void AI()
+    //    {
+    //        base.AI();
+    //        projectile.friendly = true;
 
-        protected override DamageTypes DamageType => DamageTypes.Ranged;
-        protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
-        protected override float? Rotation => projectile.velocity.ToRotation() + Degrees180;
-    }
+    //        Vector2 pos = new Vector2(
+    //            (float)System.Math.Sin(projectile.position.X),
+    //            (float)System.Math.Cos(projectile.position.Y)) * 8;
+    //        Dust.NewDustPerfect(projectile.Center + pos, mod.DustType("DeepFlames")).noGravity = true;
+    //    }
+
+    //    protected override DamageTypes DamageType => DamageTypes.Ranged;
+    //    protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
+    //    protected override float? Rotation => projectile.velocity.ToRotation() + Degrees180;
+    //}
 }
