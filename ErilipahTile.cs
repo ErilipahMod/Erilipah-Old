@@ -16,7 +16,8 @@ namespace Erilipah
             bool onScreenY = j < Main.screenPosition.Y / 16 || j > (Main.screenPosition.Y + Main.screenHeight) / 16;
             bool onScreen = onScreenX && onScreenY;
 
-            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.015f) && !onScreen)
+            // TODO remove
+            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile())// && Main.rand.Chance(0.015f) && !onScreen)
                 ErilipahWorld.PlaceHazard(i, j, mod);
         }
 
@@ -30,9 +31,7 @@ namespace Erilipah
 
         private void Snuff(int i, int j, int type, Tile tile)
         {
-            if (TileID.Sets.RoomNeeds.CountsAsTorch.Any(t => t == type) ||
-                TileObjectData.GetTileData(tile) == TileObjectData.GetTileData(TileID.Torches, 0) ||
-                TileObjectData.GetTileData(tile) == TileObjectData.GetTileData(TileID.Campfire, 0))
+            if (TileID.Sets.RoomNeeds.CountsAsTorch.Contains(type) || tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type))
             {
                 if (type == mod.TileType<Items.ErilipahBiome.CrystallineTorchTile>() && Main.rand.Chance(0.50f))
                 {
