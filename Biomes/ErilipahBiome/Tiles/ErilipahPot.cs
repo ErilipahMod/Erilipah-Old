@@ -20,7 +20,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             TileObjectData.addTile(Type);
 
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Pustule");
+            name.SetDefault("Pot");
             AddMapEntry(new Color(50, 30, 60), name);
 
             soundType = 13;

@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
 using Terraria.World.Generation;
 
 namespace Erilipah
@@ -1117,7 +1118,8 @@ namespace Erilipah
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            switch (WorldGen.genRand.Next(6))
+            // TODO change aft testing
+            switch (WorldGen.genRand.Next(3, 7))
             {
                 default:
                     WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
@@ -1154,6 +1156,23 @@ namespace Erilipah
 
                 case 5:
                     WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<Vent>()); break;
+
+                case 6:
+                    bool solidBase = Main.tileSolid[Main.tile[i, j].type] && Main.tileSolid[Main.tile[i + 1, j].type];
+                    bool clear = !Collision.SolidTiles(i, i + 1, j + 1, j + 2);
+                    if (solidBase && clear)
+                        for (int n = 0; n < 2; n++)
+                        {
+                            for (int m = 0; m < 2; m++)
+                            {
+                                Tile tile = Main.tile[i + n, j + n + 1];
+                                tile.type = (ushort)mod.TileType<Hive>();
+                                tile.frameX = (short)(n * 18);
+                                tile.frameY = (short)(m * 18);
+                                tile.active(true);
+                            }
+                        }
+                    break;
             }
         }
 

@@ -27,7 +27,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
     class Flower : HazardTile
     {
-        public override string MapName => "Cursed Flower";
+        public override string MapName => "Infected Pustule";
         public override int DustType => mod.DustType<FlowerDust>();
         public override TileObjectData Style => TileObjectData.Style2x1;
 
@@ -35,11 +35,17 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             Tile tile = Main.tile[i, j];
 
+            if (tile.frameX == 36)
+            {
+                tile.frameX = 0;
+                Main.tile[i + 1, j].frameX = 18;
+            }
+
             if (tile.frameX == 0 && tile.frameY == 0 && Main.netMode != 1)
             {
-                tile.frameY = 18;
+                tile.frameX = 36;
                 if (Main.tile[i + 1, j].type == Type)
-                    Main.tile[i + 1, j].frameY = 18;
+                    Main.tile[i + 1, j].frameY = 54;
                 for (int a = 0; a < 3; a++)
                 {
                     Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);

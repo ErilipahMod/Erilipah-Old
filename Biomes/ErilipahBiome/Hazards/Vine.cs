@@ -49,6 +49,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             soundStyle = 13;
         }
 
+        public override bool CreateDust(int i, int j, ref int type)
+        {
+            type = Main.rand.NextBool() ? mod.DustType<CrystallineDust>() : mod.DustType<FlowerDust>();
+            return true;
+        }
+
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
             if (!Main.tile[i, j - 1].IsErilipahTile() && Main.tile[i, j - 1].type != Type)

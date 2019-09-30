@@ -14,7 +14,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     public class GasGeyser : HazardTile
     {
         public override string MapName => "Gas Geyser";
-        public override int DustType => DustID.Stone;
+        public override int DustType => mod.DustType<FlowerDust>();
         public override TileObjectData Style
         {
             get

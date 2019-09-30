@@ -469,8 +469,8 @@ namespace Erilipah.NPCs.LunarBee
 
         public override void SetDefaults()
         {
-            npc.width = 48;
-            npc.height = 42;
+            npc.width = 42;
+            npc.height = 36;
 
             npc.defense = 2;
             npc.lifeMax = 20;

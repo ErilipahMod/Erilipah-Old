@@ -58,6 +58,7 @@ namespace Erilipah.Items.Materials
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16 };
+            TileObjectData.newTile.Height = 2;
             TileObjectData.addTile(Type);
             adjTiles = new int[1] { TileID.Furnaces };
             dustType = mod.DustType<MoonFire>();

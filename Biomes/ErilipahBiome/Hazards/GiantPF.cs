@@ -22,6 +22,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Giant Pure Flower");
             AddMapEntry(new Color(60, 30, 70), name);
+
+            dustType = mod.DustType<FlowerDust>();
         }
 
         public override void NumDust(int i, int j, bool fail, ref int num)
