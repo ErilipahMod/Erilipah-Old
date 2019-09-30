@@ -92,7 +92,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             {
                 // Grow a tile in the middle of the base
                 int middleX = i - (tile.frameX - 54) / 18 + 1;
-                if (IsValid(middleX, j))
+                if (!Main.tile[middleX, j - 1].active())
                 {
                     Tile above = Main.tile[middleX, j - 1];
                     above.type = Type;
@@ -155,9 +155,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public static bool IsValid(int i, int j)
         {
-            bool noRoof = !Collision.SolidTiles(i, i, j - 8, j) && !Main.tile[i, j - 1].active() && !Main.tile[i, j].active();
+            bool noRoof = !Collision.SolidTiles(i, i, j - 8, j) && !Main.tile[i, j - 1].active();
             bool noWall = Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 2].wall == 0;
-            return noRoof && noWall;
+            bool isBase = WorldGen.SolidTile(Main.tile[i, j + 1]) && WorldGen.SolidTile(Main.tile[i - 1, j + 1]) && WorldGen.SolidTile(Main.tile[i + 1, j + 1]);
+            bool noObstruction = !Main.tile[i - 1, j].active() && !Main.tile[i, j].active() && !Main.tile[i + 1, j].active();
+
+            return noRoof && noWall && noObstruction && isBase;
         }
     }
 }

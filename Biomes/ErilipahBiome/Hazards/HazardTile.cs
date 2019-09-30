@@ -20,7 +20,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             Main.tileFrameImportant[Type] = true;
 
-            TileObjectData.newTile.CopyFrom(Style);
+            TileObjectData.newTile.FullCopyFrom(Style);
             TileObjectData.addTile(Type);
 
             minPick = 101;
@@ -36,19 +36,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             drawColor *= 2;
-        }
-
-        private float fluctuant = 0;
-        protected void Light(float intensity, ref float r, ref float g, ref float b)
-        {
-            fluctuant += 0.0225f;
-            if (fluctuant > 1)
-                fluctuant = -1;
-
-            float absFluctuant = Math.Abs(fluctuant);
-            r = MathHelper.SmoothStep(-1f, 1f * intensity, absFluctuant);
-            g = MathHelper.SmoothStep(-0.8f, 0.8f * intensity, absFluctuant);
-            b = MathHelper.SmoothStep(-1f, 1f * intensity, absFluctuant);
         }
     }
 }

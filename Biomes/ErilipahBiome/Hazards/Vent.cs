@@ -41,12 +41,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 return;
 
             Vector2 pos = new Vector2(Position.X * 16 + 16, Position.Y * 16 + 20);
-            Dust.NewDustPerfect(pos, mod.DustType<AshDust>(), new Vector2(0, -10), 0).noGravity = true;
-
-            if (++timer % 13 == 0)
-            {
-                Main.PlaySound(SoundID.Item, Position.X * 16, Position.Y * 16, 45, 0.5f, -0.5f);
-            }
+            Dust.NewDustPerfect(pos, mod.DustType<AshDust>(), new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-6, -4)));
         }
     }
 

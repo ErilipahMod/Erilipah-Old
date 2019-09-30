@@ -19,7 +19,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool Update(Dust dust)
         {
-            dust.scale -= 0.001f;
+            dust.scale -= 0.01f;
             dust.position += dust.velocity;
             if (dust.scale <= 0.1f)
                 dust.active = false;
@@ -33,7 +33,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             if (dust.velocity.Y < (float)dust.customData)
                 dust.velocity.Y += 0.0025f;
 
-            if ((float)dust.customData > 2.35f)
+            if (dust.velocity.Y > 0 && (float)dust.customData > 2.35f)
                 dust.velocity = Collision.TileCollision(dust.position, dust.velocity, 2, 2);
 
             if (dust.velocity.Y < 0.15f || Math.Abs(Main.windSpeed - dust.velocity.X) > 0.2f)

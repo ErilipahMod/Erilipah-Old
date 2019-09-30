@@ -14,7 +14,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             Main.tileSpelunker[Type] = true;
             Main.tileFrameImportant[Type] = true;
-            Main.tileCut[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
             TileObjectData.addTile(Type);

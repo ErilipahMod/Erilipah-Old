@@ -40,6 +40,7 @@ namespace Erilipah.Biomes.ErilipahBiome
         }
         public override void SetDefaults()
         {
+            npc.hide = true;
             npc.lifeMax = 1;
             npc.defense = 0;
             npc.damage = 0;
@@ -122,12 +123,12 @@ namespace Erilipah.Biomes.ErilipahBiome
             if (lightPulse > 1)
                 lightPulse = -1;
 
-            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: npc.scale);
-            Lighting.AddLight(npc.Center, new Vector3(227, 148, 190) * Math.Abs(lightPulse) * npc.scale);
+            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: npc.scale).noGravity = true;
+            Lighting.AddLight(npc.Center, new Vector3(0.89f, 0.58f, 0.76f) * Math.Abs(lightPulse) * npc.scale);
 
-            if (Main.rand.NextBool(200))
+            if (Main.rand.NextBool(500))
             {
-                Main.PlaySound(27, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.8f, 0.2f);
+                Main.PlaySound(27, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.5f, 0.4f);
             }
         }
 
@@ -138,7 +139,7 @@ namespace Erilipah.Biomes.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.InErilipah() ? 0.02f : 0;
+            return spawnInfo.spawnTileType == mod.TileType<Tiles.InfectedClump>() && spawnInfo.player.InErilipah() ? 0.02f : 0;
         }
     }
     public class LightWispGuard : ModNPC
