@@ -158,8 +158,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override bool Drop(int i, int j)
         {
-            if (Main.tile[i, j].liquid + Main.tile[i, j - 1].liquid < 200)
-                Main.tile[i, j].liquid += 20;
+            Liquid.AddWater(i, j);
             return true;
         }
 
@@ -235,8 +234,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override bool Drop(int i, int j)
         {
-            if (Main.tile[i, j].liquid < 200)
-                Main.tile[i, j].liquid += 35;
+            Liquid.AddWater(i, j);
+            Liquid.AddWater(i, j);
             return true;
         }
     }
@@ -466,7 +465,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     Main.tileMerge[type][mod.TileType<SpoiledClump>()] = true;
 
                 if (Main.tileMerge[type][TileID.Stone])
+                {
                     Main.tileMerge[type][mod.TileType<InfectedClump>()] = true;
+                }
 
                 if (Main.tileMerge[type][TileID.GrayBrick] || Main.tileMerge[type][TileID.Stone])
                 {

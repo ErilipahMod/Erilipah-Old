@@ -50,15 +50,12 @@ namespace Erilipah.Items.Phlogiston
 
         public override void Kill(int timeLeft)
         {
-            if (Main.netMode != 1)
-                for (int i = 0; i < 3; i++)
-                {
-                    Projectile.NewProjectile(projectile.Center, Main.rand.NextVector2CircularEdge(3, 3), 
-                        ProjectileID.MolotovFire, projectile.damage, 0, projectile.owner);
-                }
+            //Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
+            //    projectile.damage - 1, 7, projectile.knockBack, owner: projectile.owner);
         }
     }
 
+    // TODO readd
     //public class PhlogistonArrowProjProj : NewModProjectile
     //{
     //    protected override TextureTypes TextureType => TextureTypes.Invisible;

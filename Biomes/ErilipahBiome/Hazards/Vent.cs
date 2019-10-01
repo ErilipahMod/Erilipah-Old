@@ -45,11 +45,26 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         }
     }
 
-    class Vent : HazardTile
+    class Vent : ModTile
     {
-        public override string MapName => "Gas Geyser";
-        public override int DustType => mod.DustType<AshDust>();
-        public override TileObjectData Style => TileObjectData.Style2xX;
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Statues, 12));
+            TileObjectData.newTile.HookPlaceOverride =
+                new PlacementHook(mod.GetTileEntity<TEVent>().Hook_AfterPlacement, -1, 0, true);
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>() };
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.addTile(Type);
+
+            dustType = mod.DustType<AshDust>();
+            disableSmartCursor = true;
+
+            ModTranslation name = CreateMapEntryName();
+            name.SetDefault("Vent");
+            AddMapEntry(new Color(80, 70, 100), name);
+        }
 
         private void MakeVent(int i, int j)
         {
@@ -66,6 +81,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void NearbyEffects(int i, int j, bool closer)
         {
             MakeVent(i, j);
+        }
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            if (TileEntity.ByPosition.TryGetValue(new Point16(i, j), out var te))
+                ((TEVent)te).Kill(i, j);
         }
     }
 }

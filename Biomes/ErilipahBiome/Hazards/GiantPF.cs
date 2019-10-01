@@ -15,7 +15,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             Main.tileSpelunker[Type] = true;
             Main.tileFrameImportant[Type] = true;
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+            TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Dressers, 0));
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>() };
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Width = 3;
+            TileObjectData.newTile.Height = 2;
+            TileObjectData.newTile.CoordinateHeights = new int[] { 18, 18 };
             TileObjectData.addTile(Type);
 
             ModTranslation name = CreateMapEntryName();

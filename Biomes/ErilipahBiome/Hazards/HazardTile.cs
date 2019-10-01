@@ -18,10 +18,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public abstract TileObjectData Style { get; }
         public override void SetDefaults()
         {
-            Main.tileFrameImportant[Type] = true;
-
             TileObjectData.newTile.FullCopyFrom(Style);
             TileObjectData.addTile(Type);
+
+            Main.tileFrameImportant[Type] = true;
+            Main.tileWaterDeath[Type] = true;
 
             minPick = 101;
             dustType = DustType;

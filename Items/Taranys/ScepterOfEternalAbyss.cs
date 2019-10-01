@@ -70,9 +70,9 @@ namespace Erilipah.Items.Taranys
                 bool shouldIncVel  = rot > MathHelper.Pi + MathHelper.PiOver4 && rot < MathHelper.TwoPi - MathHelper.PiOver4;
                 shouldIncVel |= rot > MathHelper.PiOver4 && rot < MathHelper.PiOver2 + MathHelper.PiOver4;
 
-                float mult = shouldIncVel ? 4f : 2.5f;
+                float mult = shouldIncVel ? 5f : 3f;
 
-                Dust.NewDustPerfect(position, mod.DustType<NPCs.ErilipahBiome.VoidParticle>(), Vector2.UnitX.RotatedBy(rot) * mult)
+                Dust.NewDustPerfect(position, mod.DustType<Crystalline.CrystallineDust>(), Vector2.UnitX.RotatedBy(rot) * mult, Scale: 0.75f)
                     .noGravity = true;
             }
 

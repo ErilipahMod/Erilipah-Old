@@ -64,7 +64,7 @@ namespace Erilipah
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
-            if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.ItemType<Items.ErilipahBiome.ArkenTorch>())
+            if (Main.netMode == 1 || !Main.rand.Chance(LightSnuffRate) || item.type == mod.ItemType<ArkenTorch>())
                 return;
 
             int ind = item.FindClosestPlayer(5000);
@@ -73,7 +73,7 @@ namespace Erilipah
 
             bool light = IsLight(item);
 
-            Player player = Main.player[ind];
+            Player player = Main.LocalPlayer;
             if (player.InErilipah() && light)
             {
                 if (item.type == mod.ItemType<CrystallineTorch>() && Main.rand.NextBool())

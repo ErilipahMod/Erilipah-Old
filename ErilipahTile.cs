@@ -31,22 +31,26 @@ namespace Erilipah
 
         private void Snuff(int i, int j, int type, Tile tile)
         {
-            if (TileID.Sets.RoomNeeds.CountsAsTorch.Contains(type) || tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type))
+            try
             {
-                if (type == mod.TileType<Items.ErilipahBiome.CrystallineTorchTile>() && Main.rand.Chance(0.50f))
+                if (tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type))
                 {
-                    return;
-                }
+                    if (type == mod.TileType<Items.ErilipahBiome.CrystallineTorchTile>() && Main.rand.Chance(0.50f))
+                    {
+                        return;
+                    }
 
-                if (Main.LocalPlayer.InErilipah())
-                {
-                    ErilipahItem.SnuffFx(new Vector2(i * 16 + 8, j * 16 + 8));
-                    Main.PlaySound(SoundID.LiquidsWaterLava.WithPitchVariance(-0.35f), new Vector2(i * 16 + 8, j * 16 + 8));
+                    if (Main.LocalPlayer.InErilipah())
+                    {
+                        ErilipahItem.SnuffFx(new Vector2(i * 16 + 8, j * 16 + 8));
+                        Main.PlaySound(SoundID.LiquidsWaterLava.WithPitchVariance(-0.35f), new Vector2(i * 16 + 8, j * 16 + 8));
 
-                    WorldGen.KillTile(i, j, false, noItem: true);
-                    WorldGen.TileFrame(i, j);
+                        WorldGen.KillTile(i, j, false, noItem: true);
+                        WorldGen.TileFrame(i, j);
+                    }
                 }
             }
+            catch { Main.NewText("PEE"); }
         }
 
         public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)

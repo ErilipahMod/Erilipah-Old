@@ -69,6 +69,8 @@ namespace Erilipah.Items.Crystalline
             Main.tileLighted[Type] = true;
             Main.tileSpelunker[Type] = true;
 
+            Main.tileMerge[Type][mod.TileType<Biomes.ErilipahBiome.Tiles.InfectedClump>()] = true;
+
             dustType = mod.DustType<CrystallineDust>();
             drop = mod.ItemType<CrystallineTileItem>();
 

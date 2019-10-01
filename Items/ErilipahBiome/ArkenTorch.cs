@@ -82,6 +82,7 @@ namespace Erilipah.Items.ErilipahBiome
     {
         public override void SetDefaults()
         {
+            Main.tileWaterDeath[Type] = false;
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileSolid[Type] = false;

@@ -27,6 +27,8 @@ namespace Erilipah.NPCs.Taranys
         private float SpeedMult => MathHelper.Lerp(Main.expertMode ? 0.35f : 0.50f, 1f, npc.life / (float)npc.lifeMax);
         private int AlphaOT => (int)MathHelper.SmoothStep(200, 0, npc.life / (float)npc.lifeMax);
 
+        private Vector2 Eye => (npc.position + new Vector2(48, 38)).RotatedBy(npc.rotation, npc.Size / 2);
+
         private static float GetFloorY(Vector2 pos)
         {
             pos /= 16f;
@@ -375,7 +377,7 @@ namespace Erilipah.NPCs.Taranys
 
                         if (Main.expertMode && Main.netMode != 1 && Timer % 90 == 0)
                         {
-                            Main.projectile[Projectile.NewProjectile(npc.Center, npc.Center.To(Main.player[npc.target].Center, 7f), mod.ProjectileType<Spew>(), npc.damage / 2, 1)]
+                            Main.projectile[Projectile.NewProjectile(Eye, Eye.To(Main.player[npc.target].Center, 7f), mod.ProjectileType<Spew>(), npc.damage / 2, 1)]
                                 .ai[0] = 1;
                         }
                     }
@@ -518,7 +520,7 @@ namespace Erilipah.NPCs.Taranys
                                 {
                                     Vector2 velocity = npc.Center.To(Target.Center, Main.rand.NextFloat(3, 10f))
                                         .RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f));
-                                    Main.projectile[Projectile.NewProjectile(npc.Center, velocity, mod.ProjectileType<SharpCrystal>(), npc.damage / 3, 1f)]
+                                    Main.projectile[Projectile.NewProjectile(Eye, velocity, mod.ProjectileType<SharpCrystal>(), npc.damage / 3, 1f)]
                                         .ai[0] = 120 - TempTimer;
                                     // Spawn projs with major spread; the deadly homing crystals
                                 }
@@ -772,8 +774,8 @@ namespace Erilipah.NPCs.Taranys
                                 .noGravity = true;
                         }
 
-                        if (TempTimer % 150 == 0 && Main.netMode != 1)
-                            Main.projectile[Projectile.NewProjectile(npc.Center, npc.Center.To(Main.player[npc.target].Center, 7f), mod.ProjectileType<Spew>(), npc.damage / 2, 1)]
+                        if (Main.expertMode && TempTimer % 150 == 0 && Main.netMode != 1)
+                            Main.projectile[Projectile.NewProjectile(Eye, Eye.To(Main.player[npc.target].Center, 7f), mod.ProjectileType<Spew>(), npc.damage / 2, 1)]
                                 .ai[0] = 1;
 
                     }
@@ -887,8 +889,7 @@ namespace Erilipah.NPCs.Taranys
         {
             for (int i = 0; i < 3; i++)
             {
-                Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType<ErilipahBiome.VoidParticle>(), hitDirection * 4, -3);
-                Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType<Items.Crystalline.CrystallineDust>(), hitDirection * 4, -3);
+                Dust.NewDust(Eye, 8, 10, mod.DustType<CrystallineDust>(), hitDirection * 4, -3);
             }
         }
 

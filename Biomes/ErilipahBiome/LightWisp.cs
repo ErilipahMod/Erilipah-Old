@@ -119,12 +119,12 @@ namespace Erilipah.Biomes.ErilipahBiome
 
         private void Effects()
         {
-            lightPulse += 0.003f;
+            lightPulse += 0.005f;
             if (lightPulse > 1)
                 lightPulse = -1;
 
             Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: npc.scale).noGravity = true;
-            Lighting.AddLight(npc.Center, new Vector3(0.89f, 0.58f, 0.76f) * Math.Abs(lightPulse) * npc.scale);
+            Lighting.AddLight(npc.Center, new Vector3(0.89f, 0.58f, 0.76f) * Math.Abs(lightPulse * 1.3f) * npc.scale);
 
             if (Main.rand.NextBool(500))
             {
@@ -139,7 +139,7 @@ namespace Erilipah.Biomes.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.spawnTileType == mod.TileType<Tiles.InfectedClump>() && spawnInfo.player.InErilipah() ? 0.02f : 0;
+            return spawnInfo.player.InErilipah() ? 0.05f : 0;
         }
     }
     public class LightWispGuard : ModNPC
@@ -227,7 +227,7 @@ namespace Erilipah.Biomes.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.InErilipah() ? 0.02f : 0;
+            return 0;
         }
     }
 }

@@ -131,7 +131,8 @@ namespace Erilipah
             index = tasks.FindIndex(genpass => genpass.Name == "Final Cleanup");
             tasks.Insert(index, new PassLegacy("[Erilipah] The Lost City", LostCityGen));
 
-            tasks.Add(new PassLegacy("[Erilipah] Hazards", HazardGen));
+            // TODO re add hazard gen
+            //tasks.Add(new PassLegacy("[Erilipah] Hazards", HazardGen));
 
             index = tasks.FindIndex(genpass => genpass.Name == "Shinies");
             tasks.Insert(index, new PassLegacy("[Erilipah] Sacracite", SacraciteOre));
@@ -1100,26 +1101,25 @@ namespace Erilipah
 
             AddItem(1f, 2, 5, ItemID.GoldCoin);
         }
-        private void HazardGen(GenerationProgress progress)
-        {
-            int halfWidth = (int)(Main.maxTilesX * 0.05f);
-            for (int i = BiomeCenterX - halfWidth; i < BiomeCenterX + halfWidth; i++)
-            {
-                for (int j = 0; j < Main.maxTilesY; j++)
-                {
-                    Tile tile = Main.tile[i, j];
-                    if (!tile.IsErilipahTile())
-                        continue;
+        //private void HazardGen(GenerationProgress progress)
+        //{
+        //    int halfWidth = (int)(Main.maxTilesX * 0.05f);
+        //    for (int i = BiomeCenterX - halfWidth; i < BiomeCenterX + halfWidth; i++)
+        //    {
+        //        for (int j = 0; j < Main.maxTilesY; j++)
+        //        {
+        //            Tile tile = Main.tile[i, j];
+        //            if (!tile.IsErilipahTile())
+        //                continue;
 
-                    if (WorldGen.genRand.Chance(0.001f))
-                        PlaceHazard(i, j, mod);
-                }
-            }
-        }
+        //            if (WorldGen.genRand.Chance(0.001f))
+        //                PlaceHazard(i, j, mod);
+        //        }
+        //    }
+        //} // TODO readd
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            // TODO change aft testing
-            switch (WorldGen.genRand.Next(3, 7))
+            switch (0)//WorldGen.genRand.Next(7))
             {
                 default:
                     WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
@@ -1155,6 +1155,14 @@ namespace Erilipah
                     WorldGen.Place3x2(i, j - 1, (ushort)mod.TileType<GiantPF>()); break;
 
                 case 5:
+                    for (int n = -10; n < 10; n++)
+                    {
+                        for (int m = -10; m < 10; m++)
+                        {
+                            if (Main.tile[i + n, j + m].type == mod.TileType<Vent>())
+                                return;
+                        }
+                    }
                     WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<Vent>()); break;
 
                 case 6:
@@ -1195,8 +1203,6 @@ namespace Erilipah
                     tile.type = T("SpoiledClump");
                 else
                     tile.type = T("InfectedClump");
-
-                WorldGen.TileFrame(i, j);
             }
 
             if (tile.wall > 0)
@@ -1263,62 +1269,62 @@ namespace Erilipah
                 this.chestType = chestType;
             }
         }
-        public override void PostWorldGen()
-        {
-            ChestItem[] possibleItems = new ChestItem[]
-            {
-                new ChestItem(
-                    I("ForestsWrath"),
-                    1,
-                    1,
-                    0.5f,
-                    0), // Living tree chest
-            };
-            ChestItem[] addedItems = new ChestItem[]
-            {
-                new ChestItem(
-                    I("NightsBane"),
-                    1,
-                    1,
-                    0.16f,
-                    2 // Locked gold chest (dungeon)
-                )
-            };
+        //public override void PostWorldGen()
+        //{
+        //    ChestItem[] possibleItems = new ChestItem[]
+        //    {
+        //        new ChestItem(
+        //            I("ForestsWrath"),
+        //            1,
+        //            1,
+        //            0.5f,
+        //            0), // Living tree chest
+        //    };
+        //    ChestItem[] addedItems = new ChestItem[]
+        //    {
+        //        new ChestItem(
+        //            I("NightsBane"),
+        //            1,
+        //            1,
+        //            0.16f,
+        //            2 // Locked gold chest (dungeon)
+        //        )
+        //    };
 
-            for (int selectedItem = 0; selectedItem < possibleItems.Length + addedItems.Length; selectedItem++)
-            {
-                for (int i = 0; i < Main.chest.Length; i++)
-                {
-                    Chest chest = Main.chest[i];
-                    if (chest != null && Main.tile[chest.x, chest.y].type == 21)
-                    {
-                        if (selectedItem < possibleItems.Length &&
-                            Main.rand.NextFloat() < possibleItems[selectedItem].chance &&
-                            Main.tile[chest.x, chest.y].frameX == possibleItems[selectedItem].chestType * 18)
-                        {
-                            if (chest.item[0].type != ItemID.GoldenKey &&
-                                chest.item[0].type != ItemID.ShadowKey &&
-                                chest.item[0].type != ItemID.Muramasa)
-                            {
-                                chest.item[0].SetDefaults(possibleItems[selectedItem].itemType, false);
-                                chest.item[0].stack = possibleItems[selectedItem].Amount();
-                                if (WorldGen.genRand.Chance(0.33f))
-                                    break;
-                            }
-                        }
-                        int addedItem = selectedItem - possibleItems.Length;
-                        if (selectedItem >= possibleItems.Length &&
-                            Main.rand.NextFloat() < addedItems[addedItem].chance &&
-                            Main.tile[chest.x, chest.y].frameX == addedItems[addedItem].chestType * 18)
-                        {
-                            chest.item[1].SetDefaults(addedItems[addedItem].itemType, false);
-                            chest.item[1].stack = addedItems[addedItem].Amount();
-                            if (WorldGen.genRand.Chance(0.33f))
-                                break;
-                        }
-                    }
-                }
-            }
-        }
+        //    for (int selectedItem = 0; selectedItem < possibleItems.Length + addedItems.Length; selectedItem++)
+        //    {
+        //        for (int i = 0; i < Main.chest.Length; i++)
+        //        {
+        //            Chest chest = Main.chest[i];
+        //            if (chest != null && Main.tile[chest.x, chest.y].type == 21)
+        //            {
+        //                if (selectedItem < possibleItems.Length &&
+        //                    Main.rand.NextFloat() < possibleItems[selectedItem].chance &&
+        //                    Main.tile[chest.x, chest.y].frameX == possibleItems[selectedItem].chestType * 18)
+        //                {
+        //                    if (chest.item[0].type != ItemID.GoldenKey &&
+        //                        chest.item[0].type != ItemID.ShadowKey &&
+        //                        chest.item[0].type != ItemID.Muramasa)
+        //                    {
+        //                        chest.item[0].SetDefaults(possibleItems[selectedItem].itemType, false);
+        //                        chest.item[0].stack = possibleItems[selectedItem].Amount();
+        //                        if (WorldGen.genRand.Chance(0.33f))
+        //                            break;
+        //                    }
+        //                }
+        //                int addedItem = selectedItem - possibleItems.Length;
+        //                if (selectedItem >= possibleItems.Length &&
+        //                    Main.rand.NextFloat() < addedItems[addedItem].chance &&
+        //                    Main.tile[chest.x, chest.y].frameX == addedItems[addedItem].chestType * 18)
+        //                {
+        //                    chest.item[1].SetDefaults(addedItems[addedItem].itemType, false);
+        //                    chest.item[1].stack = addedItems[addedItem].Amount();
+        //                    if (WorldGen.genRand.Chance(0.33f))
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //} // TODO readd
     }
 }

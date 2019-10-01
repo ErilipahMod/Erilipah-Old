@@ -50,12 +50,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if (!Main.tile[i, j - 1].IsErilipahTile() && Main.tile[i, j + 1].type != Type)
+            if (!Main.tile[i, j + 1].IsErilipahTile() && Main.tile[i, j + 1].type != Type)
             {
                 WorldGen.KillTile(i, j, Main.rand.NextBool());
-                WorldGen.TileFrame(i, j - 1);
-                WorldGen.TileFrame(i + 1, j);
-                WorldGen.TileFrame(i - 1, j);
             }
             resetFrame = false;
             return false;
@@ -155,12 +152,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public static bool IsValid(int i, int j)
         {
-            bool noRoof = !Collision.SolidTiles(i, i, j - 8, j) && !Main.tile[i, j - 1].active();
-            bool noWall = Main.tile[i, j - 1].wall == 0 && Main.tile[i, j - 2].wall == 0;
+            bool noRoof = !Collision.SolidTiles(i, i, j - 8, j - 1) && !Main.tile[i, j - 1].active();
             bool isBase = WorldGen.SolidTile(Main.tile[i, j + 1]) && WorldGen.SolidTile(Main.tile[i - 1, j + 1]) && WorldGen.SolidTile(Main.tile[i + 1, j + 1]);
             bool noObstruction = !Main.tile[i - 1, j].active() && !Main.tile[i, j].active() && !Main.tile[i + 1, j].active();
 
-            return noRoof && noWall && noObstruction && isBase;
+            return noRoof && noObstruction && isBase;
         }
     }
 }
