@@ -43,11 +43,12 @@ namespace Erilipah
             }
             else
             {
+                bool highStored = bankedDamage > 400 && player.statLife < player.statLifeMax2;
                 bool highDamage = damage > player.statLifeMax2 * 0.25;
                 bool halfLife = player.statLife < player.statLifeMax2 * 0.5;
                 bool quarterLife = player.statLife < player.statLifeMax2 * 0.25;
 
-                if (bankedDamage > 100 && halfLife || highDamage || quarterLife)
+                if (bankedDamage > 100 && halfLife || highDamage || highStored || quarterLife)
                 {
                     soulBankHealing = true;
                 }
@@ -70,7 +71,7 @@ namespace Erilipah
                     return;
                 }
             }
-            if (bankedDamage >= 200)
+            else if (bankedDamage >= 200)
             {
                 bankedDamage = 200;
                 return;

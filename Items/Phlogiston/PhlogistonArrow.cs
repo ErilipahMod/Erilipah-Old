@@ -50,34 +50,33 @@ namespace Erilipah.Items.Phlogiston
 
         public override void Kill(int timeLeft)
         {
-            //Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
-            //    projectile.damage - 1, 7, projectile.knockBack, owner: projectile.owner);
+            Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
+                projectile.damage - 1, 7, projectile.knockBack, owner: projectile.owner);
         }
     }
 
-    // TODO readd
-    //public class PhlogistonArrowProjProj : NewModProjectile
-    //{
-    //    protected override TextureTypes TextureType => TextureTypes.Invisible;
-    //    protected override int[] Dimensions => new int[] { 12, 16 };
-    //    protected override int DustType => mod.DustType("DeepFlames");
+    public class PhlogistonArrowProjProj : NewModProjectile
+    {
+        protected override TextureTypes TextureType => TextureTypes.Invisible;
+        protected override int[] Dimensions => new int[] { 12, 16 };
+        protected override int DustType => mod.DustType("DeepFlames");
 
-    //    protected override int Pierce => 0;
-    //    protected override int Bounce => 0;
-    //    protected override float Gravity => 0;
-    //    public override void AI()
-    //    {
-    //        base.AI();
-    //        projectile.friendly = true;
+        protected override int Pierce => 0;
+        protected override int Bounce => 0;
+        protected override float Gravity => 0;
+        public override void AI()
+        {
+            base.AI();
+            projectile.friendly = true;
 
-    //        Vector2 pos = new Vector2(
-    //            (float)System.Math.Sin(projectile.position.X),
-    //            (float)System.Math.Cos(projectile.position.Y)) * 8;
-    //        Dust.NewDustPerfect(projectile.Center + pos, mod.DustType("DeepFlames")).noGravity = true;
-    //    }
+            Vector2 pos = new Vector2(
+                (float)System.Math.Sin(projectile.position.X),
+                (float)System.Math.Cos(projectile.position.Y)) * 8;
+            Dust.NewDustPerfect(projectile.Center + pos, mod.DustType("DeepFlames")).noGravity = true;
+        }
 
-    //    protected override DamageTypes DamageType => DamageTypes.Ranged;
-    //    protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
-    //    protected override float? Rotation => projectile.velocity.ToRotation() + Degrees180;
-    //}
+        protected override DamageTypes DamageType => DamageTypes.Ranged;
+        protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
+        protected override float? Rotation => projectile.velocity.ToRotation() + Degrees180;
+    }
 }

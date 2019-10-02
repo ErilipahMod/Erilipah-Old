@@ -55,8 +55,8 @@ namespace Erilipah.Biomes.ErilipahBiome
             npc.width = 4;
             npc.height = 4;
 
-            npc.timeLeft = 1200;
-            npc.value = Item.buyPrice(0, 0, 75, 0);
+            npc.timeLeft = 500;
+            npc.value = 0;
             lightPulse = 0;
 
             // npc.buffImmune[BuffID.OnFire] = true;
@@ -86,34 +86,6 @@ namespace Erilipah.Biomes.ErilipahBiome
             {
                 npc.netUpdate = true;
                 npc.scale -= 1 / 200f;
-                npc.aiStyle = 0;
-                npc.velocity *= 0.9f;
-            }
-
-            if (returnPos != Vector2.Zero)
-            {
-                npc.timeLeft = 300;
-                returnTimer++;
-
-                if (!Collision.CanHit(npc.position, 4, 4, returnPos, 1, 1))
-                {
-                    returnTimer = 0;
-                    returnPos = Vector2.Zero;
-                    npc.netUpdate = true;
-                }
-            }
-
-            if (returnTimer > 600)
-            {
-                npc.aiStyle = 0;
-                npc.velocity *= 0.98f;
-                npc.velocity += npc.Center.To(returnPos, 0.01f);
-                npc.velocity = Vector2.Clamp(npc.velocity, Vector2.One * -2.5f, Vector2.One * 2.5f);
-
-                if (npc.Distance(returnPos) < 20)
-                {
-                    npc.active = false;
-                }
             }
         }
 
@@ -128,7 +100,7 @@ namespace Erilipah.Biomes.ErilipahBiome
 
             if (Main.rand.NextBool(500))
             {
-                Main.PlaySound(27, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.5f, 0.4f);
+                Main.PlaySound(27, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.4f, 0.4f);
             }
         }
 
@@ -147,27 +119,28 @@ namespace Erilipah.Biomes.ErilipahBiome
         public override string Texture => base.Texture.Replace("Guard", "");
         public override void SetStaticDefaults()
         {
+            DisplayName.SetDefault("Light Wisp Soldier");
             Main.npcFrameCount[npc.type] = 1;
         }
         public override void SetDefaults()
         {
-            npc.lifeMax = 50;
-            npc.defense = 6;
-            npc.damage = 20;
+            npc.hide = true;
+            npc.lifeMax = 30;
+            npc.defense = 0;
+            npc.damage = 18;
             npc.knockBackResist = 0.3f;
 
             npc.aiStyle = 64;
             npc.noGravity = true;
+            npc.HitSound = SoundID.NPCHit3;
             npc.DeathSound = SoundID.NPCDeath3;
-            // SoundID.NPCHit4 metal
-            // SoundID.NPCDeath14 grenade explosion
 
             npc.scale = 1.35f;
-            npc.width = 4;
-            npc.height = 4;
+            npc.width = 8;
+            npc.height = 8;
 
             npc.timeLeft = 1200;
-            npc.value = Item.buyPrice(0, 0, 75, 0);
+            npc.value = 0;
             lightPulse = 0;
 
             // npc.buffImmune[BuffID.OnFire] = true;
@@ -194,6 +167,10 @@ namespace Erilipah.Biomes.ErilipahBiome
                 npc.aiStyle = 0;
                 npc.velocity *= 0.9f;
             }
+            else
+            {
+                npc.scale = 2.25f;
+            }
 
             if (npc.target != 255 && npc.target != -1)
             {
@@ -208,15 +185,13 @@ namespace Erilipah.Biomes.ErilipahBiome
             if (lightPulse > 1)
                 lightPulse = -1;
 
-            for (int i = 0; i < 2; i++)
-            {
-                Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: npc.scale);
-            }
-            Lighting.AddLight(npc.Center, new Vector3(227, 148, 190) * Math.Abs(lightPulse) * npc.scale);
+            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
+            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<Items.Crystalline.CrystallineDust>(), Vector2.Zero, Scale: 0.8f).noGravity = true;
+            Lighting.AddLight(npc.Center, new Vector3(0.89f, 0.58f, 0.76f) * Math.Abs(lightPulse) * (npc.scale) / 2f);
 
-            if (Main.rand.NextBool(200))
+            if (Main.rand.NextBool(100))
             {
-                Main.PlaySound(27, (int)npc.Center.X, (int)npc.Center.Y, 0, 0.8f, 0.2f);
+                Main.PlaySound(27, (int)npc.Center.X, (int)npc.Center.Y, 0, 1f, -0.4f);
             }
         }
 

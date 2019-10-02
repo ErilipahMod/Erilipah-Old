@@ -14,7 +14,17 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     {
         public override string MapName => "Light Hive";
         public override int DustType => mod.DustType<FlowerDust>();
-        public override TileObjectData Style => TileObjectData.GetTileData(TileID.Hive, 0);
+        public override TileObjectData Style
+        {
+            get
+            {
+                TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+                TileObjectData.newTile.AnchorTop = new Terraria.DataStructures.AnchorData(Terraria.Enums.AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
+                TileObjectData.newTile.AnchorBottom = Terraria.DataStructures.AnchorData.Empty;
+                TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>(), mod.TileType<Tiles.SpoiledClump>() };
+                return TileObjectData.newTile;
+            }
+        }
 
         public override void SetDefaults()
         {
@@ -24,7 +34,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.netMode != 1)
+            if (Main.netMode != 1 && NPC.CountNPCS(mod.NPCType<LightWisp>()) < 15)
             {
                 Vector2 spawn = GetSpawn(i, j);
 
@@ -35,7 +45,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool KillSound(int i, int j)
         {
-            Main.PlaySound(SoundID.NPCDeath1, new Microsoft.Xna.Framework.Vector2(i, j) * 2);
+            Main.PlaySound(SoundID.NPCDeath1, new Microsoft.Xna.Framework.Vector2(i, j) * 16);
             return false;
         }
 
@@ -46,22 +56,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             Vector2 spawn = GetSpawn(i, j);
 
-            // Make all the wisps with this tile queued lost
-            for (int n = 0; n < 200; n++)
-            {
-                NPC npc = Main.npc[n];
-                LightWisp wisp = npc.modNPC as LightWisp;
-
-                if (wisp.returnPos == spawn)
-                {
-                    wisp.returnPos = Vector2.Zero;
-                }
-            }
-
             // Spawn some wisps & guards
             for (int n = 0; n < 6; n++)
             {
-                NPC.NewNPC((int)spawn.X, (int)spawn.Y, mod.NPCType<LightWisp>());
+                Main.npc[NPC.NewNPC((int)spawn.X, (int)spawn.Y, mod.NPCType<LightWisp>())]
+                    .timeLeft = 700;
                 if (n < 2)
                     NPC.NewNPC((int)spawn.X, (int)spawn.Y, mod.NPCType<LightWispGuard>(), Target: Helper.FindClosestPlayer(spawn, 300));
             }
@@ -71,7 +70,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             int x = i - Main.tile[i, j].frameX / 18;
             int y = j - Main.tile[i, j].frameY / 18;
-            Vector2 spawn = new Vector2(x * 16 + 6, y * 16 + 24);
+            Vector2 spawn = new Vector2(x * 16 + 8, y * 16 + 28);
             return spawn;
         }
     }

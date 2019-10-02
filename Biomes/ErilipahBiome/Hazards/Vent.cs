@@ -41,7 +41,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 return;
 
             Vector2 pos = new Vector2(Position.X * 16 + 16, Position.Y * 16 + 20);
-            Dust.NewDustPerfect(pos, mod.DustType<AshDust>(), new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-6, -4)));
+            Dust.NewDustPerfect(pos, mod.DustType<AshDust>(), new Vector2(Main.rand.NextFloat(-0.35f, 0.35f), Main.rand.NextFloat(-7.5f, -5)));
         }
     }
 
@@ -49,6 +49,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     {
         public override void SetDefaults()
         {
+            Main.tileFrameImportant[Type] = true;
+
             TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Statues, 12));
             TileObjectData.newTile.HookPlaceOverride =
                 new PlacementHook(mod.GetTileEntity<TEVent>().Hook_AfterPlacement, -1, 0, true);

@@ -16,7 +16,7 @@ namespace Erilipah
             bool onScreenY = j < Main.screenPosition.Y / 16 || j > (Main.screenPosition.Y + Main.screenHeight) / 16;
             bool onScreen = onScreenX && onScreenY;
 
-            // TODO remove
+            // TODO after testing
             if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile())// && Main.rand.Chance(0.015f) && !onScreen)
                 ErilipahWorld.PlaceHazard(i, j, mod);
         }
@@ -25,7 +25,7 @@ namespace Erilipah
         {
             Tile tile = Main.tile[i, j];
 
-            if (Main.rand.Chance(ErilipahItem.LightSnuffRate) && type != mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
+            if (Main.netMode != 1 && Main.rand.Chance(ErilipahItem.LightSnuffRate) && type != mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
                 Snuff(i, j, type, tile);
         }
 

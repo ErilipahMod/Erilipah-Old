@@ -31,7 +31,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.LinkedAlternates = true;
                 TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Stalk>() };
                 TileObjectData.newTile.AnchorValidTiles = new int[] 
-                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<TaintedBrick>(), mod.TileType<Vine>() };
+                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<Stalk>() };
                 TileObjectData.newTile.AnchorBottom = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
                 TileObjectData.newTile.AnchorTop = AnchorData.Empty;
@@ -65,7 +65,14 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            drawColor *= 3;
+            const byte min = 100;
+
+            if (drawColor.R < min)
+                drawColor.R = min;
+            if (drawColor.G < min)
+                drawColor.G = min;
+            if (drawColor.B < min)
+                drawColor.B = min;
         }
 
         public override bool CanPlace(int i, int j) => IsValid(i, j);

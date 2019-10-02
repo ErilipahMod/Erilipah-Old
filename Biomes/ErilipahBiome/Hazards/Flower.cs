@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+//using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -31,6 +32,34 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override int DustType => mod.DustType<FlowerDust>();
         public override TileObjectData Style => TileObjectData.Style2x1;
 
+        public override bool KillSound(int i, int j)
+        {
+            Main.PlaySound(SoundID.NPCHit, i * 16, j * 16, 19, 1, 0.2f);
+            return false;
+        }
+
+        public override void DrawEffects(int i, int j, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+        {
+            drawColor *= 2.65f;
+        }
+
+        public override void PostDraw(int i, int j, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
+        {
+            Tile tile = Main.tile[i, j];
+            Microsoft.Xna.Framework.Graphics.Texture2D texture = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/Flower_Glowmask");
+            Vector2 zero = new Vector2(Main.offScreenRange, Main.offScreenRange);
+            if (Main.drawToScreen)
+            {
+                zero = Vector2.Zero;
+            }
+
+            Color color = Lighting.GetColor(i, j) * 4;
+            Main.spriteBatch.Draw(
+                texture,
+                new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero,
+                new Rectangle(tile.frameX, tile.frameY + 2, 16, 16), color, 0f, Vector2.Zero, 1f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0f);
+        }
+
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
@@ -45,7 +74,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             {
                 tile.frameX = 36;
                 if (Main.tile[i + 1, j].type == Type)
-                    Main.tile[i + 1, j].frameY = 54;
+                    Main.tile[i + 1, j].frameX = 54;
+
+
                 for (int a = 0; a < 3; a++)
                 {
                     Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
@@ -54,6 +85,14 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                         rand.X, rand.Y,
                         mod.ProjectileType<FlowerProj>(), 25, 1);
                 }
+
+                for (int h = 0; h < 10; h++)
+                {
+                    float rotation = h / 10f * MathHelper.Pi + MathHelper.Pi;
+                    Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), mod.DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;
+                }
+
+                Main.PlaySound(SoundID.PlayerKilled, i * 16, j * 16, 0, 1, 0.625f);
             }
         }
     }
@@ -91,7 +130,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<FlowerDust>());
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<FlowerDust>(), Vector2.Zero, Scale: 1.5f);
             if (projectile.timeLeft < 60)
                 projectile.scale -= 1 / 90f;
         }

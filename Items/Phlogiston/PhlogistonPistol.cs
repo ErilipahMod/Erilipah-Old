@@ -31,6 +31,8 @@ namespace Erilipah.Items.Phlogiston
             item.shootSpeed = 11.5f;
             item.shoot = 3;
             item.useAmmo = AmmoID.Arrow;
+
+            item.value = item.AutoValue();
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

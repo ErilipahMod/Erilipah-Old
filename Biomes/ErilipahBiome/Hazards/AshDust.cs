@@ -19,7 +19,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool Update(Dust dust)
         {
-            dust.scale -= 0.01f;
+            dust.scale -= 0.006f;
             dust.position += dust.velocity;
             if (dust.scale <= 0.1f)
                 dust.active = false;

@@ -32,7 +32,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.LinkedAlternates = true;
                 TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Vine>() };
                 TileObjectData.newTile.AnchorValidTiles = new int[] 
-                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<TaintedBrick>(), mod.TileType<Vine>() };
+                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<Vine>() };
                 TileObjectData.newTile.AnchorTop = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
                 TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
@@ -65,6 +65,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             resetFrame = false;
             return false;
         }
+
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Main.tile[i, j];
@@ -74,11 +75,14 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             {
                 zero = Vector2.Zero;
             }
+
+            Color color = Lighting.GetColor(i, j) * 4;
             Main.spriteBatch.Draw(
                 texture, 
                 new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, 
-                new Rectangle(tile.frameX, tile.frameY + 2, 16, 16), Color.White * 0.7f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                new Rectangle(tile.frameX, tile.frameY + 2, 16, 16), color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
+
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
@@ -88,8 +92,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             bool anyBulb = Main.npc.Any(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[1] == i);
             if (tile.frameY == 54 && !anyBulb)
             {
-                Main.LocalPlayer.position = new Vector2(i, j) * 16; // TODO REMOVE
-                NPC.NewNPC(i * 16 + 8, j * 16 + 8, mod.NPCType<Bulb>(), ai1: i);
+                //FOR DEBUG
+                //Main.LocalPlayer.position.X = i * 16;
+                //Main.LocalPlayer.position.Y = j * 16;
+                NPC.NewNPC(i * 16 + 8, j * 16 + 16, mod.NPCType<Bulb>(), ai1: i);
             }
             else if (!Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
             { 
@@ -110,16 +116,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
     public class Bulb : ModNPC
     {
-        public override string Texture => Helper.Invisible;
         public override void SetStaticDefaults()
         {
-            //DisplayName.SetDefault("Name");
+            Main.npcFrameCount[npc.type] = 1;
         }
         public override void SetDefaults()
         {
             npc.lifeMax = 50;
-            npc.defense = 5;
+            npc.defense = 500;
             npc.knockBackResist = 0;
+            npc.noGravity = true;
+            
+            npc.aiStyle = 0;
 
             npc.width = 20;
             npc.height = 26;
@@ -128,14 +136,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             npc.timeLeft = 90;
 
             npc.damage = 0;
-            npc.dontCountMe = true;
-            npc.dontTakeDamageFromHostiles = true;
-            npc.friendly = false;
         }
 
         public override void DrawEffects(ref Color drawColor)
         {
-            drawColor = new Color(Vector3.Max(drawColor.ToVector3(), new Vector3(170, 170, 170)));
+            drawColor *= 2.5f;
         }
 
         public override void AI()
@@ -151,9 +156,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             Lighting.AddLight(npc.Center, 1f * s, 0.8f * s, 1f * s);
 
-            if (Main.rand.NextBool(30))
+            if (Main.rand.NextBool(10))
             {
-                int dustInd = Dust.NewDust(npc.position, 20, 26, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
+                int dustInd = Dust.NewDust(npc.position, 20, 26, mod.DustType<FlowerDust>());
 
                 Dust dust = Main.dust[dustInd];
                 dust.noGravity = false;

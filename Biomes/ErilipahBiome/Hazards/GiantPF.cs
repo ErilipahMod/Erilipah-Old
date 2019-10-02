@@ -35,9 +35,29 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             num = 6;
         }
 
+        public override void PostDraw(int i, int j, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
+        {
+            Tile tile = Main.tile[i, j];
+            Microsoft.Xna.Framework.Graphics.Texture2D texture = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/GiantPF_Glowmask");
+            Vector2 zero = new Vector2(Main.offScreenRange, Main.offScreenRange);
+            if (Main.drawToScreen)
+            {
+                zero = Vector2.Zero;
+            }
+
+            Color color = Lighting.GetColor(i, j) * 4;
+            Main.spriteBatch.Draw(
+                texture,
+                new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero,
+                new Rectangle(tile.frameX, tile.frameY + 2, 16, 16), color, 0f, Vector2.Zero, 1f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0f);
+        }
+
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
+#pragma warning disable IDE0062 // Make local function 'static'
             Vector2 Vel() => Main.rand.NextVector2Circular(2, 2);
+#pragma warning restore IDE0062 // Make local function 'static'
+
             int t1 = mod.GetGoreSlot("Gores/ERBiome/GiantPFGore0");
             int t2 = mod.GetGoreSlot("Gores/ERBiome/GiantPFGore1");
 
@@ -49,9 +69,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (!WorldGen.gen && Main.netMode != 1)
             {
-                Item.NewItem(i - frameX / 18, j - frameY / 18, 36, 54, mod.ItemType<PureFlower>(), 2);
-                Item.NewItem(i - frameX / 18, j - frameY / 18, 36, 54, mod.ItemType<PureFlower>(), 1);
-                Item.NewItem(i - frameX / 18, j - frameY / 18, 36, 54, mod.ItemType<PureFlower>(), Main.rand.Next(3));
+                Item.NewItem(i*16, j*16, 36, 54, mod.ItemType<PureFlower>(), Main.rand.Next(1, 5));
             }
         }
     }

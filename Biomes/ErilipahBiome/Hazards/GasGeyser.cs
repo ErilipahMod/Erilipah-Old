@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ObjectData;
 using Microsoft.Xna.Framework;
+//using Microsoft.Xna.Framework.Graphics;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
@@ -23,9 +24,21 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.Height = 1;
                 TileObjectData.newTile.CoordinatePadding = 2;
                 TileObjectData.newTile.CoordinateHeights = new int[] { 18 };
+                TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>() };
 
                 return TileObjectData.newTile;
             }
+        }
+
+        public override void DrawEffects(int i, int j, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+        {
+            drawColor *= 2.25f;
+        }
+
+        public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height)
+        {
+            height = 16;
+            offsetY = 2;
         }
 
         public override void RandomUpdate(int i, int j)
@@ -35,9 +48,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             Tile tile = Main.tile[i, j];
             int left = i - tile.frameX / 18;
-
-            // TODO remove debug
-            Main.projectile.Any(x => x.active && x.type == mod.ProjectileType<GasSpew>() && x.localAI[0] == i);
 
             for (int pIndex = 0; pIndex < Main.maxProjectiles; pIndex++)
             {
@@ -52,17 +62,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             p.localAI[0] = left;
         }
 
-        // TODO add
-        //public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        //{
-        //    for (int c = 0; c < Main.maxProjectiles; c++)
-        //    {
-        //        if (Main.projectile[c].type == mod.ProjectileType<GasSpew>())
-        //        {
-        //            Main.projectile[c].Kill();
-        //        }
-        //    }
-        //}
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            for (int c = 0; c < Main.maxProjectiles; c++)
+            {
+                if (Main.projectile[c].type == mod.ProjectileType<GasSpew>())
+                {
+                    Main.projectile[c].Kill();
+                }
+            }
+        }
     }
 
     public class GasSpew : ModProjectile

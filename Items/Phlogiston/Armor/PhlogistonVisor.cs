@@ -38,7 +38,7 @@ namespace Erilipah.Items.Phlogiston.Armor
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC npc = Main.npc[i];
-                if (npc.active && npc.life > 0 && !npc.townNPC && !npc.dontTakeDamage && !npc.buffImmune[BuffID.OnFire] &&
+                if (npc.active && !npc.friendly && npc.life > 0 && !npc.townNPC && !npc.dontTakeDamage && !npc.buffImmune[BuffID.OnFire] &&
                     npc.Distance(player.Center) < damageRadius)
                 {
                     npc.AddBuff(Terraria.ID.BuffID.OnFire, 2);

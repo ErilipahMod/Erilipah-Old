@@ -32,7 +32,7 @@ namespace Erilipah.Items.ErilipahBiome
             item.holdStyle = ItemHoldStyleID.HoldingOut;
             item.autoReuse = false;
 
-            item.value = item.AutoValue();
+            item.value = 1500;
             item.rare = ItemRarityID.Pink;
 
             item.shoot = mod.ProjectileType<NidoroseProj>();

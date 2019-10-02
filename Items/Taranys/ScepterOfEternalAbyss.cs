@@ -28,6 +28,7 @@ namespace Erilipah.Items.Taranys
             item.damage = 33;
             item.knockBack = 4;
             item.crit = 8;
+            item.mana = 9;
             item.magic = true;
 
             item.reuseDelay = 7;
@@ -42,7 +43,7 @@ namespace Erilipah.Items.Taranys
             item.UseSound = SoundID.Item43;
 
             item.maxStack = 1;
-            item.value = item.AutoValue();
+            item.value = 1900;
             item.rare = ItemRarityID.LightRed;
 
             item.shoot = mod.ProjectileType<ScepterProj1>();
@@ -104,7 +105,7 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(mod.BuffType<Wither>(), 90);
+            target.AddBuff(mod.BuffType<Wither>(), 150);
             projectile.Kill();
         }
 
@@ -161,7 +162,7 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            projectile.velocity *= 0.885f;
+            projectile.velocity *= 0.7f;
         }
 
         public override void Kill(int timeLeft)
