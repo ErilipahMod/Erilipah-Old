@@ -1118,7 +1118,7 @@ namespace Erilipah
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            switch (6)//WorldGen.genRand.Next(7))
+            switch (3)//WorldGen.genRand.Next(7))
             {
                 default:
                     WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
@@ -1145,7 +1145,7 @@ namespace Erilipah
                         {
                             Main.tile[i + n, j - 1].active(true);
                             Main.tile[i + n, j - 1].type = (ushort)mod.TileType<Stalk>();
-                            Main.tile[i + n, j - 1].frameX = (short)(72 + i * 18);
+                            Main.tile[i + n, j - 1].frameX = (short)(72 + n * 18);
                             Main.tile[i + n, j - 1].frameY = frameY;
                         }
                     } break;

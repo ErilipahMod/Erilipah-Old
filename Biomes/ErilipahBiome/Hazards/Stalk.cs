@@ -25,7 +25,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             get
             {
-                TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
+                TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
                 TileObjectData.newTile.Height = 1;
                 TileObjectData.newTile.CoordinateHeights = new[] { 16 };
                 TileObjectData.newTile.LinkedAlternates = true;
@@ -50,10 +50,35 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if (!Main.tile[i, j + 1].IsErilipahTile() && Main.tile[i, j + 1].type != Type)
+            if (Main.tile[i, j + 1].type != Type)
             {
                 WorldGen.KillTile(i, j, Main.rand.NextBool());
             }
+
+            bool isBase = Main.tile[i, j].frameX >= 54 && Main.tile[i, j].frameY >= 90;
+            if (isBase)
+            {
+                Tile tile = Main.tile[i, j];
+                int left = i - (tile.frameX - 54) / 18;
+
+                if (!Main.tile[i, j + 1].IsErilipahTile())
+                {
+                    BreakBase(left, j);
+                }
+
+                if (!Main.tile[left, j].active() && !Main.tile[left + 1, j].active() && !Main.tile[left + 2, j].active())
+                {
+                    BreakBase(left, j);
+                }
+
+                void BreakBase(int left, int j)
+                {
+                    WorldGen.KillTile(left, j, Main.rand.NextBool());
+                    WorldGen.KillTile(left + 1, j, Main.rand.NextBool());
+                    WorldGen.KillTile(left + 2, j, Main.rand.NextBool());
+                }
+            }
+
             resetFrame = false;
             return false;
         }
@@ -159,11 +184,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public static bool IsValid(int i, int j)
         {
-            bool noRoof = !Collision.SolidTiles(i, i, j - 8, j - 1) && !Main.tile[i, j - 1].active();
-            bool isBase = WorldGen.SolidTile(Main.tile[i, j + 1]) && WorldGen.SolidTile(Main.tile[i - 1, j + 1]) && WorldGen.SolidTile(Main.tile[i + 1, j + 1]);
-            bool noObstruction = !Main.tile[i - 1, j].active() && !Main.tile[i, j].active() && !Main.tile[i + 1, j].active();
+            for (int e = -1; e <= 1; e++)
+                for (int f = -7; f < 0; f++)
+                    if (Main.tile[i + e, j + f].active())
+                        return false;
 
-            return noRoof && noObstruction && isBase;
+            for (int e = -1; e <= 1; e++)
+                if (!Main.tile[i + e, j + 1].active())
+                    return false;
+
+            return true;
         }
     }
 }
