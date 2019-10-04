@@ -63,19 +63,19 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
                 if (!Main.tile[i, j + 1].IsErilipahTile())
                 {
-                    BreakBase(left, j);
+                    //BreakBase(left, j);
                 }
 
                 if (!Main.tile[left, j].active() && !Main.tile[left + 1, j].active() && !Main.tile[left + 2, j].active())
                 {
-                    BreakBase(left, j);
+                    //BreakBase(left, j);
                 }
 
-                void BreakBase(int left, int j)
+                void BreakBase(int xL, int nJ)
                 {
-                    WorldGen.KillTile(left, j, Main.rand.NextBool());
-                    WorldGen.KillTile(left + 1, j, Main.rand.NextBool());
-                    WorldGen.KillTile(left + 2, j, Main.rand.NextBool());
+                    WorldGen.KillTile(xL, nJ, Main.rand.NextBool());
+                    WorldGen.KillTile(xL + 1, nJ, Main.rand.NextBool());
+                    WorldGen.KillTile(xL + 2, nJ, Main.rand.NextBool());
                 }
             }
 
@@ -90,14 +90,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            const byte min = 100;
-
-            if (drawColor.R < min)
-                drawColor.R = min;
-            if (drawColor.G < min)
-                drawColor.G = min;
-            if (drawColor.B < min)
-                drawColor.B = min;
+            drawColor *= 2;
         }
 
         public override bool CanPlace(int i, int j) => IsValid(i, j);
@@ -185,12 +178,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public static bool IsValid(int i, int j)
         {
             for (int e = -1; e <= 1; e++)
-                for (int f = -7; f < 0; f++)
-                    if (Main.tile[i + e, j + f].active())
+                for (int f = -7; f < 0; f++) 
+                {
+                    Tile testing = Main.tile[i + e, j + f];
+                    if (testing.active() || testing.wall > 0)
                         return false;
+                }
 
             for (int e = -1; e <= 1; e++)
-                if (!Main.tile[i + e, j + 1].active())
+                if (!Main.tile[i + e, j].active())
                     return false;
 
             return true;

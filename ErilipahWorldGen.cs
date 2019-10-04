@@ -1118,7 +1118,7 @@ namespace Erilipah
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            switch (3)//WorldGen.genRand.Next(7))
+            switch (WorldGen.genRand.Next(7))
             {
                 default:
                     WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
@@ -1138,7 +1138,7 @@ namespace Erilipah
                     } break;
 
                 case 3:
-                    if (Stalk.IsValid(i, j))
+                    if (Stalk.IsValid(i, j) && Stalk.IsValid(i - 1, j) && Stalk.IsValid(i + 1, j))
                     {
                         short frameY = (short)(Main.rand.Next(5, 8) * 18);
                         for (int n = -1; n <= 1; n++)
