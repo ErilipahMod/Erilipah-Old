@@ -321,7 +321,7 @@ namespace Erilipah
             progress.Message = "[Erilipah] Massive underground chasm";
             progress.Set(0f);
 
-            Chasm.Width = (int)(0.03 * Main.maxTilesX);
+            Chasm.Width = (int)(0.07 * Main.maxTilesX);
             Chasm.Height = (int)(0.1215 * Main.maxTilesY);
             Chasm.X = BiomeCenterX - Chasm.Width / 2;
             Chasm.Y = ChasmBottomY + 95;
@@ -1115,8 +1115,11 @@ namespace Erilipah
 
         private void HazardGen(GenerationProgress progress)
         {
-            int halfWidth = (int)(Main.maxTilesX * 0.1f);
-            for (int i = BiomeCenterX - halfWidth; i < BiomeCenterX + halfWidth; i++)
+            int halfWidth = (int)(Main.maxTilesX * 0.07f);
+            int start = Math.Max(1, BiomeCenterX - halfWidth);
+            int end = Math.Min(Main.maxTilesX - 1, BiomeCenterX + halfWidth);
+
+            for (int i = start; i < end; i++)
             {
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
