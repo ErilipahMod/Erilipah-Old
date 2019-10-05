@@ -27,7 +27,7 @@ namespace Erilipah.NPCs.Taranys
         private float SpeedMult => MathHelper.Lerp(Main.expertMode ? 0.35f : 0.50f, 1f, npc.life / (float)npc.lifeMax);
         private int AlphaOT => (int)MathHelper.SmoothStep(200, 0, npc.life / (float)npc.lifeMax);
 
-        private Vector2 Eye => (npc.position + new Vector2(48, 38)).RotatedBy(npc.rotation, npc.Size / 2);
+        private Vector2 Eye => npc.position + new Vector2(48, 38).RotatedBy(npc.rotation, npc.Size / 2);
 
         private static float GetFloorY(Vector2 pos)
         {
@@ -44,7 +44,8 @@ namespace Erilipah.NPCs.Taranys
 
         private void Roar()
         {
-            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 0.825f, Main.rand.NextFloat(0.1f, 0.225f));
+            float pitch = MathHelper.Lerp(0.1f, 0.25f, 1 - npc.life / (float)npc.lifeMax);
+            Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 0.80f, pitch + Main.rand.NextFloat(-0.05f, 0.05f));
         }
         private void Hover()
         {
@@ -75,16 +76,32 @@ namespace Erilipah.NPCs.Taranys
         private void Pulse(float distance, float speed = 5, bool repel = false)
         {
             if (distance == 0 || distance == speed)
-                if (npc.life > npc.lifeMax * 0.1f)
-                    Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, -0.35f);
+            {
+                float pitch = MathHelper.Lerp(-0.2f, -0.5f, 1 - npc.life / (float)npc.lifeMax);
+                Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 1f, pitch + Main.rand.NextFloat(-0.05f, 0.05f));
+            }
 
             npc.alpha = (int)MathHelper.SmoothStep(0, AlphaOT, distance / (60 * speed));
+
+            if (Filters.Scene["TaranysPulse"].IsActive() && distance == 0 || distance == speed)
+            {
+                Filters.Scene["TaranysPulse"].Deactivate();
+            }
+            if (!Filters.Scene["TaranysPulse"].IsActive())
+            {
+                Filters.Scene.Activate("TaranysPulse", npc.Center).GetShader().
+                    UseColor(1, 3f, speed).UseTargetPosition(Eye);
+            }
+            float progress = MathHelper.Lerp(0, 1, (distance + speed) / 800f);
+            float intensity = repel ? 130 : 100;
+            Filters.Scene["TaranysPulse"].GetShader().UseProgress(progress).
+                UseOpacity(intensity * (1 - progress));
 
             for (int i = 0; i < distance * 0.2f; i++)
             {
                 // Create dusts in an even ring around the NPC
                 float rotation = MathHelper.Lerp(0, MathHelper.TwoPi, i / (distance * 0.2f));
-                Vector2 position = npc.Center + Vector2.UnitX.RotatedBy(rotation) * distance;
+                Vector2 position = npc.Center + Vector2.UnitX.RotatedBy(rotation) * (distance - speed);
 
                 Dust dust = Dust.NewDustPerfect(position, mod.DustType<CrystallineDust>(), Vector2.Zero);
                 dust.noGravity = true;
@@ -164,15 +181,6 @@ namespace Erilipah.NPCs.Taranys
                     Main.player[i].rocketTime = 0;
                 }
             }
-
-            if (!Filters.Scene["TaranysPulse"].IsActive())
-            {
-                Filters.Scene.Activate("TaranysPulse", npc.Center).GetShader().
-                    UseColor(1, 3f, speed).UseTargetPosition(npc.Center);
-            }
-            float progress = MathHelper.Lerp(0, 1, distance / 1000f);
-            Filters.Scene["TaranysPulse"].GetShader().UseProgress(progress).
-                UseOpacity(115 * (1 - progress));
         }
 
         const float intoEating = 0.32f;
@@ -791,7 +799,7 @@ namespace Erilipah.NPCs.Taranys
                     Hover();
                     npc.velocity *= 0.90f;
 
-                    if (NPC.CountNPCS(mod.NPCType<OrbitMinion>()) < 13 && Timer % 600 * SpeedMult == 0)
+                    if (NPC.CountNPCS(mod.NPCType<OrbitMinion>()) < 16 && Timer % 600 * SpeedMult == 0)
                     {
                         SpawnMinions(Main.expertMode ? 4 : 2);
                         Roar();
@@ -924,7 +932,7 @@ namespace Erilipah.NPCs.Taranys
         public override void SetDefaults()
         {
             npc.lifeMax = 80;
-            npc.defense = 0;
+            npc.defense = 3;
             npc.damage = 25;
             npc.knockBackResist = 0f;
             npc.SetInfecting(0.8f);

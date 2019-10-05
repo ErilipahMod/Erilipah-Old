@@ -131,10 +131,10 @@ namespace Erilipah
             index = tasks.FindIndex(genpass => genpass.Name == "Final Cleanup");
             tasks.Insert(index, new PassLegacy("[Erilipah] The Lost City", LostCityGen));
 
-            tasks.Add(new PassLegacy("[Erilipah] Hazards", HazardGen));
-
             index = tasks.FindIndex(genpass => genpass.Name == "Shinies");
             tasks.Insert(index, new PassLegacy("[Erilipah] Sacracite", SacraciteOre));
+
+            tasks.Add(new PassLegacy("[Erilipah] Hazards", HazardGen));
         }
 
         private bool GenLeft => WorldGen.dungeonX > Main.maxTilesX / 2;
@@ -321,7 +321,7 @@ namespace Erilipah
             progress.Message = "[Erilipah] Massive underground chasm";
             progress.Set(0f);
 
-            Chasm.Width = 520;
+            Chasm.Width = (int)(0.03 * Main.maxTilesX);
             Chasm.Height = (int)(0.1215 * Main.maxTilesY);
             Chasm.X = BiomeCenterX - Chasm.Width / 2;
             Chasm.Y = ChasmBottomY + 95;
@@ -352,6 +352,9 @@ namespace Erilipah
                 {
                     Tile tile = Main.tile[chasmX, j];
 
+                    if (tile.type == TileID.LihzahrdBrick)
+                        continue;
+
                     tile.active(false);
                     tile.wall = 0;
                 }
@@ -359,12 +362,15 @@ namespace Erilipah
                 {
                     Tile tile = Main.tile[chasmX, j];
 
+                    if (tile.type == TileID.LihzahrdBrick)
+                        continue;
+
                     WorldGen.PlaceTile(chasmX, j, (ushort)mod.TileType<TaintedRubble>(), forced: true);
                     tile.wall = 0;
                 }
 
-                if (trueTop > chasmRoof + 10)
-                    trueTop = chasmRoof + 10;
+                if (trueTop > chasmRoof + 20)
+                    trueTop = chasmRoof + 20;
 
                 progress.Set(Chasm.Right - Chasm.X / (float)Chasm.Width);
             }
@@ -529,6 +535,9 @@ namespace Erilipah
                 {
                     WorldGen.PlaceTile(leftX + 2,  floor + 2, mod.TileType<ArkenTorchTile>());
                     WorldGen.PlaceTile(rightX - 2, floor + 2, mod.TileType<ArkenTorchTile>());
+
+                    Main.tile[leftX + 2,  floor + 2].frameX += 66;
+                    Main.tile[rightX - 2, floor + 2].frameX += 66;
                 }
 
                 // Don't do any of this on the roof
@@ -713,6 +722,9 @@ namespace Erilipah
                     // Torches
                     WorldGen.PlaceTile(relLeft + 2,  extensionRoof + 2, mod.TileType<ArkenTorchTile>());
                     WorldGen.PlaceTile(relRight - 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
+
+                    Main.tile[relLeft + 2, extensionRoof + 2].frameX += 66;
+                    Main.tile[relRight - 2, extensionRoof + 2].frameX += 66;
 
                     // Pots
                     for (int i = 0; i < potsPerFloor; i++)
@@ -1100,24 +1112,29 @@ namespace Erilipah
 
             AddItem(1f, 2, 5, ItemID.GoldCoin);
         }
+
         private void HazardGen(GenerationProgress progress)
         {
-            int halfWidth = (int)(Main.maxTilesX * 0.05f);
+            int halfWidth = (int)(Main.maxTilesX * 0.1f);
             for (int i = BiomeCenterX - halfWidth; i < BiomeCenterX + halfWidth; i++)
             {
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
                     Tile tile = Main.tile[i, j];
-                    if (!tile.IsErilipahTile())
-                        continue;
 
-                    if (WorldGen.genRand.Chance(0.001f))
+                    if (tile.IsErilipahTile() && WorldGen.genRand.Chance(0.1f))
                         PlaceHazard(i, j, mod);
                 }
             }
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
+            bool 
+                isLostCity = Main.tile[i, j].active() && Main.tile[i, j].type == mod.TileType<TaintedBrick>();
+                isLostCity |= Main.tile[i, j + 1].active() && Main.tile[i, j + 1].type == mod.TileType<TaintedBrick>();
+            if (isLostCity)
+                return;
+
             switch (WorldGen.genRand.Next(7))
             {
                 default:
@@ -1151,6 +1168,9 @@ namespace Erilipah
                     } break;
 
                 case 4:
+                    if (WorldGen.genRand.Chance(0.5f))
+                        goto case 3;
+
                     WorldGen.Place3x2(i, j - 1, (ushort)mod.TileType<GiantPF>()); break;
 
                 case 5:

@@ -121,9 +121,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 Dust.NewDustPerfect(projectile.Center, mod.DustType<Items.Crystalline.CrystallineDust>(),
                     new Vector2(Main.rand.NextFloat(-0.32f, 0.32f), Main.rand.NextFloat(-10f, -8f)), Scale: 1.5f).noGravity = false;
 
-            if (projectile.ai[0] % 7 == 0)
+            if (projectile.ai[0] % 8 == 0)
             {
-                Main.PlaySound(SoundID.Item45, projectile.Center);
+                Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 45, 0.7f, -0.15f);
             }
         }
     }

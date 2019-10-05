@@ -58,7 +58,7 @@ namespace Erilipah.Items.Taranys
                 }
             }
 
-            player.Center = ErilipahWorld.ChasmPosition;
+            player.Teleport(ErilipahWorld.ChasmPosition);
 
             // Make sure the player doesn't instantly fucking die
             player.AddBuff(BuffID.Featherfall, 300);

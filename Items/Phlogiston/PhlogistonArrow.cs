@@ -51,7 +51,7 @@ namespace Erilipah.Items.Phlogiston
         public override void Kill(int timeLeft)
         {
             Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
-                projectile.damage - 1, 7, projectile.knockBack, owner: projectile.owner);
+                projectile.damage - 6, 7, projectile.knockBack, owner: projectile.owner);
         }
     }
 
@@ -61,7 +61,7 @@ namespace Erilipah.Items.Phlogiston
         protected override int[] Dimensions => new int[] { 12, 16 };
         protected override int DustType => mod.DustType("DeepFlames");
 
-        protected override int Pierce => 0;
+        protected override int Pierce => 1;
         protected override int Bounce => 0;
         protected override float Gravity => 0;
         public override void AI()

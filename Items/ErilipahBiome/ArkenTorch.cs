@@ -10,6 +10,37 @@ using Terraria.ObjectData;
 
 namespace Erilipah.Items.ErilipahBiome
 {
+    public class UnlitArkenTorch : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Unlit Arken Torch");
+            Tooltip.SetDefault("Never snuffs in Erilipah\n'A lighter probably won't work'");
+        }
+
+        public override void SetDefaults()
+        {
+            item.CloneDefaults(ItemID.Torch);
+
+            item.flame = false;
+            item.width = 20;
+            item.height = 20;
+            item.holdStyle = 1;
+
+            item.noWet = true;
+            item.useTurn = true;
+            item.autoReuse = true;
+
+            item.useStyle = 1;
+            item.consumable = true;
+            item.createTile = mod.TileType<ArkenTorchTile>();
+
+            item.value = 0;
+        }
+
+        public override bool CanUseItem(Player player) => !player.wet;
+    }
+
     public class ArkenTorch : ModItem
     {
         public override void SetStaticDefaults()
@@ -27,7 +58,7 @@ namespace Erilipah.Items.ErilipahBiome
             item.height = 20;
             item.holdStyle = 1;
 
-            item.noWet = false;
+            item.noWet = true;
             item.useTurn = true;
             item.autoReuse = true;
 
@@ -38,9 +69,13 @@ namespace Erilipah.Items.ErilipahBiome
             item.value = 0;
         }
 
+        public override bool CanUseItem(Player player) => !player.wet;
+
         internal static readonly Color light = new Color(2.5f, 1f, 2f);
         public override void HoldItem(Player player)
         {
+            if (player.wet) return;
+
             player.itemLocation.X -= 4 * player.direction;
             player.itemLocation.Y += 4;
 
@@ -60,6 +95,8 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override void PostUpdate()
         {
+            if (item.wet) return;
+
             if (Main.LocalPlayer.InErilipah())
                 for (int i = -2; i < 3; i++)
                 {
@@ -75,14 +112,14 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
         {
             dryTorch = true;
-            wetTorch = true;
         }
     }
     public class ArkenTorchTile : ModTile
     {
         public override void SetDefaults()
         {
-            Main.tileWaterDeath[Type] = false;
+            Main.tileLavaDeath[Type] = true;
+            Main.tileWaterDeath[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileSolid[Type] = false;
@@ -114,9 +151,18 @@ namespace Erilipah.Items.ErilipahBiome
             torch = true;
         }
 
-        public override void NumDust(int i, int j, bool fail, ref int num)
+        private static bool IsLit(Tile tile) => tile.frameX < 66;
+
+        public override bool CanPlace(int i, int j) => Main.tile[i, j].liquid == 0;
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = Main.rand.Next(2, 4);
+        public override void HitWire(int i, int j) { }
+
+        public override void PlaceInWorld(int i, int j, Item item)
         {
-            num = Main.rand.Next(1, 4);
+            if (item?.type == mod.ItemType<UnlitArkenTorch>())
+            {
+                Main.tile[i, j].frameX += 66;
+            }
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
@@ -124,7 +170,7 @@ namespace Erilipah.Items.ErilipahBiome
             Tile tile = Main.tile[i, j];
             r = g = b = 0;
 
-            if (tile.frameX < 66)
+            if (IsLit(tile))
             {
                 if (Main.LocalPlayer.InErilipah())
                     for (int x = -2; x < 3; x++)
@@ -137,6 +183,20 @@ namespace Erilipah.Items.ErilipahBiome
                 else
                     Lighting.AddLight(new Vector2(i, j) * 16, ArkenTorch.light.ToVector3());
             }
+        }
+
+
+        public override bool Drop(int i, int j)
+        {
+            if (IsLit(Main.tile[i, j]))
+            {
+                drop = mod.ItemType<ArkenTorch>();
+            }
+            else
+            {
+                drop = mod.ItemType<UnlitArkenTorch>();
+            }
+            return true;
         }
 
         public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height)

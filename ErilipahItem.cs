@@ -20,12 +20,7 @@ namespace Erilipah
 
         public override void HoldItem(Item item, Player player)
         {
-            if (!Main.rand.Chance(LightSnuffRate) || item.type == mod.ItemType<Items.ErilipahBiome.ArkenTorch>())
-                return;
-
-            bool light = IsLight(item);
-
-            if (player.InErilipah() && light)
+            if (Main.rand.Chance(LightSnuffRate) && player.InErilipah() && IsLight(item))
             {
                 if (item.type == mod.ItemType<CrystallineTorch>() && Main.rand.NextBool())
                     return;
@@ -49,7 +44,7 @@ namespace Erilipah
             }
         }
 
-        private static bool IsLight(Item item)
+        private bool IsLight(Item item)
         {
             bool dry = false;
             bool wet = false;
@@ -57,6 +52,7 @@ namespace Erilipah
             ItemLoader.AutoLightSelect(item, ref dry, ref wet, ref glow);
 
             bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Contains(item.createTile);
+            light &= item.type != mod.ItemType<ArkenTorch>() && item.type != mod.ItemType<UnlitArkenTorch>();
             light |= item.flame || dry || wet || glow;
             light |= item.type == ItemID.Glowstick || item.type == ItemID.BouncyGlowstick || item.type == ItemID.StickyGlowstick || item.type == ItemID.SpelunkerGlowstick;
             return light;
@@ -64,7 +60,7 @@ namespace Erilipah
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
-            if (Main.netMode == 1 || !Main.rand.Chance(LightSnuffRate) || item.type == mod.ItemType<ArkenTorch>())
+            if (Main.netMode == 1 || !Main.rand.Chance(LightSnuffRate))
                 return;
 
             int ind = item.FindClosestPlayer(5000);

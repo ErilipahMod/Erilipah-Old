@@ -105,11 +105,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             int y = j - tile.frameY / 18;
             if (TileEntity.ByPosition.TryGetValue(new Point16(x, y), out var tileEntity))
             {
-                statue = (TESoulStatue)tileEntity;
+                statue = tileEntity as TESoulStatue;
             }
             else
             {
-                statue = (TESoulStatue)TileEntity.ByID[mod.GetTileEntity<TESoulStatue>().Place(x, y)];
+                statue = TileEntity.ByID[mod.GetTileEntity<TESoulStatue>().Place(x, y)] as TESoulStatue;
                 if (statue == null)
                     return false;
             }

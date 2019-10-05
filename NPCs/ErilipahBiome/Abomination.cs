@@ -94,7 +94,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                     { "Abomination", "Monster", "Thing", "Amalgam", "Horror" }
                 );
 
-                float scale = Main.rand.NextFloat(0.8f, 1.2f);
+                float scale = Main.rand.NextFloat(0.9f, 1.085f);
                 npc.scale = scale;
                 npc.damage = (int)(npc.damage * scale);
                 npc.defense = (int)(npc.defense * scale);
@@ -450,6 +450,15 @@ namespace Erilipah.NPCs.ErilipahBiome
             return CurAttack != (int)AttacksEnum.Grab;
         }
 
+        public override bool CheckDead()
+        {
+            if (npc.lastInteraction > -1)
+            {
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, mod.ProjectileType<WarmedSoul>(), 0, 0, npc.lastInteraction);
+            }
+            return true;
+        }
+
         public class SpitBall : ModProjectile
         {
             public override string Texture => Helper.Invisible;
@@ -541,7 +550,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             npc.width = 50;
             npc.height = 48;
 
-            npc.value = Item.buyPrice(0, 0, 0, 0);
+            npc.value = 0;
 
             // npc.MakeBuffImmune(BuffID.OnFire);
         }
@@ -550,11 +559,6 @@ namespace Erilipah.NPCs.ErilipahBiome
             Main.npcFrameCount[npc.type] = 5;
             NPCID.Sets.TrailCacheLength[npc.type] = 4;
             NPCID.Sets.TrailingMode[npc.type] = 0;
-        }
-
-        public override void NPCLoot()
-        {
-            Loot.DropItem(npc, mod.ItemType<BioluminescentSinew>(), 1, 1, 35 * npc.scale);
         }
     }
 }

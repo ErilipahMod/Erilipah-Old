@@ -76,7 +76,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 zero = Vector2.Zero;
             }
 
-            Color color = Lighting.GetColor(i, j) * 4;
+            Color color = Lighting.GetColor(i, j) * 2;
             Main.spriteBatch.Draw(
                 texture, 
                 new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, 
@@ -89,16 +89,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             if (Main.netMode == 1)
                 return;
 
-            bool anyBulb = Main.npc.Any(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[1] == i);
-            if (tile.frameY == 54 && !anyBulb)
+            NPC bulb = AnyBulb(i, j);
+            if (tile.frameY == 54 && bulb == null)
             {
                 //FOR DEBUG
                 //Main.LocalPlayer.position.X = i * 16;
                 //Main.LocalPlayer.position.Y = j * 16;
-                NPC.NewNPC(i * 16 + 8, j * 16 + 16, mod.NPCType<Bulb>(), ai1: i);
+                NPC.NewNPC(i * 16 + 8, j * 16 + 16, mod.NPCType<Bulb>(), ai0: i, ai1: j);
             }
-            else if (!Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
-            { 
+            else if (tile.frameY < 54 && !Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
+            {
                 bool endTile = Main.rand.Chance(0.12f);
 
                 Tile vineEx = Main.tile[i, j + 1];
@@ -112,6 +112,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     vineEx.frameY = 54;
             }
         }
+
+        private NPC AnyBulb(int i, int j)
+        {
+            return Main.npc.FirstOrDefault(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[0] == i && x.ai[1] == j);
+        }
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+            NPC bulb = AnyBulb(i, j);
+            if (bulb != null)
+                bulb.ai[3] = 1;
+        }
     }
 
     public class Bulb : ModNPC
@@ -122,7 +134,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         }
         public override void SetDefaults()
         {
-            npc.lifeMax = 50;
+            npc.lifeMax = 1;
             npc.defense = 500;
             npc.knockBackResist = 0;
             npc.noGravity = true;
@@ -143,8 +155,36 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             drawColor *= 2.5f;
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            for (int a = 0; a < 3; a++)
+            {
+                Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
+                Projectile.NewProjectile(npc.Center, rand, mod.ProjectileType<FlowerProj>(), 24, 1);
+            }
+
+            for (int h = 0; h < 10; h++)
+            {
+                float rotation = h / 10f * MathHelper.Pi;
+                Dust.NewDustPerfect(npc.Center, mod.DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;
+            }
+
+            Main.PlaySound(SoundID.PlayerKilled, (int)npc.Center.X, (int)npc.Center.X, 0, 1, 0.625f);
+        }
+
+        // 0 is for i pos
+        // 1 is for j pos
+        // 2 is for scale counter
+        // 3 is for death
+
         public override void AI()
         {
+            if (npc.ai[3] == 1)
+            {
+                npc.life = 0;
+                npc.HitEffect(0, 5);
+            }
+
             npc.ai[2] += 0.001f;
             if (npc.ai[2] > 0.15f)
                 npc.ai[2] = -0.15f;

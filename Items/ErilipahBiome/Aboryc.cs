@@ -81,17 +81,21 @@ namespace Erilipah.Items.ErilipahBiome
 
                 int taranys = NPC.FindFirstNPC(mod.NPCType<NPCs.Taranys.Taranys>());
                 bool taranysIsDying = taranys != -1 && Main.npc[taranys].ai[0] < 0;
+                bool taranysDespawn = taranys != -1 && Main.npc[taranys].ai[0] < -2000;
 
-                if (SummonComplete && taranys == -1 || Timer < 0)
+                if (SummonComplete && taranysDespawn || Timer >= 1e9f)
+                {
+                    Timer = 1e9f;
+                    if (projectile.scale > 0.02f)
+                        projectile.scale -= 0.01f;
+                    else
+                        projectile.Kill();
+                }
+                else if (SummonComplete && taranys == -1 || Timer < 0)
                 {
                     // Shrink back down then go to the altar
-                    if (projectile.scale > 1.2f)
-                        projectile.scale -= 0.035f;
-                    else
-                    {
-                        Effects(Vector2.Zero, true);
-                        AlAltar();
-                    }
+                    Effects(Vector2.Zero, true);
+                    AlAltar();
                 }
                 else if (SummonComplete && taranys > -1 && taranysIsDying)
                 {
@@ -262,6 +266,7 @@ namespace Erilipah.Items.ErilipahBiome
 
             if (Timer < 0)
             {
+                projectile.Center = AboveAltar;
                 Timer--;
 
                 // If there's a person dashing thru us, drop everything and complete the cycle.
@@ -288,7 +293,7 @@ namespace Erilipah.Items.ErilipahBiome
 
                 if (Timer < -60)
                 {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10 + Main.rand.NextVector2CircularEdge(55, 55), mod.DustType<CrystallineDust>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 16 + Main.rand.NextVector2CircularEdge(55, 55), mod.DustType<CrystallineDust>(), Vector2.Zero);
                     dust.customData = 100f; // Make it start funneling inward automatically
                 }
 
@@ -297,7 +302,7 @@ namespace Erilipah.Items.ErilipahBiome
                 if (!ErilipahWorld.downedTaintedSkull && dist > 300 && Main.LocalPlayer.InErilipah())
                 {
                     float numDust = dist / 50f;
-                    Vector2 pos = Vector2.Lerp(Main.LocalPlayer.Center, projectile.Center - Vector2.UnitY * 10, (inc += 0.25f / numDust) % 1);
+                    Vector2 pos = Vector2.Lerp(Main.LocalPlayer.Center, projectile.Center - Vector2.UnitY * 16, (inc += 0.25f / numDust) % 1);
                     Dust.NewDustPerfect(pos, mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.35f)
                         .noGravity = true;
                 }

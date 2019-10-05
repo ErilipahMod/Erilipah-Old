@@ -250,19 +250,21 @@ namespace Erilipah
             if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && playerBrightness <= 0.1f)
             {
                 darknessCounter++;
-                if (darknessCounter == 220)
+                if (darknessCounter == 320)
                 {
                     Main.PlaySound(15, (int)player.Center.X + Main.rand.Next(-150, 150), (int)player.Center.Y + Main.rand.Next(-150, 150), 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
                 }
-                if (darknessCounter >= 400 && darknessCounter % 120 == 0)
+                if (darknessCounter >= 500 && darknessCounter % 150 == 0)
                 {
-                    player.Hurt(PlayerDeathReason.ByCustomReason("Darkness overtook " + player.name + "."), player.statLifeMax2 / 5 + Main.rand.Next(15), Main.rand.Next(-1, 2));
+                    player.Hurt(PlayerDeathReason.ByCustomReason("Darkness overtook " + player.name + "."), 
+                        player.statLifeMax2 / 4 + (player.statDefense / 2) + Main.rand.Next(15), Main.rand.Next(-1, 2));
                 }
             }
             else
             {
-                if (darknessCounter > 400) darknessCounter = 400;
-                darknessCounter -= 3;
+                if (darknessCounter > 500) 
+                    darknessCounter = 500;
+                darknessCounter--;
             }
 
             if (darknessCounter < 0)
@@ -323,6 +325,7 @@ namespace Erilipah
                 Infect((float)damage / 20f + added);
             }
         }
+
         public class InfectionNPC : GlobalNPC
         {
             public override bool InstancePerEntity => true;

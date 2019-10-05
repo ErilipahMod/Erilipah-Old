@@ -57,10 +57,10 @@ namespace Erilipah.Biomes.ErilipahBiome
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D texture2D = ModContent.GetTexture("Erilipah/NPCs/ErilipahBiome/VoidParticle");
+            Texture2D texture2D = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/AshDust");
             Rectangle frame = texture2D.Frame(1, 3, 0, 1);
             spriteBatch.Draw(texture2D,
-                pos - Main.screenPosition, frame, Color.White * 1f, rot, new Vector2(4.5f, 4.5f), scale, 0, 0);
+                pos - Main.screenPosition, frame, Color.White, rot, new Vector2(4.5f, 4.5f), scale, 0, 0);
         }
     }
     public class ErilipahSky : CustomSky
@@ -90,6 +90,11 @@ namespace Erilipah.Biomes.ErilipahBiome
             }
             Opacity = MathHelper.Clamp(Opacity, 0, 1f);
 
+            HandleAshes();
+        }
+
+        private void HandleAshes()
+        {
             bool noAshes = Main.myPlayer < 0 || Main.gameMenu || !Main.LocalPlayer.active || Main.LocalPlayer.Center.Y > Main.worldSurface * 16;
             if (noAshes)
             {
@@ -97,14 +102,17 @@ namespace Erilipah.Biomes.ErilipahBiome
             }
             else if (ashes.Count < (Main.raining || Sandstorm.Happening ? 1200 : 900))
             {
-                float grav = (Main.raining || Sandstorm.Happening ? 1.3f : 1.0f) * Main.rand.NextFloat(1f, 5f);
-                ashes.Add(new FallingAsh(
-                    new Vector2(
-                        Main.rand.NextFloat(Main.screenPosition.X - 100, Main.screenPosition.X + Main.screenWidth + 100),
-                        Main.screenPosition.Y - 50),
-                    grav,
-                    MathHelper.Lerp(0.6f, 1.5f, (grav - 1f) / 5f)
-                    ));
+                for (int i = 0; i < (Main.raining || Sandstorm.Happening ? 2 : 1); i++)
+                {
+                    float grav = (Main.raining || Sandstorm.Happening ? 1.3f : 1.0f) * Main.rand.NextFloat(1f, 5f);
+                    ashes.Add(new FallingAsh(
+                        new Vector2(
+                            Main.rand.NextFloat(Main.screenPosition.X - 100, Main.screenPosition.X + Main.screenWidth + 100),
+                            Main.screenPosition.Y - 50),
+                        grav,
+                        MathHelper.Lerp(0.6f, 1.5f, (grav - 1f) / 5f)
+                        ));
+                }
             }
             ashes.ForEach(ash => ash.Update());
             ashes.RemoveAll(ash => !ash.active);
@@ -113,6 +121,7 @@ namespace Erilipah.Biomes.ErilipahBiome
                 droplet.active = false;
             }
         }
+
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
         {
             if (maxDepth >= 0f && minDepth < 0f)

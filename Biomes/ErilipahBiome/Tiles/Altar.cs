@@ -35,7 +35,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             const int min = 125;
-            drawColor *= 3;
 
             if (drawColor.R < min) drawColor.R = min;
             if (drawColor.G < min) drawColor.G = min;

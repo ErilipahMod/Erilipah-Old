@@ -1,4 +1,5 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
+using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using Terraria;
@@ -10,14 +11,17 @@ namespace Erilipah
 {
     internal class ErilipahTile : GlobalTile
     {
-        public override void RandomUpdate(int i, int j, int type)
+        public static bool OnScreen(int i, int j)
         {
             bool onScreenX = i < Main.screenPosition.X / 16 || i > (Main.screenPosition.X + Main.screenWidth) / 16;
             bool onScreenY = j < Main.screenPosition.Y / 16 || j > (Main.screenPosition.Y + Main.screenHeight) / 16;
-            bool onScreen = onScreenX && onScreenY;
+            return onScreenX & onScreenY;
+        }
 
+        public override void RandomUpdate(int i, int j, int type)
+        {
             // TODO after testing
-            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile())// && Main.rand.Chance(0.015f) && !onScreen)
+            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.08f) && !OnScreen(i, j))
                 ErilipahWorld.PlaceHazard(i, j, mod);
         }
 
@@ -25,7 +29,7 @@ namespace Erilipah
         {
             Tile tile = Main.tile[i, j];
 
-            if (Main.netMode != 1 && Main.rand.Chance(ErilipahItem.LightSnuffRate) && type != mod.TileType<Items.ErilipahBiome.ArkenTorchTile>())
+            if (Main.netMode != 1 && Main.rand.Chance(ErilipahItem.LightSnuffRate))
                 Snuff(i, j, type, tile);
         }
 
@@ -33,7 +37,9 @@ namespace Erilipah
         {
             try
             {
-                if (tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type))
+                bool light = tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type);
+                light &= type != mod.TileType<ArkenTorchTile>();
+                if (light)
                 {
                     if (type == mod.TileType<Items.ErilipahBiome.CrystallineTorchTile>() && Main.rand.Chance(0.50f))
                     {

@@ -63,6 +63,11 @@ namespace Erilipah.Items.ErilipahBiome
                 }
         }
 
+        public override bool UseItem(Player player)
+        {
+            return !player.wet;
+        }
+
         public override void PostUpdate()
         {
             if (!item.wet && Main.LocalPlayer.InErilipah())
@@ -89,14 +94,7 @@ namespace Erilipah.Items.ErilipahBiome
             recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 5);
             recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 1);
             recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
-            recipe.SetResult(this, 6);
-            recipe.AddRecipe();
-
-            recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Torch, 6);
-            recipe.AddIngredient(mod.ItemType<BioluminescentSinew>(), 1);
-            recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
-            recipe.SetResult(this, 6);
+            recipe.SetResult(this, 2);
             recipe.AddRecipe();
         }
     }
@@ -135,6 +133,11 @@ namespace Erilipah.Items.ErilipahBiome
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Torches };
             torch = true;
+        }
+
+        public override bool CanPlace(int i, int j)
+        {
+            return Main.tile[i, j].liquid == 0;
         }
 
         public override void NumDust(int i, int j, bool fail, ref int num)

@@ -27,7 +27,7 @@ namespace Erilipah.NPCs.Taranys
         public override void SetDefaults()
         {
             npc.lifeMax = 6500;
-            npc.defense = 14;
+            npc.defense = 18;
             npc.damage = 25;
             npc.knockBackResist = 0f;
             npc.SetInfecting(4.5f);
@@ -53,7 +53,7 @@ namespace Erilipah.NPCs.Taranys
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
             npc.lifeMax = (int)(npc.lifeMax * 0.65f * bossLifeScale) + (numPlayers > 1 ? numPlayers * 1250 : 0);
-            npc.defense = (int)(npc.defense * 1.35f);
+            npc.defense = (int)(npc.defense * 1.4f);
             npc.damage = (int)(npc.damage * 0.65f);
         }
 

@@ -50,28 +50,30 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if (Main.tile[i, j + 1].type != Type)
+            Tile tile = Main.tile[i, j];
+            bool isBase = tile.frameX >= 54 && tile.frameY >= 90;
+
+            if (!isBase && Main.tile[i, j + 1].type != Type)
             {
                 WorldGen.KillTile(i, j, Main.rand.NextBool());
             }
-
-            bool isBase = Main.tile[i, j].frameX >= 54 && Main.tile[i, j].frameY >= 90;
             if (isBase)
             {
-                Tile tile = Main.tile[i, j];
                 int left = i - (tile.frameX - 54) / 18;
 
                 if (!Main.tile[i, j + 1].IsErilipahTile())
                 {
-                    //BreakBase(left, j);
+                    BreakBase(left, j);
                 }
 
-                if (!Main.tile[left, j].active() && !Main.tile[left + 1, j].active() && !Main.tile[left + 2, j].active())
+                if (!Main.tile[left, j].active() || !Main.tile[left + 1, j].active() || !Main.tile[left + 2, j].active())
                 {
-                    //BreakBase(left, j);
+                    BreakBase(left, j);
                 }
 
+#pragma warning disable IDE0062 // Make local function 'static'
                 void BreakBase(int xL, int nJ)
+#pragma warning restore IDE0062 // Make local function 'static'
                 {
                     WorldGen.KillTile(xL, nJ, Main.rand.NextBool());
                     WorldGen.KillTile(xL + 1, nJ, Main.rand.NextBool());
