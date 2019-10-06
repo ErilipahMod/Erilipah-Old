@@ -28,9 +28,9 @@ namespace Erilipah.NPCs.Dracocide
         }
 
         private Entity target = null;
-        private List<Entity> ignore = new List<Entity>();
+        private readonly List<Entity> ignore = new List<Entity>();
 
-        private int[] projectiles = new int[9];
+        private readonly int[] projectiles = new int[9];
 
         public override void SetStaticDefaults()
         {
@@ -66,19 +66,7 @@ namespace Erilipah.NPCs.Dracocide
 
         private Entity FindTarget()
         {
-            // #1 look for dracons                
-            // postponed until dracons are implemented
-
-            // #2 look for drones
-            npc.target = npc.FindClosestNPC(750, mod.NPCType<DroneGunner>());
-            if (npc.target > -1 && CanSee(Main.npc[npc.target]) && !ignore.Contains(Main.npc[npc.target]))
-            {
-                npc.netUpdate = true;
-                Say("?");
-                return Main.npc[npc.target];
-            }
-
-            // #3 look for players
+            // #1 look for players
             npc.target = Helper.FindClosestPlayer(npc, 1050);
             if (npc.target > -1 && CanSee(Main.player[npc.target]) && !ignore.Contains(Main.player[npc.target]))
             {
@@ -87,7 +75,7 @@ namespace Erilipah.NPCs.Dracocide
                 return Main.player[npc.target];
             }
 
-            // #4 look for town NPCs and zombies
+            // #2 look for town NPCs and zombies
             npc.target = npc.FindClosestNPC(750, x => x.townNPC || x.aiStyle == 3);
 
             if (npc.target > -1 && CanSee(Main.npc[npc.target]) && !ignore.Contains(Main.npc[npc.target]))
@@ -203,14 +191,7 @@ namespace Erilipah.NPCs.Dracocide
             }
             else
             {
-                Vector2 goTo;
-                bool isDrone = target is NPC && ((target as NPC).type == mod.NPCType<DroneGunner>() || (target as NPC).type == mod.NPCType<DroneSaw>());
-
-                // Follow
-                if (isDrone)
-                    goTo = new Vector2(target.Center.X + 100, npc.Center.Y);
-                else
-                    goTo = target.Center + new Vector2(0, -200);
+                Vector2 goTo = target.Center + new Vector2(0, -200);
 
                 if (CanSee(target))
                 {
@@ -305,17 +286,6 @@ namespace Erilipah.NPCs.Dracocide
                 return;
 
             npc.netUpdate = true;
-
-            if (target is NPC && (target as NPC).type == mod.NPCType<DroneGunner>())
-            {
-                NPC.NewNPC(
-                    (int)npc.Center.X + Main.rand.Next(-100, 100),
-                    (int)npc.Center.Y - 100,
-                    mod.NPCType<AssaultDrone>(),
-                    ai1: target.whoAmI,
-                    ai2: 0);
-                return;
-            }
 
             float numNPCs = 2.5f;
             if (Main.expertMode)
