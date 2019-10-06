@@ -1,4 +1,5 @@
 ﻿using Erilipah.Items.Crystalline;
+using Erilipah.NPCs.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +11,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah.NPCs.ErilipahBiome
+namespace Erilipah.NPCs.LostCity
 {
     public class Abomination : ModNPC
     {

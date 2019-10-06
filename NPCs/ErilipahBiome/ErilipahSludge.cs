@@ -47,7 +47,7 @@ namespace Erilipah.NPCs.ErilipahBiome
         {
             Player target = Main.player[npc.target];
             float distance = npc.Distance(target.Center);
-            bool canSeeTarget = Collision.CanHitLine(target.position, target.width, target.height, npc.position, npc.width, npc.height);
+            bool canSeeTarget = Collision.CanHitLine(target.Center, 1, 1, npc.Top, 1, 1);
             if (timer >= 300 || (canSeeTarget && distance < 1000))
                 timer++;
 
@@ -140,7 +140,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.InErilipah() ? 0.09f : 0;
+            return spawnInfo.player.InErilipah() ? SpawnCondition.OverworldDaySlime.Chance * 0.08f : 0;
         }
     }
 }

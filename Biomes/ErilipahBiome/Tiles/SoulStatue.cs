@@ -1,5 +1,5 @@
 ﻿using Erilipah.Items.ErilipahBiome;
-using Erilipah.NPCs.ErilipahBiome;
+using Erilipah.NPCs.LostCity;
 using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;

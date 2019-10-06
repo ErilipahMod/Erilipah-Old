@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah.NPCs.ErilipahBiome
+namespace Erilipah.NPCs.Taranys
 {
     public class Seeker : ModNPC
     {
@@ -64,8 +64,6 @@ namespace Erilipah.NPCs.ErilipahBiome
             }
         }
 
-        private bool Direction { get => npc.ai[2] == 1; set => npc.ai[2] = value ? 1 : 0; }
-        private bool HasSeenTarget { get => npc.ai[3] == 1; set => npc.ai[3] = value ? 1 : 0; }
         private Player Target => Main.player[npc.target];
 
         public override void AI()
@@ -103,10 +101,6 @@ namespace Erilipah.NPCs.ErilipahBiome
     public class Zoub : ModProjectile
     {
         public override string Texture => Helper.Invisible;
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Sonic Crystal");
-        }
         public override void SetDefaults()
         {
             projectile.width = 32;
