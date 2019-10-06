@@ -39,6 +39,8 @@ namespace Erilipah.Items.Sanguine
             Main.tileLighted[Type] = true;
             Main.tileSpelunker[Type] = true;
 
+            Main.tileMerge[Type][Terraria.ID.TileID.Stone] = true;
+
             dustType = mod.DustType("Sanguine");
             drop = mod.ItemType("SanguineTileItem");
 

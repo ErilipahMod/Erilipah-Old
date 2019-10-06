@@ -54,7 +54,6 @@ namespace Erilipah
                 }
             }
         }
-
         private void TorchOfSoul(NPC target, int damage)
         {
             Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
@@ -89,6 +88,15 @@ namespace Erilipah
             Rectangle loc = player.getRect();
             loc.Y -= 30;
             CombatText.NewText(loc, new Color(247, 202, 166), amount);
+        }
+
+        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        {
+            if (player.statLife == 1 && player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
+            {
+                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, mod.DustType<Items.Niter.NiterDust>(), Scale: 0.75f)];
+                d.velocity = new Vector2(0, -0.25f);
+            }
         }
 
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
@@ -133,6 +141,15 @@ namespace Erilipah
                 }
             }
         }
+        public override void UpdateBadLifeRegen()
+        {
+            if (player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
+            {
+                player.lifeRegenTime = 0;
+                if (player.lifeRegen > 0)
+                    player.lifeRegen = 0;
+            }
+        }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
@@ -158,7 +175,6 @@ namespace Erilipah
                 }
             }
         }
-
         public override void SetControls()
         {
             if (!canMove)

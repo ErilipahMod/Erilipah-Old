@@ -210,6 +210,8 @@ namespace Erilipah.NPCs.Taranys
 
             if (Timer <= -2000 || Target.dead && CheckActive())
             {
+                Filters.Scene["TaranysPulse"].Deactivate();
+
                 Timer--;
                 if (Timer > 0)
                 {

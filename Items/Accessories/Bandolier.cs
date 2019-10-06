@@ -91,7 +91,6 @@ namespace Erilipah.Items.Accessories
 
         public class Bandolier : Bandoliers
         {
-            public override string Texture => "Erilipah/Items/Bandolier";
             public override void SetStaticDefaults()
             {
                 Tooltip.SetDefault("Right click the bandolier with bullets to add the bullets\n" +
@@ -187,9 +186,8 @@ namespace Erilipah.Items.Accessories
             }
         }
 
-        public class ThreeTorusBandolier : Bandoliers
+        public class BandolierThreeTorus : Bandoliers
         {
-            public override string Texture => "Erilipah/Items/BandolierThreeTorus";
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Three-Torus Bandolier");
@@ -273,7 +271,7 @@ namespace Erilipah.Items.Accessories
                 return 1;
             if (player.FindAmmo().modItem is Bandoliers.Bandolier)
                 return 1.15f;
-            if (player.FindAmmo().modItem is Bandoliers.ThreeTorusBandolier)
+            if (player.FindAmmo().modItem is Bandoliers.BandolierThreeTorus)
                 return 1.25f;
             return 1;
         }

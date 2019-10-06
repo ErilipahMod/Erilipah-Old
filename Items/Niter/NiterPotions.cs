@@ -23,62 +23,80 @@ namespace Erilipah.Items.Niter
             player.statLifeMax2 -= (int)(50 * proportion) - 50;
             player.allDamage *= proportion;
             player.moveSpeed *= proportion;
+            player.jumpSpeedBoost += 2 * proportion;
             player.maxRunSpeed *= System.Math.Min(proportion, 2.06f);
             player.wellFed = true;
         }
     }
 
-    public class LesserNiterPotion : ModItem
+    public abstract class NiterPot : ModItem
     {
-        private const int amount = 50;
-        public static void InsertNiterTooltip(List<TooltipLine> tooltips, Mod mod, int amount)
+        public int takeLife;
+        public int sickTime;
+
+        public override bool CloneNewInstances => true;
+        public override ModItem Clone()
         {
-            tooltips.Insert(1, new TooltipLine(mod, "Takes Life", "Takes " + amount + " life"));
+            NiterPot clone = (NiterPot)base.Clone();
+            clone.takeLife = takeLife;
+            clone.sickTime = sickTime;
+            return clone;
         }
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Lesser Niter Potion");
-            Tooltip.SetDefault("Induces a potent power surge");
-        }
-        public override void SetDefaults()
+        public abstract void SetDefaults(out int width, out int height, out int rare, out int value, out int lifeAmt, out int buffTime, out int sickTime);
+
+        public sealed override void SetDefaults()
         {
             item.CloneDefaults(ItemID.LesserHealingPotion);
 
             item.healLife = 0;
             item.healMana = 0;
 
-            item.width = 28;
-            item.height = 34;
+            sickTime = 0;
+            takeLife = 0;
 
-            item.value = Item.sellPrice(0, 0, 5);
-            item.rare = 1;
-
-            item.buffTime = 400;
             item.buffType = mod.BuffType<NiterPotionBuff>();
+
+            SetDefaults(out item.width, out item.height, out item.rare, out item.value, out takeLife, out item.buffTime, out sickTime);
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            InsertNiterTooltip(tooltips, mod, amount);
+            tooltips.Insert(1, new TooltipLine(mod, "Takes Life", "Takes " + takeLife + " life"));
         }
 
         public override bool CanUseItem(Player player)
         {
-            return !player.HasBuff(BuffID.PotionSickness) && player.statLife > amount;
+            return !player.HasBuff(BuffID.PotionSickness);
         }
 
         public override void OnConsumeItem(Player player)
         {
-            CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, amount);
-            player.statLife -= amount;
+            // lt = 50
+            // pl = 40
+
+            int lifeTaken = takeLife;
+            if (lifeTaken >= player.statLife)
+                lifeTaken -= lifeTaken - player.statLife + 1; // Leaves player at 1 HP if they consume while < amount
+
+            CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, lifeTaken);
+            player.statLife -= lifeTaken;
             player.netLife = true;
 
             player.ClearBuff(BuffID.PotionSickness);
             player.potionDelayTime = 0;
 
-            float time = 700 * (player.potionDelay / 3600f);
+            float time = sickTime * (player.potionDelay / 3600f);
             player.AddBuff(BuffID.PotionSickness, (int)time);
+        }
+    }
+
+    public class LesserNiterPotion : NiterPot
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Lesser Niter Potion");
+            Tooltip.SetDefault("Induces a potent power surge");
         }
 
         public override void AddRecipes()
@@ -90,63 +108,22 @@ namespace Erilipah.Items.Niter
             recipe.SetResult(this, 3);
             recipe.AddRecipe();
         }
+
+        public override void SetDefaults(out int width, out int height, out int rare, out int value, out int lifeAmt, out int buffTime, out int sickTime)
+        {
+            width = 28;
+            height = 34;
+
+            rare = 1;
+            value = 500;
+            lifeAmt = 50;
+            buffTime = 400;
+            sickTime = 600;
+        }
     }
 
-    public class NiterPotion : ModItem
+    public class NiterPotion : NiterPot
     {
-        public override string Texture => Helper.Invisible;
-
-        private const int amount = 100;
-        public static void InsertNiterTooltip(List<TooltipLine> tooltips, Mod mod, int amount)
-        {
-            tooltips.Insert(1, new TooltipLine(mod, "Takes Life", "Takes " + amount + " life"));
-        }
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Niter Potion");
-            Tooltip.SetDefault("Induces an immense power surge");
-        }
-        public override void SetDefaults()
-        {
-            item.CloneDefaults(ItemID.LesserHealingPotion);
-
-            item.healLife = 0;
-            item.healMana = 0;
-
-            item.width = 28;
-            item.height = 34;
-
-            item.value = Item.sellPrice(0, 0, 15);
-            item.rare = 3;
-
-            item.buffTime = 600;
-            item.buffType = mod.BuffType<NiterPotionBuff>();
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            InsertNiterTooltip(tooltips, mod, amount);
-        }
-
-        public override bool CanUseItem(Player player)
-        {
-            return !player.HasBuff(BuffID.PotionSickness) && player.statLife > amount;
-        }
-
-        public override void OnConsumeItem(Player player)
-        {
-            CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, amount);
-            player.statLife -= amount;
-            player.netLife = true;
-
-            player.ClearBuff(BuffID.PotionSickness);
-            player.potionDelayTime = 0;
-
-            float time = 850 * (player.potionDelay / 3600f);
-            player.AddBuff(BuffID.PotionSickness, (int)time);
-        }
-
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
@@ -163,61 +140,46 @@ namespace Erilipah.Items.Niter
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
         }
-    }
 
-    public class GreaterNiterPotion : ModItem
-    {
-        public override string Texture => Helper.Invisible;
-
-        private const int amount = 150;
-        public static void InsertNiterTooltip(List<TooltipLine> tooltips, Mod mod, int amount)
+        public override void SetDefaults(out int width, out int height, out int rare, out int value, out int lifeAmt, out int buffTime, out int sickTime)
         {
-            tooltips.Insert(1, new TooltipLine(mod, "Takes Life", "Takes " + amount + " life"));
+            width = 30;
+            height = 36;
+
+            rare = 3;
+            value = 1500;
+
+            lifeAmt = 100;
+            buffTime = 600;
+            sickTime = 850;
         }
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Niter Potion");
+            Tooltip.SetDefault("Induces an immense power surge");
+        }
+    }
+
+    public class GreaterNiterPotion : NiterPot
+    {
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Greater Niter Potion");
             Tooltip.SetDefault("Induces an overwhelming power surge");
         }
-        public override void SetDefaults()
+
+        public override void SetDefaults(out int width, out int height, out int rare, out int value, out int lifeAmt, out int buffTime, out int sickTime)
         {
-            item.CloneDefaults(ItemID.LesserHealingPotion);
+            width = 32;
+            height = 38;
 
-            item.healLife = 0;
-            item.healMana = 0;
+            rare = 5;
+            value = 2500;
 
-            item.width = 28;
-            item.height = 34;
-
-            item.value = Item.sellPrice(0, 0, 25);
-            item.rare = 5;
-
-            item.buffTime = 1000;
-            item.buffType = mod.BuffType<NiterPotionBuff>();
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            InsertNiterTooltip(tooltips, mod, amount);
-        }
-
-        public override bool CanUseItem(Player player)
-        {
-            return !player.HasBuff(BuffID.PotionSickness) && player.statLife > amount;
-        }
-
-        public override void OnConsumeItem(Player player)
-        {
-            CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, amount);
-            player.statLife -= amount;
-            player.netLife = true;
-
-            player.ClearBuff(BuffID.PotionSickness);
-            player.potionDelayTime = 0;
-
-            float time = 1000 * (player.potionDelay / 3600f);
-            player.AddBuff(BuffID.PotionSickness, (int)time);
+            lifeAmt = 150;
+            buffTime = 900;
+            sickTime = 1200;
         }
 
         public override void AddRecipes()
@@ -232,59 +194,25 @@ namespace Erilipah.Items.Niter
         }
     }
 
-    public class SuperNiterPotion : ModItem
+    public class SuperNiterPotion : NiterPot
     {
-        public override string Texture => Helper.Invisible;
-
-        private const int amount = 200;
-        public static void InsertNiterTooltip(List<TooltipLine> tooltips, Mod mod, int amount)
+        public override void SetDefaults(out int width, out int height, out int rare, out int value, out int lifeAmt, out int buffTime, out int sickTime)
         {
-            tooltips.Insert(1, new TooltipLine(mod, "Takes Life", "Takes " + amount + " life"));
+            width = 32;
+            height = 46;
+
+            rare = 7;
+            value = 3500;
+
+            lifeAmt = 200;
+            buffTime = 1100;
+            sickTime = 1450;
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Antares Potion");
-            Tooltip.SetDefault("Induces an overwhelming power surge");
-        }
-        public override void SetDefaults()
-        {
-            item.CloneDefaults(ItemID.LesserHealingPotion);
-
-            item.healLife = 0;
-            item.healMana = 0;
-
-            item.width = 28;
-            item.height = 34;
-
-            item.value = Item.sellPrice(0, 0, 35);
-            item.rare = 7;
-
-            item.buffTime = 1500;
-            item.buffType = mod.BuffType<NiterPotionBuff>();
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            InsertNiterTooltip(tooltips, mod, amount);
-        }
-
-        public override bool CanUseItem(Player player)
-        {
-            return !player.HasBuff(BuffID.PotionSickness) && player.statLife > amount;
-        }
-
-        public override void OnConsumeItem(Player player)
-        {
-            CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, amount);
-            player.statLife -= amount;
-            player.netLife = true;
-
-            player.ClearBuff(BuffID.PotionSickness);
-            player.potionDelayTime = 0;
-
-            float time = 2000 * (player.potionDelay / 3600f);
-            player.AddBuff(BuffID.PotionSickness, (int)time);
+            Tooltip.SetDefault("Induces a lethal power surge");
         }
 
         public override void AddRecipes()

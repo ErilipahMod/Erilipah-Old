@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -13,12 +14,16 @@ namespace Erilipah.Items.Phlogiston
         protected override string Tooltip => "Splits into smaller bolts on impact";
 
         protected override float ShootSpeed => 9;
-        protected override int[,] CraftingIngredients => new int[,]
+
+        public override void AddRecipes()
         {
-            { ItemID.WoodenArrow, 333 },
-            { mod.ItemType<StablePhlogiston>(), 1 }
-        };
-        protected override int CraftingTile => TileID.Anvils;
+            ModRecipe r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.WoodenArrow, 333);
+            r.AddIngredient(mod.ItemType<StablePhlogiston>(), 1);
+            r.AddTile(TileID.Anvils);
+            r.SetResult(this, 333);
+            r.AddRecipe();
+        }
     }
 
     public class PhlogistonArrowProj : NewModProjectile
