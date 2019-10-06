@@ -16,7 +16,7 @@ namespace Erilipah.Items.LunarBee
             item.maxStack = 999;
             item.consumable = true;
             item.width = 40;
-            item.height = 40;
+            item.height = 34;
             item.rare = 1;
             item.expert = true;
         }

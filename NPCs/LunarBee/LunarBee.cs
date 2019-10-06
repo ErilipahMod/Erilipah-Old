@@ -456,6 +456,22 @@ namespace Erilipah.NPCs.LunarBee
             npc.lifeMax = (int)(npc.lifeMax * 0.6 * Math.Max(1, numPlayers * 0.8f));
             npc.defense = (int)(npc.defense * 1.15);
         }
+
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life <= 0)
+            {
+                Vector2 v() => new Vector2(Main.rand.NextFloat() * hitDirection, Main.rand.NextFloat(-2.5f, -1));
+
+                Gore.NewGore(npc.Top, v(), mod.GetGoreSlot("Gores/Lunaemia/Lunaemia0"));
+                Gore.NewGore(npc.position + new Vector2(30, 40), v(), mod.GetGoreSlot("Gores/Lunaemia/Lunaemia1"));
+                Gore.NewGore(npc.position + new Vector2(28, 64), v(), mod.GetGoreSlot("Gores/Lunaemia/Lunaemia2"));
+                Gore.NewGore(npc.position + new Vector2(18, 88), v(), mod.GetGoreSlot("Gores/Lunaemia/Lunaemia3"));
+
+                for (int i = 0; i < 2; i++)
+                    Gore.NewGore(npc.position + new Vector2(60, 26), v() * 1.75f, mod.GetGoreSlot("Gores/Lunaemia/Lunaemia4"));
+            }
+        }
     }
 
     public class Lunacrita : ModNPC
@@ -538,13 +554,30 @@ namespace Erilipah.NPCs.LunarBee
                 }
             }
         }
+
         public override void FindFrame(int frameHeight)
             => npc.Animate(frameHeight, 8, 4);
+
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life <= 0)
+            {
+                Vector2 v() => new Vector2(Main.rand.NextFloat(1, 3) * hitDirection, Main.rand.NextFloat(-2.5f, -1));
+
+                Gore.NewGore(npc.TopLeft, v(), mod.GetGoreSlot("Gores/Lunaemia/Lunacrita0"));
+                Gore.NewGore(npc.Center, v(), mod.GetGoreSlot("Gores/Lunaemia/Lunacrita1"));
+                Gore.NewGore(npc.Bottom, v(), mod.GetGoreSlot("Gores/Lunaemia/Lunacrita2"));
+
+                for (int i = 0; i < 2; i++)
+                    Gore.NewGore(npc.TopRight, v(), mod.GetGoreSlot("Gores/Lunaemia/Lunaemia3"));
+            }
+        }
 
         public override void NPCLoot()
         {
             Loot.DropItem(npc, ItemID.Heart);
         }
+
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             return 0;
