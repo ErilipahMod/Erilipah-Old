@@ -57,7 +57,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (!WorldGen.gen && Main.netMode != 1)
             {
-                Item.NewItem(i * 16, j * 16, 36, 54, mod.ItemType<PureFlower>(), Main.rand.Next(1, 5));
+                Item.NewItem(i * 16, j * 16, 36, 54, mod.ItemType<VoidFlower>(), Main.rand.Next(1, 5));
             }
         }
     }

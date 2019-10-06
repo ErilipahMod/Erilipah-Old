@@ -1016,7 +1016,7 @@ namespace Erilipah.NPCs.Taranys
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<PureFlower>());
+            Loot.DropItem(npc, mod.ItemType<VoidFlower>());
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

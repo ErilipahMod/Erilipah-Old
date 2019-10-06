@@ -32,7 +32,7 @@ namespace Erilipah.Items.Taranys
 
         public override void OpenBossBag(Player player)
         {
-            player.QuickSpawnItem(mod.ItemType<PureFlower>(), 10);
+            player.QuickSpawnItem(mod.ItemType<VoidFlower>(), 10);
 
             player.QuickSpawnItem(mod.ItemType<ShellChunk>(), Main.rand.Next(6, 15));
             player.QuickSpawnItem(mod.ItemType<MadnessFocus>(), Main.rand.Next(15, 23));

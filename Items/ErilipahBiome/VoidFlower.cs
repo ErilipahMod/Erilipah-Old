@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace Erilipah.Items.ErilipahBiome
 {
-    internal class PureFlower : ModItem
+    internal class VoidFlower : ModItem
     {
         public override void SetDefaults()
         {
@@ -19,6 +19,16 @@ namespace Erilipah.Items.ErilipahBiome
             player.I().Infect((Main.expertMode ? -5f : -3f) * item.stack);
             item.TurnToAir();
             return false;
+        }
+
+        public override bool ItemSpace(Player player)
+        {
+            return true;
+        }
+
+        public override void GrabRange(Player player, ref int grabRange)
+        {
+            grabRange += 2;
         }
     }
 }
