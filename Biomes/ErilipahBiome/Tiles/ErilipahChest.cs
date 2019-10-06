@@ -1,5 +1,4 @@
-﻿using Erilipah.Items.ErilipahBiome;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -209,7 +208,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 player.showItemIconText = Language.GetTextValue("LegacyChestType.0");
             }
             else
-            {                
+            {
                 if (tile.frameX >= 36)
                     player.showItemIcon2 = mod.ItemType<Items.Taranys.LostKey>();
                 else

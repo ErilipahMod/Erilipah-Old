@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria.ObjectData;
+﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
+using Erilipah.Items.Crystalline;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
-using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Terraria.Enums;
-using Erilipah.NPCs.ErilipahBiome;
-using Erilipah.Items.Crystalline;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
-    class Vine : HazardTile
+    internal class Vine : HazardTile
     {
         public override string MapName => "Cursed Vine";
         public override int DustType => mod.DustType<CrystallineDust>();
@@ -31,7 +27,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.StyleHorizontal = true;
                 TileObjectData.newTile.LinkedAlternates = true;
                 TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Vine>() };
-                TileObjectData.newTile.AnchorValidTiles = new int[] 
+                TileObjectData.newTile.AnchorValidTiles = new int[]
                 { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<Vine>() };
                 TileObjectData.newTile.AnchorTop = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
@@ -78,8 +74,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             Color color = Lighting.GetColor(i, j) * 2;
             Main.spriteBatch.Draw(
-                texture, 
-                new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, 
+                texture,
+                new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero,
                 new Rectangle(tile.frameX, tile.frameY + 2, 16, 16), color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
@@ -95,7 +91,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 //FOR DEBUG
                 //Main.LocalPlayer.position.X = i * 16;
                 //Main.LocalPlayer.position.Y = j * 16;
-                NPC.NewNPC(i * 16 + 8, j * 16 + 16, mod.NPCType<Bulb>(), ai0: i, ai1: j);
+                NPC.NewNPC(i * 16 + 8, j * 16 + 20, mod.NPCType<Bulb>(), ai0: i, ai1: j);
             }
             else if (tile.frameY < 54 && !Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
             {
@@ -138,7 +134,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             npc.defense = 500;
             npc.knockBackResist = 0;
             npc.noGravity = true;
-            
+
             npc.aiStyle = 0;
 
             npc.width = 20;
@@ -198,7 +194,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (Main.rand.NextBool(10))
             {
-                int dustInd = Dust.NewDust(npc.position, 20, 26, mod.DustType<FlowerDust>());
+                int dustInd = Dust.NewDust(npc.position + new Vector2(0, 6), 20, 20, mod.DustType<FlowerDust>());
 
                 Dust dust = Main.dust[dustInd];
                 dust.noGravity = false;

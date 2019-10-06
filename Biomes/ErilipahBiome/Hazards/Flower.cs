@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 //using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +7,7 @@ using Terraria.ObjectData;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
-    class FlowerDust : ModDust
+    internal class FlowerDust : ModDust
     {
         public override bool MidUpdate(Dust dust)
         {
@@ -26,7 +21,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         }
     }
 
-    class Flower : HazardTile
+    internal class Flower : HazardTile
     {
         public override string MapName => "Infected Pustule";
         public override int DustType => mod.DustType<FlowerDust>();

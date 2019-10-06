@@ -256,13 +256,13 @@ namespace Erilipah
                 }
                 if (darknessCounter >= 500 && darknessCounter % 150 == 0)
                 {
-                    player.Hurt(PlayerDeathReason.ByCustomReason("Darkness overtook " + player.name + "."), 
+                    player.Hurt(PlayerDeathReason.ByCustomReason("Darkness overtook " + player.name + "."),
                         player.statLifeMax2 / 4 + (player.statDefense / 2) + Main.rand.Next(15), Main.rand.Next(-1, 2));
                 }
             }
             else
             {
-                if (darknessCounter > 500) 
+                if (darknessCounter > 500)
                     darknessCounter = 500;
                 darknessCounter--;
             }

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria.ObjectData;
+﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
+using Erilipah.Items.Crystalline;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
 using Terraria.DataStructures;
-using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Terraria.Enums;
-using Erilipah.NPCs.ErilipahBiome;
-using Erilipah.Items.Crystalline;
+using Terraria.ObjectData;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
@@ -30,7 +23,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.CoordinateHeights = new[] { 16 };
                 TileObjectData.newTile.LinkedAlternates = true;
                 TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Stalk>() };
-                TileObjectData.newTile.AnchorValidTiles = new int[] 
+                TileObjectData.newTile.AnchorValidTiles = new int[]
                 { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<Stalk>() };
                 TileObjectData.newTile.AnchorBottom = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
@@ -108,7 +101,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             if (isTip)
                 return;
 
-            bool isBase  =  tile.frameX >= 54 && tile.frameY >= 90;
+            bool isBase = tile.frameX >= 54 && tile.frameY >= 90;
             bool isTop = tile.frameX >= 54 && tile.frameY <= 72;
             bool isStalk = (tile.frameX == 00 && tile.frameY >= 54) || (tile.frameX <= 36 && tile.frameY >= 72);
 
@@ -136,8 +129,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     above.active(true);
                     above.frameX = (short)(Main.rand.Next(3, 6) * 18);
                     above.frameY = 72;
-                } 
-                else 
+                }
+                else
                 {
                     above.type = Type;
                     above.active(true);
@@ -147,7 +140,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             else if (isTop)
             {
                 Tile above = Main.tile[i, j - 1];
-                
+
                 if (!above.active())
                 {
                     above.type = Type;
@@ -180,7 +173,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public static bool IsValid(int i, int j)
         {
             for (int e = -1; e <= 1; e++)
-                for (int f = -7; f < 0; f++) 
+                for (int f = -7; f < 0; f++)
                 {
                     Tile testing = Main.tile[i + e, j + f];
                     if (testing.active() || testing.wall > 0)

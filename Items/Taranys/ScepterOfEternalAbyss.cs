@@ -1,14 +1,9 @@
-﻿using Terraria.ID;
-using Terraria;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
+﻿using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
-using Erilipah.Items.Weapons;
-using Erilipah.Items.ErilipahBiome;
+using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace Erilipah.Items.Taranys
 {
@@ -68,7 +63,7 @@ namespace Erilipah.Items.Taranys
             for (int i = 0; i < 35; i++)
             {
                 float rot = i / 35f * MathHelper.TwoPi;
-                bool shouldIncVel  = rot > MathHelper.Pi + MathHelper.PiOver4 && rot < MathHelper.TwoPi - MathHelper.PiOver4;
+                bool shouldIncVel = rot > MathHelper.Pi + MathHelper.PiOver4 && rot < MathHelper.TwoPi - MathHelper.PiOver4;
                 shouldIncVel |= rot > MathHelper.PiOver4 && rot < MathHelper.PiOver2 + MathHelper.PiOver4;
 
                 float mult = shouldIncVel ? 5f : 3f;

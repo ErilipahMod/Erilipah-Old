@@ -200,33 +200,33 @@ namespace Erilipah.Items.Accessories.Medallions
     }
 
     public class BroadswordMedallion : Medallion
-    { override protected int i => ItemID.GoldBroadsword; override protected int i2 => ItemID.PlatinumBroadsword; }
+    { protected override int i => ItemID.GoldBroadsword; protected override int i2 => ItemID.PlatinumBroadsword; }
     public class ShortswordMedallion : Medallion
-    { override protected int i => ItemID.GoldShortsword; override protected int i2 => ItemID.PlatinumShortsword; }
+    { protected override int i => ItemID.GoldShortsword; protected override int i2 => ItemID.PlatinumShortsword; }
     public class MeleeProjectileMedallion : Medallion
-    { override protected int i => ItemID.EnchantedBoomerang; }
+    { protected override int i => ItemID.EnchantedBoomerang; }
     public class PickaxeMedallion : Medallion
-    { override protected int i => ItemID.GoldPickaxe; override protected int i2 => ItemID.PlatinumPickaxe; }
+    { protected override int i => ItemID.GoldPickaxe; protected override int i2 => ItemID.PlatinumPickaxe; }
     public class AxeMedallion : Medallion
-    { override protected int i => ItemID.GoldAxe; override protected int i2 => ItemID.PlatinumAxe; }
+    { protected override int i => ItemID.GoldAxe; protected override int i2 => ItemID.PlatinumAxe; }
 
     public class BowMedallion : Medallion
-    { override protected int i => ItemID.GoldBow; override protected int i2 => ItemID.PlatinumBow; }
+    { protected override int i => ItemID.GoldBow; protected override int i2 => ItemID.PlatinumBow; }
     public class RocketLauncherMedallion : Medallion
-    { override protected int i => ItemID.RocketLauncher; override protected int i2 => ItemID.SnowmanCannon; }
+    { protected override int i => ItemID.RocketLauncher; protected override int i2 => ItemID.SnowmanCannon; }
     public class GunMedallion : Medallion
-    { override protected int i => ItemID.Handgun; }
+    { protected override int i => ItemID.Handgun; }
 
     public class StaffMedallion : Medallion
-    { override protected int i => ItemID.AmethystStaff; override protected int i2 => ItemID.TopazStaff; }
+    { protected override int i => ItemID.AmethystStaff; protected override int i2 => ItemID.TopazStaff; }
     public class TomeMedallion : Medallion
-    { override protected int i => ItemID.WaterBolt; }
+    { protected override int i => ItemID.WaterBolt; }
 
     public class SentryMedallion : Medallion
-    { override protected int i => ItemID.DD2FlameburstTowerT1Popper; }
+    { protected override int i => ItemID.DD2FlameburstTowerT1Popper; }
     public class MinionMedallion : Medallion
-    { override protected int i => ItemID.HornetStaff; }
+    { protected override int i => ItemID.HornetStaff; }
 
     public class ThrownItemMedallion : Medallion
-    { override protected int i => ItemID.BouncyGrenade; override protected int i2 => ItemID.BouncyDynamite; }
+    { protected override int i => ItemID.BouncyGrenade; protected override int i2 => ItemID.BouncyDynamite; }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -56,10 +55,10 @@ namespace Erilipah.Items.ErilipahBiome
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             if (Banked > 0)
-            tooltips.Add(new TooltipLine(mod, "Stored Dmg", "Use to heal " + Banked + " life")
-            {
-                overrideColor = CombatText.HealLife
-            });
+                tooltips.Add(new TooltipLine(mod, "Stored Dmg", "Use to heal " + Banked + " life")
+                {
+                    overrideColor = CombatText.HealLife
+                });
         }
     }
 }

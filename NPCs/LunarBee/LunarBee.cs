@@ -83,7 +83,7 @@ namespace Erilipah.NPCs.LunarBee
                 spriteBatch.Draw(
                     texture,
                     TrailPos[i] - Main.screenPosition,
-                    new Rectangle(0, i * 100, texture.Width, texture.Height / 8),
+                    new Rectangle(0, i * 100, texture.Width, texture.Height / 4),
                     Color.White * ((TrailAlpha + i * 30) / 255f),
                     TrailRot,
                     drawOrigin,
@@ -120,7 +120,7 @@ namespace Erilipah.NPCs.LunarBee
             if (ShouldFlee())
             {
                 npc.velocity.Y -= 0.05f;
-                npc.rotation += npc.localAI[0] += Helper.RadiansPerTick(0.15f);
+                npc.rotation += npc.localAI[0] += Helper.RadiansPerTick(0.25f);
                 npc.dontTakeDamage = true;
                 return;
             }

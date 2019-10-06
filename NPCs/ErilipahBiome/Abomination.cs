@@ -1,5 +1,4 @@
 ﻿using Erilipah.Items.Crystalline;
-using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

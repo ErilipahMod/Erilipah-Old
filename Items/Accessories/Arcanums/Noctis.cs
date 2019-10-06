@@ -92,7 +92,7 @@ namespace Erilipah.Items.Accessories.Arcanums
             }
             else
             {
-                player.allDamage += 0.20f;
+                player.allDamage += 0.1f;
                 player.statLifeMax2 = (int)(player.statLifeMax2 * 0.75f);
                 player.accRunSpeed *= 1.15f;
                 player.maxRunSpeed *= 1.15f;

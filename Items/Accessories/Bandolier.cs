@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace Erilipah.Items
+namespace Erilipah.Items.Accessories
 {
     public abstract class Bandoliers : ModItem
     {
@@ -271,9 +271,9 @@ namespace Erilipah.Items
             bool valid = item.useAmmo == AmmoID.Bullet && item.ranged;
             if (!valid)
                 return 1;
-            if (Helper.FindAmmo(player).modItem is Bandoliers.Bandolier)
+            if (player.FindAmmo().modItem is Bandoliers.Bandolier)
                 return 1.15f;
-            if (Helper.FindAmmo(player).modItem is Bandoliers.ThreeTorusBandolier)
+            if (player.FindAmmo().modItem is Bandoliers.ThreeTorusBandolier)
                 return 1.25f;
             return 1;
         }

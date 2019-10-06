@@ -51,7 +51,7 @@ namespace Erilipah.Items.Phlogiston
         public override void Kill(int timeLeft)
         {
             Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
-                projectile.damage - 6, 7, projectile.knockBack, owner: projectile.owner);
+                projectile.damage - 7, 7, projectile.knockBack, owner: projectile.owner);
         }
     }
 

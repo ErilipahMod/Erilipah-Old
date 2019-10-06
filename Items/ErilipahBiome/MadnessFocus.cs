@@ -59,11 +59,16 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-
-            recipe.AddIngredient(mod.ItemType<SoulRubble>(), 2);
+            recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 4);
             recipe.AddTile(mod.TileType<Altar>());
+            recipe.SetResult(this, 1);
+            recipe.AddRecipe();
 
-            recipe.SetResult(this, 5);
+            recipe = new ModRecipe(mod);
+            recipe.AddIngredient(mod.ItemType<SoulRubble>(), 3);
+            recipe.AddIngredient(this, 50);
+            recipe.AddTile(TileID.MythrilAnvil);
+            recipe.SetResult(ItemID.RodofDiscord, 1);
             recipe.AddRecipe();
         }
     }

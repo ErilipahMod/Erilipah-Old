@@ -1,5 +1,4 @@
 ﻿using Erilipah.Items.ErilipahBiome;
-using Erilipah.Items.ErilipahBiome.Potions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -50,15 +49,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             int t1 = mod.GetGoreSlot("Gores/ERBiome/GiantPFGore0");
             int t2 = mod.GetGoreSlot("Gores/ERBiome/GiantPFGore1");
 
-            Gore.NewGore(new Vector2(i, j + 1) * 16,     Vel(), t1);
+            Gore.NewGore(new Vector2(i, j + 1) * 16, Vel(), t1);
             Gore.NewGore(new Vector2(i + 2, j + 1) * 16, Vel(), t1);
 
-            Gore.NewGore(new Vector2(i, j) * 16,         Vel(), t2);
-            Gore.NewGore(new Vector2(i + 2, j) * 16,     Vel(), t2);
+            Gore.NewGore(new Vector2(i, j) * 16, Vel(), t2);
+            Gore.NewGore(new Vector2(i + 2, j) * 16, Vel(), t2);
 
             if (!WorldGen.gen && Main.netMode != 1)
             {
-                Item.NewItem(i*16, j*16, 36, 54, mod.ItemType<PureFlower>(), Main.rand.Next(1, 5));
+                Item.NewItem(i * 16, j * 16, 36, 54, mod.ItemType<PureFlower>(), Main.rand.Next(1, 5));
             }
         }
     }

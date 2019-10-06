@@ -10,14 +10,14 @@ namespace Erilipah.Items.Phlogiston
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Phlogiston Longbow");
-            Tooltip.SetDefault("Fires an extra auto-aimed arrow\nCoats wooden arrows in phlogiston");
+            Tooltip.SetDefault("Fires an extra auto-aimed arrow\n1/3 chance to coat wooden arrows in phlogiston");
         }
         public override void SetDefaults()
         {
             item.width = 36;
             item.height = 66;
 
-            item.damage = 16;
+            item.damage = 14;
             item.ranged = true;
             item.knockBack = 1.3f;
 
@@ -40,7 +40,7 @@ namespace Erilipah.Items.Phlogiston
             position.X += speedX;
             position.Y += speedY;
 
-            if (type == ProjectileID.WoodenArrowFriendly)
+            if (type == ProjectileID.WoodenArrowFriendly && Main.rand.Next(3) == 0)
                 type = mod.ProjectileType<PhlogistonArrowProj>();
 
             int closest = player.FindClosestNPC(1000);

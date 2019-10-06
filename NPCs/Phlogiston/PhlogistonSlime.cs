@@ -2,13 +2,8 @@
 using Microsoft.Xna.Framework;
 //using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -90,7 +85,7 @@ namespace Erilipah.NPCs.Phlogiston
             return true;
         }
 
-        int timer = 0;
+        private int timer = 0;
         public override void SendExtraAI(BinaryWriter writer) => writer.Write(timer);
         public override void ReceiveExtraAI(BinaryReader reader) => timer = reader.ReadInt32();
 

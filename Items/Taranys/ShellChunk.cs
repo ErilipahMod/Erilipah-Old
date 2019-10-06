@@ -1,14 +1,9 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader;
 
 namespace Erilipah.Items.Taranys
 {
-    class ShellChunk : ModItem
+    internal class ShellChunk : ModItem
     {
         public override void SetDefaults()
         {

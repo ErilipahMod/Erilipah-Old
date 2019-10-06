@@ -214,7 +214,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            ulong randSeed = Main.TileFrameSeed ^ (ulong)((long)j << 32 | (long)(uint)i);
+            ulong randSeed = Main.TileFrameSeed ^ (ulong)((long)j << 32 | (uint)i);
             Color color = new Color(100, 100, 100, 0);
             int frameX = Main.tile[i, j].frameX;
             int frameY = Main.tile[i, j].frameY;
@@ -236,9 +236,9 @@ namespace Erilipah.Items.ErilipahBiome
             }
             for (int k = 0; k < 7; k++)
             {
-                float x = (float)Utils.RandomInt(ref randSeed, -10, 11) * 0.15f;
-                float y = (float)Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
-                Main.spriteBatch.Draw(mod.GetTexture("Items/ErilipahBiome/ArkenTorchTile_Flame"), new Vector2((float)(i * 16 - (int)Main.screenPosition.X) - (width - 16f) / 2f + x, (float)(j * 16 - (int)Main.screenPosition.Y + offsetY) + y) + zero, new Rectangle(frameX, frameY, width, height), color, 0f, default, 1f, SpriteEffects.None, 0f);
+                float x = Utils.RandomInt(ref randSeed, -10, 11) * 0.15f;
+                float y = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
+                Main.spriteBatch.Draw(mod.GetTexture("Items/ErilipahBiome/ArkenTorchTile_Flame"), new Vector2(i * 16 - (int)Main.screenPosition.X - (width - 16f) / 2f + x, j * 16 - (int)Main.screenPosition.Y + offsetY + y) + zero, new Rectangle(frameX, frameY, width, height), color, 0f, default, 1f, SpriteEffects.None, 0f);
             }
         }
     }

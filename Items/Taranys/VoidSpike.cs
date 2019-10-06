@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -194,7 +193,7 @@ namespace Erilipah.Items.Taranys
                 for (int i = 0; i < variable; i++)
                 {
                     Vector2 drawPos = projectile.oldPos[i] - Main.screenPosition + rect.Size() / 2 + new Vector2(0, projectile.gfxOffY);
-                    Color color = projectile.GetAlpha(drawColor) * ((variable - i) / (float)variable);
+                    Color color = projectile.GetAlpha(drawColor) * ((variable - i) / variable);
                     SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                     spriteBatch.Draw(

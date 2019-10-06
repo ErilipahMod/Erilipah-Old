@@ -1000,7 +1000,7 @@ namespace Erilipah
                 }
             }
         }
-        public override sealed void ScaleExpertStats(int numPlayers, float bossLifeScale)
+        public sealed override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
             if (ScaleExpertHP <= 0)
                 npc.lifeMax = (int)(npc.lifeMax * bossLifeScale) / 2;

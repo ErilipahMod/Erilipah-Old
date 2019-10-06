@@ -116,7 +116,7 @@ namespace Erilipah.NPCs.Taranys
 
                 if (!Main.projHook[proj.type] && proj.active && distanceToNPC > distance - speed && distanceToNPC < distance + speed)
                 {
-                    bool validType = proj.aiStyle == 0 || proj.aiStyle == 1 || proj.aiStyle == 2 || proj.aiStyle == 8 || 
+                    bool validType = proj.aiStyle == 0 || proj.aiStyle == 1 || proj.aiStyle == 2 || proj.aiStyle == 8 ||
                         proj.aiStyle == 21 || proj.aiStyle == 24 || proj.aiStyle == 28 || proj.aiStyle == 29 || proj.aiStyle == 131;
 
                     validType &= !proj.WipableTurret && !proj.hide && !proj.minion;
@@ -183,7 +183,7 @@ namespace Erilipah.NPCs.Taranys
             }
         }
 
-        const float intoEating = 0.32f;
+        private const float intoEating = 0.32f;
 
         public override void AI()
         {
@@ -997,7 +997,7 @@ namespace Erilipah.NPCs.Taranys
 
             npc.direction = npc.spriteDirection = tCen.X < npc.Center.X ? 1 : -1;
             npc.Center = mother.Center + Vector2.UnitX.RotatedBy(rotation) * distance;
-            npc.rotation = npc.Center.To(tCen).ToRotation() + 
+            npc.rotation = npc.Center.To(tCen).ToRotation() +
                 (npc.spriteDirection == -1 ? MathHelper.Pi : 0);
             npc.velocity = Vector2.Zero;
 

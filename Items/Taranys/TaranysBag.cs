@@ -1,8 +1,7 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-using Erilipah.Items.Taranys;
-using Erilipah.Items.ErilipahBiome;
+﻿using Erilipah.Items.ErilipahBiome;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace Erilipah.Items.Taranys
 {

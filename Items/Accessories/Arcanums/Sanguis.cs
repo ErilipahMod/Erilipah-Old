@@ -75,7 +75,7 @@ namespace Erilipah.Items.Accessories.Arcanums
 
         public override void UpdateEquip(Player player)
         {
-            player.allDamage += 0.15f;
+            player.allDamage += 0.08f;
             player.accRunSpeed *= 1.10f;
             player.maxRunSpeed *= 1.10f;
             player.statDefense += 4;

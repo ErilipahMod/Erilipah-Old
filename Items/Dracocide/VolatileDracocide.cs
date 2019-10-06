@@ -72,7 +72,6 @@ namespace Erilipah.Items.Dracocide
         }
         public override void AI()
         {
-            projectile.damage = 5;
         }
         public override void Kill(int timeLeft)
         {

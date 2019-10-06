@@ -1,16 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Erilipah.Items.Taranys
 {
-    class LostKey : ModItem
+    internal class LostKey : ModItem
     {
         public override void SetStaticDefaults()
         {

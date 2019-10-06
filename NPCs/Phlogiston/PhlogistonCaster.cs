@@ -1,12 +1,7 @@
 ﻿using Erilipah.NPCs.Drone;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -59,10 +54,10 @@ namespace Erilipah.NPCs.Phlogiston
         public override void HitEffect(int hitDirection, double damage)
         {
             if (npc.life < 0)
-            for (int i = 0; i < 4; i++)
-            {
-                Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), 1.15f);
-            }
+                for (int i = 0; i < 4; i++)
+                {
+                    Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), 1.15f);
+                }
 
             Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), Math.Min(1.2f, (float)damage / npc.lifeMax));
         }
@@ -75,7 +70,7 @@ namespace Erilipah.NPCs.Phlogiston
             for (int attempt = 0; attempt < 100; attempt++)
             {
                 Vector2 worldPos = new Vector2(
-                    Main.rand.NextFloat(player.Center.X - 500, player.Center.X + 500), 
+                    Main.rand.NextFloat(player.Center.X - 500, player.Center.X + 500),
                     Main.rand.NextFloat(player.Center.Y - 500, player.Center.Y + 500));
                 Point tilePos = worldPos.ToTileCoordinates();
 
@@ -114,9 +109,9 @@ namespace Erilipah.NPCs.Phlogiston
             // Spawns 3 dusts that spiral inward in a triangle manner
             for (int i = 0; i < 3; i++)
             {
-                float rotation  = percent * MathHelper.TwoPi;
-                      rotation += i / 3f * MathHelper.TwoPi;
-                float distance  = MathHelper.SmoothStep(200, 20, Math.Min(1, percent * 3f)); // At 33%, the dusts will circling already
+                float rotation = percent * MathHelper.TwoPi;
+                rotation += i / 3f * MathHelper.TwoPi;
+                float distance = MathHelper.SmoothStep(200, 20, Math.Min(1, percent * 3f)); // At 33%, the dusts will circling already
 
                 Dust.NewDustPerfect(DustBallPosition + new Vector2(distance, 0).RotatedBy(rotation), mod.DustType<DeepFlames>(), Vector2.Zero).noGravity = true;
             }
@@ -125,7 +120,7 @@ namespace Erilipah.NPCs.Phlogiston
             if (percent > 0.33f)
             {
                 if (Main.rand.NextFloat(percent) > 0.2f)
-                Dust.NewDustPerfect(DustBallPosition + Main.rand.NextVector2CircularEdge(15, 15), mod.DustType<PhlogistonDust>(), Vector2.One).customData = DustBallPosition;
+                    Dust.NewDustPerfect(DustBallPosition + Main.rand.NextVector2CircularEdge(15, 15), mod.DustType<PhlogistonDust>(), Vector2.One).customData = DustBallPosition;
             }
 
             // Spawns dust that goes to where the fireball will go
@@ -243,8 +238,8 @@ namespace Erilipah.NPCs.Phlogiston
             const int count = 60;
             for (int i = 0; i < count; i++)
             {
-                bool alt    = i % 2 == 0;
-                int type    = alt ? mod.DustType<PhlogistonDust>() : mod.DustType<Drone.DeepFlames>();
+                bool alt = i % 2 == 0;
+                int type = alt ? mod.DustType<PhlogistonDust>() : mod.DustType<Drone.DeepFlames>();
                 float speed = alt ? 3f : 5f;
                 float angle = i / (float)count * MathHelper.TwoPi;
 

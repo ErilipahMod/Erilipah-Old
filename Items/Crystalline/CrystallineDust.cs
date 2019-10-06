@@ -1,6 +1,5 @@
 ﻿using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
-using System;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -64,7 +63,7 @@ namespace Erilipah.Items.Crystalline
 
                 if (Vector2.Distance(Main.LocalPlayer.Center, sigil.Center) < 150)
                 {
-                    dust.customData = (int)0; // Stop tracking and start falling bich
+                    dust.customData = 0; // Stop tracking and start falling bich
                 }
                 return false;
             }

@@ -1,11 +1,9 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 
 namespace Erilipah
 {

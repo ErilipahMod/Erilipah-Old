@@ -258,7 +258,7 @@ namespace Erilipah.Items.ErilipahBiome
             }
         }
 
-        float inc = 0;
+        private float inc = 0;
         private void AlAltar()
         {
             float distanceToAltar = Vector2.Distance(projectile.Center, AboveAltar);
@@ -340,7 +340,7 @@ namespace Erilipah.Items.ErilipahBiome
                 Item.NewItem(r, itemType, itemStack, false, 0, false, false);
         }
 
-        float pulse = 1f;
+        private float pulse = 1f;
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             float pulseSpeed;

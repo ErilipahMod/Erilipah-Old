@@ -97,12 +97,6 @@ namespace Erilipah.NPCs.ErilipahBiome
                 Loot.DropItem(npc, ItemID.Heart, 1, 1, 50);
             else
                 Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
-
-        }
-
-        public override float SpawnChance(NPCSpawnInfo spawnInfo)
-        {
-            return spawnInfo.player.InErilipah() ? 0.08f : 0;
         }
     }
 

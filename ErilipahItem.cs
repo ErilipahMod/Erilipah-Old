@@ -49,7 +49,8 @@ namespace Erilipah
             bool dry = false;
             bool wet = false;
             bool glow = false;
-            ItemLoader.AutoLightSelect(item, ref dry, ref wet, ref glow);
+            if (item.modItem != null)
+                ItemLoader.AutoLightSelect(item, ref dry, ref wet, ref glow);
 
             bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Contains(item.createTile);
             light &= item.type != mod.ItemType<ArkenTorch>() && item.type != mod.ItemType<UnlitArkenTorch>();

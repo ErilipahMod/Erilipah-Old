@@ -1,12 +1,12 @@
-﻿using Erilipah.Items.Taranys;
+﻿using Erilipah.Items.ErilipahBiome;
+using Erilipah.Items.Taranys;
+using Microsoft.Xna.Framework;
 using System;
 using System.IO;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Erilipah.Items.ErilipahBiome;
 
 namespace Erilipah
 {
@@ -30,7 +30,7 @@ namespace Erilipah
             canJump = true;
         }
 
-        void AutoHeal(int damage)
+        private void AutoHeal(int damage)
         {
             if (player.FindEquip(mod.ItemType<SoulHearth>()) == null)
                 return;
@@ -54,7 +54,8 @@ namespace Erilipah
                 }
             }
         }
-        void TorchOfSoul(NPC target, int damage)
+
+        private void TorchOfSoul(NPC target, int damage)
         {
             Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
             Item i2 = player.FindEquip(mod.ItemType<SoulHearth>());

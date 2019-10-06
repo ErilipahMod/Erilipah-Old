@@ -11,7 +11,6 @@ using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using Terraria.World.Generation;
 
 namespace Erilipah
@@ -533,10 +532,10 @@ namespace Erilipah
                 // Torches
                 if (floor != baseY)
                 {
-                    WorldGen.PlaceTile(leftX + 2,  floor + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(leftX + 2, floor + 2, mod.TileType<ArkenTorchTile>());
                     WorldGen.PlaceTile(rightX - 2, floor + 2, mod.TileType<ArkenTorchTile>());
 
-                    Main.tile[leftX + 2,  floor + 2].frameX += 66;
+                    Main.tile[leftX + 2, floor + 2].frameX += 66;
                     Main.tile[rightX - 2, floor + 2].frameX += 66;
                 }
 
@@ -720,7 +719,7 @@ namespace Erilipah
                     }
 
                     // Torches
-                    WorldGen.PlaceTile(relLeft + 2,  extensionRoof + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(relLeft + 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
                     WorldGen.PlaceTile(relRight - 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
 
                     Main.tile[relLeft + 2, extensionRoof + 2].frameX += 66;
@@ -1101,9 +1100,9 @@ namespace Erilipah
 
             AddItem(0.5f, 65, 100, ItemID.HellfireArrow, ItemID.SilverBullet, mod.ItemType<Items.Phlogiston.PhlogistonArrow>());
 
-            AddItem(1.0f,  1, 3, mod.ItemType<EffulgencePot>(), mod.ItemType<SlowingPot>(), mod.ItemType<ReductionPot>(), mod.ItemType<PurityPot>());
+            AddItem(1.0f, 1, 3, mod.ItemType<EffulgencePot>(), mod.ItemType<SlowingPot>(), mod.ItemType<ReductionPot>(), mod.ItemType<PurityPot>());
             AddItem(0.50f, 1, 3, ItemID.ShinePotion, ItemID.WaterWalkingPotion, ItemID.LifeforcePotion, ItemID.HeartreachPotion);
-            AddItem(0.50f,  1, 3, ItemID.MagicPowerPotion, ItemID.RegenerationPotion, ItemID.IronskinPotion, ItemID.EndurancePotion);
+            AddItem(0.50f, 1, 3, ItemID.MagicPowerPotion, ItemID.RegenerationPotion, ItemID.IronskinPotion, ItemID.EndurancePotion);
 
             if (WorldGen.genRand.NextBool())
                 AddItem(0.75f, 1, 4, mod.ItemType<ArkenTorch>());
@@ -1132,13 +1131,13 @@ namespace Erilipah
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            bool 
+            bool
                 isLostCity = Main.tile[i, j].active() && Main.tile[i, j].type == mod.TileType<TaintedBrick>();
-                isLostCity |= Main.tile[i, j + 1].active() && Main.tile[i, j + 1].type == mod.TileType<TaintedBrick>();
+            isLostCity |= Main.tile[i, j + 1].active() && Main.tile[i, j + 1].type == mod.TileType<TaintedBrick>();
             if (isLostCity)
                 return;
 
-            switch (WorldGen.genRand.Next(7))
+            switch (Main.rand.Next(7))
             {
                 default:
                     WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
@@ -1155,7 +1154,8 @@ namespace Erilipah
                         vine.type = (ushort)mod.TileType<Vine>();
                         vine.frameX = Main.rand.Next(new short[] { 0, 18, 36 });
                         vine.frameY = 0;
-                    } break;
+                    }
+                    break;
 
                 case 3:
                     if (Stalk.IsValid(i, j) && Stalk.IsValid(i - 1, j) && Stalk.IsValid(i + 1, j))
@@ -1168,7 +1168,8 @@ namespace Erilipah
                             Main.tile[i + n, j - 1].frameX = (short)(72 + n * 18);
                             Main.tile[i + n, j - 1].frameY = frameY;
                         }
-                    } break;
+                    }
+                    break;
 
                 case 4:
                     if (WorldGen.genRand.Chance(0.5f))
@@ -1188,9 +1189,9 @@ namespace Erilipah
                     WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<Vent>()); break;
 
                 case 6:
-                    bool hayBase = 
+                    bool hayBase =
                         Main.tile[i, j].active() && Main.tile[i + 1, j].active();
-                    bool puede = 
+                    bool puede =
                         !Main.tile[i, j + 1].active() && !Main.tile[i, j + 1].active() &&
                         !Main.tile[i + 1, j + 1].active() && !Main.tile[i + 1, j + 1].active();
 
