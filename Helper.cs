@@ -14,6 +14,8 @@ namespace Erilipah
         internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => chance >= 1f || random.NextFloat() < chance;
         internal const string Invisible = "Terraria/Projectile_294";
 
+        internal static Vector2 V(this (float x, float y) p) => new Vector2(p.x, p.y);
+
         /// <summary>
         /// Finds an ammo item in a player's inventory.
         /// </summary>
@@ -107,6 +109,14 @@ namespace Erilipah
                 npc.frame.Y %= numFrames * frameHeight;
                 if (npc.frame.Y < startingFrame)
                     npc.frame.Y = startingFrame * frameHeight;
+            }
+        }
+        internal static void Animate(this NPC npc, int frameHeight, int frameDelay)
+        {
+            if (++npc.frameCounter % frameDelay == 0)
+            {
+                npc.frame.Y += frameHeight;
+                npc.frame.Y %= Main.npcFrameCount[npc.type] * frameHeight;
             }
         }
         /// <summary>

@@ -20,7 +20,7 @@ namespace Erilipah.Items.Niter
         {
             float proportion = (500 + player.buffTime[buffIndex]) / 500f;
 
-            player.statLifeMax2 -= (int)(50 * proportion) - 50;
+            //player.statLifeMax2 -= (int)(50 * proportion) - 50;
             player.allDamage *= proportion;
             player.moveSpeed *= proportion;
             player.jumpSpeedBoost += 2 * proportion;

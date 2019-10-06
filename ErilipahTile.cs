@@ -9,17 +9,17 @@ namespace Erilipah
 {
     internal class ErilipahTile : GlobalTile
     {
-        public static bool OnScreen(int i, int j)
+        public static bool OffScreen(int i, int j)
         {
-            bool onScreenX = i < Main.screenPosition.X / 16 || i > (Main.screenPosition.X + Main.screenWidth) / 16;
-            bool onScreenY = j < Main.screenPosition.Y / 16 || j > (Main.screenPosition.Y + Main.screenHeight) / 16;
-            return onScreenX & onScreenY;
+            bool offScreenX = i < Main.screenPosition.X / 16 || i > (Main.screenPosition.X + Main.screenWidth) / 16;
+            bool offScreenY = j < Main.screenPosition.Y / 16 || j > (Main.screenPosition.Y + Main.screenHeight) / 16;
+            return offScreenX & offScreenY;
         }
 
         public override void RandomUpdate(int i, int j, int type)
         {
             // TODO after testing
-            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.08f) && !OnScreen(i, j))
+            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.08f) && OffScreen(i, j))
                 ErilipahWorld.PlaceHazard(i, j, mod);
         }
 

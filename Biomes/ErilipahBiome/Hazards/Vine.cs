@@ -140,10 +140,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             npc.width = 20;
             npc.height = 26;
 
+            npc.friendly = true;
             npc.noTileCollide = true;
             npc.timeLeft = 90;
-
-            npc.damage = 0;
         }
 
         public override void DrawEffects(ref Color drawColor)

@@ -3,6 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Erilipah.NPCs.ErilipahBiome;
 
 namespace Erilipah
 {
@@ -51,29 +52,14 @@ namespace Erilipah
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
-            if (!spawnInfo.player.InErilipah())
-                return;
-
-            int[] erilipianNPCs = new int[] {
-                mod.NPCType("ErilipahSludge"),
-                mod.NPCType("Seeker")
-            };
-
-            foreach (var pair in pool.ToList())
-            {
-                if (!erilipianNPCs.Contains(pair.Key))
-                {
-                    pool[pair.Key] *= 0.65f;
-                }
-            }
         }
 
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
         {
             if (player.InErilipah())
             {
-                spawnRate = (int)(spawnRate * 0.5);
-                maxSpawns = (int)(maxSpawns * 0.8);
+                spawnRate = (int)(spawnRate * 0.75);
+                maxSpawns = (int)(maxSpawns * 1.25);
             }
         }
     }

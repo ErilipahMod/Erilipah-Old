@@ -18,6 +18,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             NPCID.Sets.TrailingMode[npc.type] = 0;
             NPCID.Sets.TrailCacheLength[npc.type] = 5;
         }
+
         public override void SetDefaults()
         {
             npc.lifeMax = 120;
@@ -70,11 +71,17 @@ namespace Erilipah.NPCs.ErilipahBiome
             }
             else
             {
-                npc.velocity = new Vector2(0, 14);
+                npc.velocity = new Vector2(0, 15);
             }
 
             if (timer > 460 || npc.collideY)
             {
+                for (int i = 0; i < 20; i++)
+                {
+                    float x = npc.position.X + (npc.width * i / 20f);
+                    float y = npc.position.Y + npc.height;
+                    Dust.NewDustPerfect(new Vector2(x, y), mod.DustType<VoidParticle>(), new Vector2(0, -6f));
+                }
                 npc.netUpdate = true;
                 timer = 0;
             }
@@ -135,7 +142,6 @@ namespace Erilipah.NPCs.ErilipahBiome
         public override void NPCLoot()
         {
             Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
-            Loot.DropItem(npc, ItemID.Heart, 1, 1, 50);
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)

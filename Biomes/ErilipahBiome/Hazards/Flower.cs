@@ -64,7 +64,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             Tile tile = Main.tile[i, j];
 
-            if (tile.frameX == 36 && ErilipahTile.OnScreen(i, j))
+            if (tile.frameX == 36 && ErilipahTile.OffScreen(i, j))
             {
                 WorldGen.KillTile(i, j);
             }

@@ -397,7 +397,10 @@ namespace Erilipah
             {
                 int y = GetY(passTheBeer, Chasm.Top, mod.TileType<TaintedRubble>()) + 2;
                 float amount = Math.Abs(passTheBeer - Chasm.Center.X) / (Chasm.Width / 2f);
-                int numFloors = (int)MathHelper.Lerp(1, 11, 1f - amount);
+
+                float chasmHeight = 0.1215f * Main.maxTilesY;
+                float aNumFloors = (1f - amount) * (chasmHeight / 15f);
+                int numFloors = (int)Math.Ceiling(aNumFloors);
 
                 MakeHouse(
                     passTheBeer,

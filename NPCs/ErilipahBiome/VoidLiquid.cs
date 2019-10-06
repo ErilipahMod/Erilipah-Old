@@ -10,7 +10,6 @@ namespace Erilipah.NPCs.ErilipahBiome
         {
             if (!dust.noGravity)
                 dust.velocity.Y += 0.06f;
-            dust.position += Collision.TileCollision(dust.position, dust.velocity, 2, 2);
 
             if (dust.scale > 0.8f)
                 dust.scale -= 0.01f;
