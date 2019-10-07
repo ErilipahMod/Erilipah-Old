@@ -270,14 +270,12 @@ namespace Erilipah
             if (darknessCounter < 0)
                 darknessCounter = 0;
 
-            if (Infection > infectionMax * 0.9f)
+            if (Infection > infectionMax * 0.9f && !player.buffImmune[BuffID.Weak])
             {
-                player.buffImmune[BuffID.Weak] = false;
                 player.AddBuff(BuffID.Weak, 1);
             }
-            if (Infection > infectionMax * 1.0f)
+            if (Infection > infectionMax * 1.0f && !player.buffImmune[BuffID.Slow])
             {
-                player.buffImmune[BuffID.Slow] = false;
                 player.AddBuff(BuffID.Slow, 1);
             }
         }
