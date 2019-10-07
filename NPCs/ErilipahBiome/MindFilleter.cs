@@ -27,8 +27,10 @@ namespace Erilipah.NPCs.ErilipahBiome
             npc.knockBackResist = 0.25f;
 
             npc.aiStyle = 0;
-            npc.noGravity = false;
+            npc.noGravity = true;
             npc.noTileCollide = false;
+
+            npc.HitSound = SoundID.NPCHit19;
 
             npc.width = 42;
             npc.height = 58;
@@ -41,10 +43,16 @@ namespace Erilipah.NPCs.ErilipahBiome
         private Player Target => Main.player[npc.target];
         private Vector2 Eye => npc.position + new Vector2(20, 30).RotatedBy(npc.rotation, npc.Size / 2);
 
-        private void HurtSound() => Main.PlaySound(Target.Male ? SoundID.PlayerHit : SoundID.FemaleHit, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, Main.rand.NextFloat(0.2f, 0.4f));
-        private void DeathSound() => Main.PlaySound(SoundID.PlayerKilled, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, Main.rand.NextFloat(0.12f, 0.22f));
+        private void HurtSound() => Main.PlaySound(Target.Male ? SoundID.PlayerHit : SoundID.FemaleHit, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, Main.rand.NextFloat(-0.8f, -0.7f));
+        private void DeathSound() => Main.PlaySound(SoundID.PlayerKilled, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, Main.rand.NextFloat(-0.3f, -0.25f));
 
         private int spewTimer = 0;
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            //TODO check if functional
+            this.DrawGlowmask(spriteBatch, drawColor);
+        }
 
         public override void AI()
         {
@@ -57,26 +65,14 @@ namespace Erilipah.NPCs.ErilipahBiome
 
             bool canSee = Collision.CanHitLine(Target.Center, 1, 1, npc.Center, 1, 1);
 
-            if (npc.Distance(Target.Center) > 300)
-            {
-                npc.velocity = npc.GoTo(Target.Center, 0.265f, 2f);
-            }
-            else if (npc.Distance(Target.Center) < 50 || !canSee)
-            {
-                npc.velocity = -npc.GoTo(Target.Center, 0.1f, 2f);
-            }
-            else
-            {
-                npc.velocity *= 0.93f;
-            }
+            npc.aiStyle = -1;
+
+            npc.velocity.X -= Math.Sign(npc.Center.X - Target.Center.X) * 0.02f;
+            npc.velocity.Y -= Math.Sign(npc.Center.Y - Target.Center.Y) * 0.02f;
+            npc.velocity = Vector2.Clamp(npc.velocity, Vector2.One * -4, Vector2.One * 4);
 
             if (canSee)
                 spewTimer++;
-
-            if (spewTimer > 90 && spewTimer < 150)
-            {
-                Dust.NewDustPerfect(Eye, mod.DustType<FlowerDust>(), Vector2.Zero, Scale: 1.25f).noGravity = true;
-            }
 
             if (spewTimer >= 150)
             {
@@ -85,7 +81,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
                 if (Main.netMode != 1)
                 {
-                    Projectile.NewProjectile(Eye, Eye.To(Target.Center, 6) - new Vector2(0, 1.5f), mod.ProjectileType<Vomit>(), 0, 0);
+                    Projectile.NewProjectile(Eye, Eye.To(Target.Center, 6) - new Vector2(0, 1.5f), mod.ProjectileType<Vomit>(), 1, 0);
                 }
             }
         }
@@ -107,7 +103,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 for (int i = 0; i < 18; i++)
                 {
                     float rot = i / 18f * MathHelper.TwoPi;
-                    Dust.NewDustPerfect(Eye, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 6).noGravity = true;
+                    Dust.NewDustPerfect(Eye, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 10, Scale: 1.5f).noGravity = true;
                 }
             }
             else
@@ -145,7 +141,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void SetDefaults()
         {
-            projectile.damage = 0;
+            projectile.damage = 1;
             projectile.width = 8;
             projectile.height = 8;
 
@@ -161,22 +157,21 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void AI()
         {
-            projectile.velocity.Y += 0.025f;
-            Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(0.1f, 0.1f));
+            projectile.velocity.Y += 0.055f;
+            Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(0.1f, 0.1f), Scale: 0.55f);
         }
 
         public override void Kill(int timeLeft)
         {
             for (int i = 0; i < 15; i++)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(2.5f, 2.5f));
+                Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(1.5f, 1.5f));
             }
         }
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            target.immune = true;
-            target.immuneTime = 45;
+            projectile.Kill();
         }
     }
 }

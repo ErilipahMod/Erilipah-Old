@@ -23,7 +23,7 @@ namespace Erilipah.Items.Niter
             //player.statLifeMax2 -= (int)(50 * proportion) - 50;
             player.allDamage *= proportion;
             player.moveSpeed *= proportion;
-            player.jumpSpeedBoost += 2 * proportion;
+            player.jumpSpeedBoost += 1.25f * proportion;
             player.maxRunSpeed *= System.Math.Min(proportion, 2.06f);
             player.wellFed = true;
         }

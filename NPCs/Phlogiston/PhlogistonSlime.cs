@@ -69,7 +69,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void HitEffect(int hitDirection, double damage)
         {
-            if (npc.life < 0)
+            if (npc.life <= 0)
                 for (int i = 0; i < 3; i++)
                 {
                     Gore.NewGore(npc.Center, Main.rand.NextVector2Unit() * 2, GoreID.ChimneySmoke1 + Main.rand.Next(3), npc.scale);
@@ -91,6 +91,14 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void AI()
         {
+            if (npc.wet)
+            {
+                npc.life = 0;
+                HitEffect(0, 1);
+                Main.PlaySound(npc.DeathSound, npc.Center);
+                npc.active = false;
+            }
+
             if (timer == 0)
             {
                 SetDefaults();

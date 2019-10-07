@@ -18,8 +18,7 @@ namespace Erilipah
 
         public override void RandomUpdate(int i, int j, int type)
         {
-            // TODO after testing
-            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.08f) && OffScreen(i, j))
+            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.02f) && OffScreen(i, j))
                 ErilipahWorld.PlaceHazard(i, j, mod);
         }
 

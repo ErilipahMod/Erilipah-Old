@@ -94,6 +94,9 @@ namespace Erilipah
         {
             if (player.statLife == 1 && player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
             {
+                r -= 0.35f;
+                b -= 0.35f;
+                g = Math.Max(0.80f, g);
                 Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, mod.DustType<Items.Niter.NiterDust>(), Scale: 0.75f)];
                 d.velocity = new Vector2(0, -0.25f);
             }

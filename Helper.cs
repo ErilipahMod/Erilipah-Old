@@ -14,8 +14,6 @@ namespace Erilipah
         internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => chance >= 1f || random.NextFloat() < chance;
         internal const string Invisible = "Terraria/Projectile_294";
 
-        internal static Vector2 V(this (float x, float y) p) => new Vector2(p.x, p.y);
-
         /// <summary>
         /// Finds an ammo item in a player's inventory.
         /// </summary>
@@ -119,13 +117,7 @@ namespace Erilipah
                 npc.frame.Y %= Main.npcFrameCount[npc.type] * frameHeight;
             }
         }
-        /// <summary>
-        /// Used in PreDraw to draw an NPC's glowmask.
-        /// </summary>
-        /// <param name="npc"></param>
-        /// <param name="spriteBatch"></param>
-        /// <param name="texture"></param>
-        /// <param name="color"></param>
+
         internal static void DrawGlowmask(this ModNPC npc, SpriteBatch spriteBatch, Color color)
         {
             string texture = npc.Texture.Remove(0, 9) + "_Glow";
