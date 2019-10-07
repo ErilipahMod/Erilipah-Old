@@ -105,6 +105,11 @@ namespace Erilipah.NPCs.ErilipahBiome
                     float rot = i / 18f * MathHelper.TwoPi;
                     Dust.NewDustPerfect(Eye, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 10, Scale: 1.5f).noGravity = true;
                 }
+
+                for (int i = 0; i <= 4; i++)
+                {
+                    Gore.NewGore(npc.Center, new Vector2(hitDirection, -2), mod.GetGoreSlot("Gores/ERBiome/MindFilleter" + i));
+                }
             }
             else
             {
