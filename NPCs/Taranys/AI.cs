@@ -73,6 +73,7 @@ namespace Erilipah.NPCs.Taranys
                     NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType<OrbitMinion>(), 0, mother, rotation, 0, i * -255);
                 }
         }
+
         private void Pulse(float distance, float speed = 5, bool repel = false)
         {
             if (distance == 0 || distance == speed)

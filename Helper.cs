@@ -47,7 +47,7 @@ namespace Erilipah
         internal static bool InLostCity(this Player player) => player.GetModPlayer<ErilipahPlayer>().ZoneLostCity;
         internal static bool IsErilipahTile(this Tile tile)
         {
-            var mod = ModLoader.GetMod("Erilipah");
+            var mod = Erilipah.Instance;
             return tile.type == mod.TileType<InfectedClump>() ||
                 tile.type == mod.TileType<SpoiledClump>() ||
                 tile.type == mod.TileType<TaintedRubble>() ||
@@ -56,7 +56,7 @@ namespace Erilipah
         }
         internal static bool IsErilipahWall(this Tile tile)
         {
-            var mod = ModLoader.GetMod("Erilipah");
+            var mod = Erilipah.Instance;
             return tile.wall == mod.WallType<InfectedClump.InfectedClumpWall>() ||
                 tile.wall == mod.WallType<TaintedBrick.TaintedBrickWall>();
         }

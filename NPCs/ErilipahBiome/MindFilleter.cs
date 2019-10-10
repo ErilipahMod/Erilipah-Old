@@ -21,7 +21,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void SetDefaults()
         {
-            npc.lifeMax = Main.hardMode ? 150 : 65;
+            npc.lifeMax = Main.hardMode ? 100 : 45;
             npc.defense = 12;
             npc.damage = 26;
             npc.knockBackResist = 0.25f;
@@ -40,6 +40,12 @@ namespace Erilipah.NPCs.ErilipahBiome
             // npc.buffImmune[BuffID.OnFire] = true;
         }
 
+        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            // TODO chek if functional
+            this.DrawGlowmask(spriteBatch, Color.White * 0.65f);
+        }
+
         private Player Target => Main.player[npc.target];
         private Vector2 Eye => npc.position + new Vector2(20, 30).RotatedBy(npc.rotation, npc.Size / 2);
 
@@ -47,12 +53,6 @@ namespace Erilipah.NPCs.ErilipahBiome
         private void DeathSound() => Main.PlaySound(SoundID.PlayerKilled, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, Main.rand.NextFloat(-0.3f, -0.25f));
 
         private int spewTimer = 0;
-
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
-        {
-            //TODO check if functional
-            this.DrawGlowmask(spriteBatch, drawColor);
-        }
 
         public override void AI()
         {

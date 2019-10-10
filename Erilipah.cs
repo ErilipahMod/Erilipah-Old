@@ -16,7 +16,12 @@ namespace Erilipah
 {
     public partial class Erilipah : Mod
     {
-        public Erilipah() { }
+        public Erilipah() 
+        {
+            Instance = this;
+        }
+
+        public static Erilipah Instance { get; private set; }
 
         public static ModHotKey VeritasAbilityKey;
         public static ModHotKey VitalityAbilityKey;

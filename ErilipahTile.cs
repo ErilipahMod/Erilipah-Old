@@ -24,21 +24,23 @@ namespace Erilipah
 
         public override void NearbyEffects(int i, int j, int type, bool closer)
         {
-            Tile tile = Main.tile[i, j];
-
             if (Main.netMode != 1 && Main.rand.Chance(ErilipahItem.LightSnuffRate))
-                Snuff(i, j, type, tile);
+                Snuff(i, j);
         }
 
-        private void Snuff(int i, int j, int type, Tile tile)
+        public static void Snuff(int i, int j, bool ignoreArken = false)
         {
             try
             {
+                Tile tile = Main.tile[i, j];
+                int type = tile.type;
+
                 bool light = tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type);
-                light &= type != mod.TileType<ArkenTorchTile>();
+                if (ignoreArken)
+                    light &= type != Erilipah.Instance.TileType<ArkenTorchTile>();
                 if (light)
                 {
-                    if (type == mod.TileType<Items.ErilipahBiome.CrystallineTorchTile>() && Main.rand.Chance(0.50f))
+                    if (!ignoreArken && type == Erilipah.Instance.TileType<CrystallineTorchTile>() && Main.rand.Chance(0.50f))
                     {
                         return;
                     }

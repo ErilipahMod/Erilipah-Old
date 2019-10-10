@@ -55,7 +55,7 @@ namespace Erilipah
         private void IfNoneSpawnAboryc()
         {
             int aborycType = mod.ProjectileType<Items.ErilipahBiome.AbProj>();
-            if (!Main.projectile.Any(p => p.active && p.type == aborycType))
+            if (Main.netMode != 1 && !Main.projectile.Any(p => p.active && p.type == aborycType))
             {
                 Projectile.NewProjectile(AltarPosition, Vector2.Zero, aborycType, 0, 0, 255);
             }
