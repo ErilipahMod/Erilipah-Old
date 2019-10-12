@@ -209,7 +209,12 @@ namespace Erilipah.NPCs.Taranys
                 }
             }
 
-            if (Timer <= -2000 || Target.dead && CheckActive())
+            if (npc.target == -1 || npc.target == 255 || Target.dead || !Target.active)
+            {
+                npc.target = npc.FindClosestPlayer();
+            }
+
+            if (npc.target == -1 || npc.target == 255 || Timer <= -2000 || Target.dead && CheckActive())
             {
                 Filters.Scene["TaranysPulse"].Deactivate();
 
@@ -744,7 +749,7 @@ namespace Erilipah.NPCs.Taranys
                             vector = validPosition.ToVector2();
                         }
                     }
-                    else if (TempTimer < 120)
+                    else if (TempTimer < 90)
                     {
                         npc.velocity = npc.GoTo(vector, 0.3f, 4.5f);
                         if (npc.Center.Y > Target.Center.Y - 150 && npc.Center.Y < Target.Center.Y)
@@ -770,7 +775,7 @@ namespace Erilipah.NPCs.Taranys
                         {
                             Player p = Main.player[i];
                             float distance = p.Distance(npc.position + new Vector2(50, 78));
-                            float speed = MathHelper.SmoothStep(8f, 0, distance / 1000f);
+                            float speed = MathHelper.SmoothStep(6.75f, 0, distance / 1000f);
                             Vector2 vel = new Vector2(p.Center.X < npc.Center.X ? speed : -speed, 0);
 
                             p.position += Collision.TileCollision(p.position, vel, p.width, p.height);
