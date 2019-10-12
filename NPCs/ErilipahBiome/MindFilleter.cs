@@ -28,7 +28,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
             npc.aiStyle = 0;
             npc.noGravity = true;
-            npc.noTileCollide = false;
+            npc.noTileCollide = true;
 
             npc.HitSound = SoundID.NPCHit19;
 
@@ -63,7 +63,17 @@ namespace Erilipah.NPCs.ErilipahBiome
                 HurtSound();
             }
 
-            bool canSee = Collision.CanHitLine(Target.Center, 1, 1, npc.Center, 1, 1);
+            if (npc.collideX)
+                npc.velocity.X = npc.velocity.X / -1.5f;
+            if (npc.collideY)
+                npc.velocity.Y = npc.velocity.Y / -1.5f;
+
+            bool canSee = Collision.CanHitLine(Target.position, Target.width, Target.height, npc.position, npc.width, npc.height);
+
+            if (canSee)
+            {
+                npc.noTileCollide = false;
+            }
 
             npc.aiStyle = -1;
 

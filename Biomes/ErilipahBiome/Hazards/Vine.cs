@@ -82,8 +82,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            if (Main.netMode == 1)
-                return;
 
             NPC bulb = AnyBulb(i, j);
             if (tile.frameY == 54 && bulb == null)
@@ -91,11 +89,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 //FOR DEBUG
                 //Main.LocalPlayer.position.X = i * 16;
                 //Main.LocalPlayer.position.Y = j * 16;
-                NPC.NewNPC(i * 16 + 8, j * 16 + 20, mod.NPCType<Bulb>(), ai0: i, ai1: j);
+                NPC.NewNPC(i * 16 + 8, j * 16 + 26, mod.NPCType<Bulb>(), ai0: i, ai1: j);
             }
             else if (tile.frameY < 54 && !Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
             {
-                bool endTile = Main.rand.Chance(0.12f);
+                bool tilesBelow = Main.tile[i, j + 2].active() || Main.tile[i, j + 3].active();
+                bool endTile = Main.rand.Chance(0.12f) || tilesBelow;
 
                 Tile vineEx = Main.tile[i, j + 1];
                 vineEx.active(true);
@@ -103,9 +102,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 vineEx.frameX = (short)(Main.rand.Next(3) * 18);
 
                 if (!endTile || tile.frameY == 0)
+                {
                     vineEx.frameY = Main.rand.NextBool() ? (short)18 : (short)36;
+                }
                 else
+                {
                     vineEx.frameY = 54;
+                }
             }
         }
 
@@ -140,6 +143,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             npc.width = 20;
             npc.height = 26;
 
+            npc.dontTakeDamage = npc.dontTakeDamageFromHostiles = false;
             npc.friendly = true;
             npc.noTileCollide = true;
             npc.timeLeft = 90;

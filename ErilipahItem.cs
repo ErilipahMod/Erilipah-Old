@@ -46,6 +46,9 @@ namespace Erilipah
 
         private bool IsLight(Item item)
         {
+            if (item.type == mod.ItemType<ArkenTorch>() || item.type == mod.ItemType<UnlitArkenTorch>())
+                return false;
+
             bool dry = false;
             bool wet = false;
             bool glow = false;
@@ -53,7 +56,6 @@ namespace Erilipah
                 ItemLoader.AutoLightSelect(item, ref dry, ref wet, ref glow);
 
             bool light = TileID.Sets.RoomNeeds.CountsAsTorch.Contains(item.createTile);
-            light &= item.type != mod.ItemType<ArkenTorch>() && item.type != mod.ItemType<UnlitArkenTorch>();
             light |= item.flame || dry || wet || glow;
             light |= item.type == ItemID.Glowstick || item.type == ItemID.BouncyGlowstick || item.type == ItemID.StickyGlowstick || item.type == ItemID.SpelunkerGlowstick;
             return light;

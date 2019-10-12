@@ -53,13 +53,17 @@ namespace Erilipah
             {
                 Tile tile = Main.tile[i, j];
                 int type = tile.type;
+                Mod mod = Erilipah.Instance;
 
                 bool light = tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type);
-                if (ignoreArken)
-                    light &= type != Erilipah.Instance.TileType<ArkenTorchTile>();
+                if (!ignoreArken)
+                    light &= type != mod.TileType<ArkenTorchTile>();
+                else
+                    light &= type != mod.TileType<ArkenTorchTile>() || Main.rand.NextBool();
+
                 if (light)
                 {
-                    if (!ignoreArken && type == Erilipah.Instance.TileType<CrystallineTorchTile>() && Main.rand.Chance(0.50f))
+                    if (!ignoreArken && type == mod.TileType<CrystallineTorchTile>() && Main.rand.Chance(0.50f))
                     {
                         return;
                     }
@@ -69,7 +73,7 @@ namespace Erilipah
                         ErilipahItem.SnuffFx(new Vector2(i * 16 + 8, j * 16 + 8));
                         Main.PlaySound(SoundID.LiquidsWaterLava.WithPitchVariance(-0.35f), new Vector2(i * 16 + 8, j * 16 + 8));
 
-                        WorldGen.KillTile(i, j, false, noItem: true);
+                        WorldGen.KillTile(i, j, false, noItem: type != mod.TileType<ArkenTorchTile>());
                         WorldGen.TileFrame(i, j);
                     }
                 }

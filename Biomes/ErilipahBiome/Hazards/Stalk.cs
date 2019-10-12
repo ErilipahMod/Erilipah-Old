@@ -54,12 +54,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             {
                 int left = i - (tile.frameX - 54) / 18;
 
-                if (!Main.tile[i, j + 1].IsErilipahTile())
-                {
-                    BreakBase(left, j);
-                }
+                bool notValidBase = !Main.tile[left, j].active() || !Main.tile[left + 1, j].active() || !Main.tile[left + 2, j].active();
+                bool notValidFloor = !Main.tile[left, j + 1].ValidTop() || !Main.tile[left + 1, j + 1].ValidTop() || !Main.tile[left + 2, j + 1].ValidTop();
 
-                if (!Main.tile[left, j + 1].ValidTop() || !Main.tile[left + 1, j + 1].ValidTop() || !Main.tile[left + 2, j + 1].ValidTop())
+                if (!Main.tile[i, j + 1].IsErilipahTile() || notValidFloor || notValidBase)
                 {
                     BreakBase(left, j);
                 }
@@ -92,9 +90,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.netMode == 1)
-                return;
-
             Tile tile = Main.tile[i, j];
 
             bool isTip = (tile.frameX == 54 && tile.frameY <= 18) || tile.frameY == 0;

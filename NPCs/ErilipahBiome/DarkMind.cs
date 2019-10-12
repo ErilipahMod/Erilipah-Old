@@ -28,9 +28,10 @@ namespace Erilipah.NPCs.ErilipahBiome
 
             npc.aiStyle = -1;
             npc.noGravity = true;
+            npc.noTileCollide = true;
 
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
+            npc.HitSound = SoundID.NPCHit13;
+            npc.DeathSound = SoundID.NPCDeath22;
 
             npc.width = 30;
             npc.height = 36;
@@ -40,10 +41,18 @@ namespace Erilipah.NPCs.ErilipahBiome
             npc.buffImmune[BuffID.OnFire] = true;
         }
 
+        // TODO swap post and pre draw
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             this.DrawGlowmask(spriteBatch, Color.White * 0.5f);
         }
+
+        //public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        //{
+        //    npc.DrawNPC(spriteBatch, drawColor);
+        //    this.DrawGlowmask(spriteBatch, Color.White * 0.5f);
+        //    return false;
+        //}
 
         public override void FindFrame(int frameHeight)
         {
@@ -53,9 +62,11 @@ namespace Erilipah.NPCs.ErilipahBiome
         // ai0 for torch X
         // ai1 for torch Y
         // ai2 for timer
+        // ai3 for fade in
 
         // ai2 > 150 for "is disappearing"
 
+            // TODO REMOVE
         private const float speed = 3;
         private const int chooseLeave = 120;
         private const int finishSnuff = 160;
@@ -66,9 +77,12 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void AI()
         {
-            base.AI();
+            const float speed = 5f;
+            const int chooseLeave = 30;
+            const int finishSnuff = 100;
 
-            SpewDust();
+            if (npc.target == -1 || npc.target == 255)
+                npc.target = npc.FindClosestPlayer();
 
             bool invalidTorch = Torch == Point.Zero || !IsLight(Torch.X, Torch.Y);
             bool shouldLeave = npc.life < 30 || npc.ai[2] < -chooseLeave;
@@ -92,17 +106,31 @@ namespace Erilipah.NPCs.ErilipahBiome
             }
             else
             {
-                if (npc.Distance(Torch.ToWorldCoordinates()) > 5)
+                float dist = Vector2.Distance(npc.Center, Torch.ToWorldCoordinates());
+                if (dist > 3)
                 {
-                    npc.velocity = npc.DirectionTo(Torch.ToWorldCoordinates()) * speed;
+                    float distToSpeed = MathHelper.Lerp(speed, speed / 4, 1 - dist / 300f);
+                    npc.velocity = npc.DirectionTo(Torch.ToWorldCoordinates()) * distToSpeed;
                 }
                 else
                 {
                     if (npc.ai[2] < 0)
                         npc.ai[2] = 0;
-                    npc.ai[2]++;
+
+                    // Increase faster the more there are focused on this boi
+                    for (int i = 0; i < Main.maxNPCs; i++)
+                    {
+                        if (Main.npc[i].active && Main.npc[i].type == npc.type && Vector2.Distance(Main.npc[i].Center, npc.Center) < 6)
+                            npc.ai[2]++;
+                    }
 
                     npc.velocity = Vector2.Zero;
+                    npc.Center = Torch.ToWorldCoordinates();
+
+                    if (npc.ai[2] % 20 == 0)
+                    {
+                        Main.PlaySound(SoundID.LiquidsHoneyLava, npc.Center);
+                    }
 
                     if (npc.ai[2] > finishSnuff)
                     {
@@ -111,6 +139,8 @@ namespace Erilipah.NPCs.ErilipahBiome
                     }
                 }
             }
+
+            SpewDust();
         }
 
         private void SpewDust()
@@ -119,20 +149,20 @@ namespace Erilipah.NPCs.ErilipahBiome
                 npc.Bottom,
                 mod.DustType<FlowerDust>(),
                 new Vector2(
-                    Main.rand.NextFloat(-0.3f, 0.3f),
-                    6
+                    Main.rand.NextFloat(-0.6f, 0.6f),
+                    5
                     ),
-                Scale: 1.2f
+                Scale: 1.2f * ((255 - npc.alpha) / 255f)
                 );
         }
 
         private void Leave()
         {
-            npc.velocity += npc.DirectionTo(Target.Center) * 0.05f;
+            npc.velocity += npc.DirectionTo(Target.Center) * -0.065f;
             if (npc.velocity.Length() > 3)
-                npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * 3;
+                npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * 4;
 
-            if (npc.alpha >= 250 || Lighting.BrightnessAverage(NPCTileRect.X, NPCTileRect.Y, NPCTileRect.Width, NPCTileRect.Height) < 0.1f)
+            if (npc.alpha >= 250)
             {
                 npc.netUpdate = true;
                 npc.active = false;
@@ -147,13 +177,17 @@ namespace Erilipah.NPCs.ErilipahBiome
             Point closest = Point.Zero;
             float closestDistance = 1000;
 
-            for (int i = tilePos.X - 20; i < tilePos.X + 20; i++)
+            const int rad = 30;
+            for (int i = tilePos.X - rad; i < tilePos.X + rad; i++)
             {
-                for (int j = tilePos.Y - 20; j < tilePos.Y + 20; j++)
+                for (int j = tilePos.Y - rad; j < tilePos.Y + rad; j++)
                 {
                     float currentDistance = Vector2.Distance(new Vector2(i, j), tilePos.ToVector2());
                     bool light = IsLight(i, j);
-                    if (currentDistance < closestDistance && light)
+                    bool canSee = centerPlayer ?
+                        Collision.CanHitLine(Target.Top, 1, 1, new Vector2(i + 0.5f, j) * 16, 1, 1) : 
+                        Collision.CanHitLine(npc.Top, 1, 1, new Vector2(i + 0.5f, j) * 16, 1, 1);
+                    if (currentDistance < closestDistance && light && canSee)
                     {
                         closestDistance = currentDistance;
                         closest = new Point(i, j);
@@ -183,11 +217,20 @@ namespace Erilipah.NPCs.ErilipahBiome
         {
             if (npc.life <= 0)
             {
+                for (int i = 0; i < 15; i++)
+                {
+                    float rot = i / 15f * MathHelper.TwoPi;
+                    Dust.NewDustPerfect(npc.Center, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 5, Scale: 1.5f).noGravity = true;
+                }
+
                 for (int i = 0; i <= 3; i++)
                 {
                     Gore.NewGore(npc.Center, Main.rand.NextVector2Circular(2, 2) + Vector2.UnitX * hitDirection * 2.5f,
                         mod.GetGoreSlot("Gores/ERBiome/Shell" + i));
                 }
+
+                Gore.NewGore(npc.Center, Main.rand.NextVector2Circular(2, 2) + Vector2.UnitX * hitDirection * 2.5f,
+                    mod.GetGoreSlot("Gores/ERBiome/Eye0"));
             }
             else
             {
@@ -200,7 +243,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.InErilipah() ? 0.045f : 0;
+            return spawnInfo.player.InErilipah() ? 0.06f : 0;
         }
 
         public override void NPCLoot()

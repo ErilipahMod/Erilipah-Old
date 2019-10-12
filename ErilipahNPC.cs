@@ -58,8 +58,8 @@ namespace Erilipah
         {
             if (player.InErilipah())
             {
-                spawnRate = (int)(spawnRate * 0.75);
-                maxSpawns = (int)(maxSpawns * 1.25);
+                spawnRate = (int)(spawnRate * 1.25);
+                maxSpawns = (int)(maxSpawns * 1.50);
             }
         }
     }

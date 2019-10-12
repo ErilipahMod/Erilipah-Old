@@ -62,6 +62,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
+            // TODO check this net message after jopo does the example bush
+            //if (Main.netMode == 1)
+            //    NetMessage.SendTileSquare(Main.myPlayer, i, j, 1);
             Tile tile = Main.tile[i, j];
 
             if (tile.frameX == 36 && ErilipahTile.OffScreen(i, j))
@@ -69,7 +72,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 WorldGen.KillTile(i, j);
             }
 
-            if (tile.frameX == 0 && tile.frameY == 0 && Main.netMode != 1)
+            if (tile.frameX == 0 && tile.frameY == 0)
             {
                 tile.frameX = 36;
                 if (Main.tile[i + 1, j].type == Type)

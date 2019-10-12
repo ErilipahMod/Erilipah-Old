@@ -39,9 +39,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.netMode == 1)
-                return;
-
             Tile tile = Main.tile[i, j];
             int left = i - tile.frameX / 18;
 

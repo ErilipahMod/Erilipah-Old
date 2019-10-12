@@ -29,7 +29,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.netMode != 1 && NPC.CountNPCS(mod.NPCType<LightWisp>()) < 15)
+            if (NPC.CountNPCS(mod.NPCType<LightWisp>()) < 15)
             {
                 Vector2 spawn = GetSpawn(i, j);
 
