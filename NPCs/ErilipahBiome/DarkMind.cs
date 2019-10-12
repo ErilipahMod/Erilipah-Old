@@ -41,18 +41,12 @@ namespace Erilipah.NPCs.ErilipahBiome
             npc.buffImmune[BuffID.OnFire] = true;
         }
 
-        // TODO swap post and pre draw
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
+            npc.DrawNPC(spriteBatch, drawColor);
             this.DrawGlowmask(spriteBatch, Color.White * 0.5f);
+            return false;
         }
-
-        //public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
-        //{
-        //    npc.DrawNPC(spriteBatch, drawColor);
-        //    this.DrawGlowmask(spriteBatch, Color.White * 0.5f);
-        //    return false;
-        //}
 
         public override void FindFrame(int frameHeight)
         {
@@ -66,14 +60,8 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         // ai2 > 150 for "is disappearing"
 
-            // TODO REMOVE
-        private const float speed = 3;
-        private const int chooseLeave = 120;
-        private const int finishSnuff = 160;
-
         private Player Target => Main.player[npc.target];
         private Point Torch { get { return new Point((int)npc.ai[0], (int)npc.ai[1]); } set { npc.ai[0] = value.X; npc.ai[1] = value.Y; } }
-        private Rectangle NPCTileRect => new Rectangle((int) npc.position.X / 16, (int) npc.position.Y / 16, npc.width / 16, npc.height / 16);
 
         public override void AI()
         {

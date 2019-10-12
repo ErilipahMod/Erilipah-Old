@@ -40,11 +40,13 @@ namespace Erilipah.NPCs.ErilipahBiome
             // npc.buffImmune[BuffID.OnFire] = true;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            // TODO chek if functional
-            this.DrawGlowmask(spriteBatch, Color.White * 0.65f);
+            npc.DrawNPC(spriteBatch, drawColor);
+            this.DrawGlowmask(spriteBatch, Color.White * 0.5f);
+            return false;
         }
+
 
         private Player Target => Main.player[npc.target];
         private Vector2 Eye => npc.position + new Vector2(20, 30).RotatedBy(npc.rotation, npc.Size / 2);
