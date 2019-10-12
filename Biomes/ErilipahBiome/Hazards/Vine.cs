@@ -110,6 +110,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     vineEx.frameY = 54;
                 }
             }
+
+            if (Main.netMode == 2 /*Sync to clients when run on the server*/)
+                NetMessage.SendTileSquare(-1, i, j, 1);
         }
 
         private NPC AnyBulb(int i, int j)

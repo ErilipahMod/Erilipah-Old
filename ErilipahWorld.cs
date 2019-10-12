@@ -1,5 +1,6 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Microsoft.Xna.Framework;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -47,7 +48,7 @@ namespace Erilipah
             ChasmPosition = new Vector2(tag.GetFloat("LostCX"), tag.GetFloat("LostCY"));
         }
 
-        public override void PostUpdate()
+        public override void PreUpdate()
         {
             IfNoneSpawnAboryc();
         }
@@ -55,9 +56,9 @@ namespace Erilipah
         private void IfNoneSpawnAboryc()
         {
             int aborycType = mod.ProjectileType<Items.ErilipahBiome.AbProj>();
-            if (Main.netMode != 1 && !Main.projectile.Any(p => p.active && p.type == aborycType))
+            if (!Main.projectile.Any(p => p.active && p.type == aborycType))
             {
-                Projectile.NewProjectile(AltarPosition, Vector2.Zero, aborycType, 0, 0, 255);
+                Projectile.NewProjectile(AltarPosition, Vector2.Zero, aborycType, 0, 0, Main.myPlayer);
             }
         }
 

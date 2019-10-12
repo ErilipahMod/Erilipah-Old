@@ -50,9 +50,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 }
             }
 
-            Projectile p = Main.projectile[Projectile.NewProjectile(left * 16f + 16 + 6, j * 16f + 6, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1)];
-            p.ai[1] = Main.rand.Next(3);
-            p.localAI[0] = left;
+            if (Main.netMode != 1)
+            {
+                Projectile p = Main.projectile[Projectile.NewProjectile(left * 16f + 16 + 6, j * 16f + 6, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1, Main.myPlayer)];
+                p.ai[1] = Main.rand.Next(3);
+                p.localAI[0] = left;
+            }
+
+            if (Main.netMode == 2 /*Sync to clients when run on the server*/)
+                NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)

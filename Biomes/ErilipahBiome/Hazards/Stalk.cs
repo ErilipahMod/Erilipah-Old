@@ -150,6 +150,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 throw new Exception($"Invalid Crystalline Stalk frame: ({i}, {j})");
             }
 #endif
+
+            if (Main.netMode == 2 /*Sync to clients when run on the server*/)
+                NetMessage.SendTileSquare(-1, i, j, 1);
         }
 
         private void GetStalkFrame(out short x, out short y)

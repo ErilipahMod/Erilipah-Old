@@ -12,8 +12,9 @@ namespace Erilipah.NPCs.Taranys
     [AutoloadBossHead]
     public partial class Taranys : ModNPC
     {
+        private const float goIntoEatingPhase = 0.32f;
         private const float dashSpeed = 13f;
-        private const float dashChange = 0.275f;
+        private const float dashChange = 0.3f;
 
         public new const string Name = "Taranys";
         public override void SetStaticDefaults()

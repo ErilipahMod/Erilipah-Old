@@ -184,26 +184,26 @@ namespace Erilipah.NPCs.Taranys
             }
         }
 
-        private const float intoEating = 0.32f;
-
         public override void AI()
         {
             // Run spawning code on the first tick
             npc.spriteDirection = 0; npc.direction = npc.velocity.X > 0 ? 1 : -1;
 
+            npc.netAlways = true;
+
             void IncrementPhase()
             {
-                npc.netUpdate = true;
+                //npc.netUpdate = true;
                 TempTimer = 0;
                 Phase++;
             }
             void SwitchAttacks()
             {
-                npc.netUpdate = true;
+                //npc.netUpdate = true;
                 TempTimer = 0;
                 Attack = Main.rand.Next(5);
 
-                if (npc.life < npc.lifeMax * intoEating)
+                if (npc.life < npc.lifeMax * goIntoEatingPhase)
                 {
                     IncrementPhase();
                 }
@@ -239,7 +239,7 @@ namespace Erilipah.NPCs.Taranys
             }
 
             // Force a switch if we're really low and aren't switching already
-            if (npc.life < npc.lifeMax * intoEating && Phase == 1)
+            if (npc.life < npc.lifeMax * goIntoEatingPhase && Phase == 1)
             {
                 SwitchAttacks();
                 return;
@@ -374,7 +374,7 @@ namespace Erilipah.NPCs.Taranys
                             }
                             else
                             {
-                                npc.netUpdate = true;
+                                //npc.netUpdate = true;
                                 Phase = 3;
                                 TempTimer = 0;
                             }
@@ -406,7 +406,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else if (TempTimer == 60) // Teleport
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             npc.Teleport(Target.Center + new Vector2(0, 370).RotatedByRandom(MathHelper.TwoPi), 1);
                             npc.velocity = Vector2.Zero;
                             npc.rotation = 0;
@@ -425,7 +425,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else // Wind down
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             npc.velocity /= 2f;
                             TempTimer = (int)(49 * (1 - SpeedMult)); // Decrease breathing time as HP decreases
                             if (Main.netMode != 1 && Main.rand.Chance(dashChange))
@@ -470,7 +470,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else // Wind down
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             npc.velocity /= 2f;
                             TempTimer = (int)(49 * (1 - SpeedMult)); // Decrease breathing time as HP decreases
                             if (Main.netMode != 1 && Main.rand.Chance(dashChange))
@@ -488,7 +488,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else if (TempTimer == 25) // Decide where we're going
                         {
-                            npc.netUpdate = true; // Lots of randomization, just sync 'em up.
+                            //npc.netUpdate = true; // Lots of randomization, just sync 'em up.
                             if (Main.netMode != 1) // Don't run any of this on clients, it's not worth it lol.
                             {
                                 Rectangle valid = new Rectangle((int)Target.Center.X - 300, (int)Target.Center.Y - 350, 600, 200);
@@ -525,7 +525,7 @@ namespace Erilipah.NPCs.Taranys
                             // 7 deadly crystal projectiles; every 10 ticks through delta70 ticks
                             if (Timer % 10 == 0)
                             {
-                                npc.netUpdate = true;
+                                //npc.netUpdate = true;
                                 Main.PlaySound(SoundID.Item17, npc.Center);
                                 if (Main.netMode != 1)
                                 {
@@ -539,7 +539,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else if (TempTimer > 140 * SpeedMult)
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             npc.velocity /= 2f;
                             TempTimer = (int)(25 * (1 - SpeedMult)); // Decrease breathing time as HP decreases
                             if (Main.netMode != 1 && Main.rand.Chance(dashChange))
@@ -561,7 +561,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else if (TempTimer == 60) // Set our place we wanna slam
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
 
                             if (Main.netMode != 1)
                             {
@@ -660,7 +660,7 @@ namespace Erilipah.NPCs.Taranys
                         else // Wind down
                         {
                             Filters.Scene["TaranysPulse"].Deactivate();
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             TempTimer = (int)(60 * (1 - SpeedMult)); // Decrease breathing time as HP decreases
                             if (Main.netMode != 1 && Main.rand.Chance(dashChange))
                                 SwitchAttacks();
@@ -684,7 +684,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else if (TempTimer % 45 == 0)
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.5f);
                             if (Main.netMode != 1)
                             {
@@ -696,7 +696,7 @@ namespace Erilipah.NPCs.Taranys
 
                         if (TempTimer > 240)
                         {
-                            npc.netUpdate = true;
+                            //npc.netUpdate = true;
                             npc.velocity /= 4f;
                             SwitchAttacks();
                         }
@@ -722,7 +722,7 @@ namespace Erilipah.NPCs.Taranys
                     TempTimer++;
                     if (TempTimer == 1)
                     {
-                        npc.netUpdate = true;
+                        //npc.netUpdate = true;
 
                         if (Main.netMode != 1)
                         {

@@ -4,6 +4,7 @@ using Erilipah.NPCs.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -26,16 +27,17 @@ namespace Erilipah.Items.ErilipahBiome
             projectile.tileCollide = false;
             projectile.netImportant = true;
 
-            projectile.owner = 255;
+            Follow = 255;
             projectile.frame = 0;
 
             Timer = 0;
             ScaleTimer = 0;
             FloatTimer = 0;
+            Follow = 255;
         }
 
         private static Vector2 AboveAltar => ErilipahWorld.AltarPosition - Vector2.UnitY * 100;
-        private bool Taken => projectile.owner != 255;
+        private bool Taken => Follow != 255;
         private bool SummonComplete => Timer > 1110;
 
         private float Timer { get => projectile.ai[0]; set => projectile.ai[0] = value; }
@@ -43,6 +45,17 @@ namespace Erilipah.Items.ErilipahBiome
 
         private float ScaleTimer { get => projectile.localAI[0]; set => projectile.localAI[0] = value; }
         private float FloatTimer { get => projectile.localAI[1]; set => projectile.localAI[1] = value; }
+
+        private int Follow = 255;
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(Follow);
+        }
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            reader.ReadInt32();
+        }
 
         public override void AI()
         {
@@ -77,7 +90,7 @@ namespace Erilipah.Items.ErilipahBiome
 
             if (Taken)
             {
-                Player player = Main.player[projectile.owner];
+                Player player = Main.player[Follow];
 
                 int taranys = NPC.FindFirstNPC(mod.NPCType<NPCs.Taranys.Taranys>());
                 bool taranysIsDying = taranys != -1 && Main.npc[taranys].ai[0] < 0;
@@ -123,7 +136,7 @@ namespace Erilipah.Items.ErilipahBiome
             else
             {
                 Effects(AboveAltar);
-                projectile.owner = CheckForDash();
+                Follow = CheckForDash();
             }
         }
 
@@ -287,7 +300,7 @@ namespace Erilipah.Items.ErilipahBiome
                     Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 29, 1, -0.35f);
                     SetDefaults();
 
-                    projectile.owner = 255;
+                    Follow = 255;
                     return;
                 }
 

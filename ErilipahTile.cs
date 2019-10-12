@@ -18,7 +18,7 @@ namespace Erilipah
 
         public override void RandomUpdate(int i, int j, int type)
         {
-            if (Main.netMode != 1 && Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.005f) && OffScreen(i, j)) 
+            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.005f) && OffScreen(i, j)) 
             {
                 /* 0= 2x    stalk
                  * 1= 1x    bubble
@@ -38,6 +38,9 @@ namespace Erilipah
                 rand.Add(6, 1.25);
 
                 ErilipahWorld.PlaceHazard(i, j, rand, mod);
+
+                if (Main.netMode == 2 /*Sync to clients when run on the server*/)
+                    NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
             }
         }
 

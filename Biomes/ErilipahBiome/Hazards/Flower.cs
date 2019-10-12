@@ -33,11 +33,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             return false;
         }
 
-        public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height)
-        {
-
-        }
-
         public override void DrawEffects(int i, int j, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             drawColor *= 1.2f;
@@ -80,17 +75,21 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
                 Burst(i, j);
             }
+
+            if (Main.netMode == 2 /*Sync to clients when run on the server*/)
+                NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
         }
 
         private void Burst(int i, int j)
         {
+            if (Main.netMode != 1)
             for (int a = 0; a < 3; a++)
             {
                 Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
                 Projectile.NewProjectile(
                     i * 16f + 16 + 8, j * 16f + 4,
                     rand.X, rand.Y,
-                    mod.ProjectileType<FlowerProj>(), 21, 1);
+                    mod.ProjectileType<FlowerProj>(), 21, 1, Main.myPlayer);
             }
 
             for (int h = 0; h < 10; h++)
