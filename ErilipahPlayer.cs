@@ -18,7 +18,6 @@ namespace Erilipah
 
         public int bankedDamage = 0;
         public int extraItemReach = 0;
-        public bool frozen = false;//TODO remove
         public bool canMove = true;
         public bool canJump = true;
         public bool soulBankHealing = false;

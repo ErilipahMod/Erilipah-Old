@@ -21,8 +21,8 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void SetDefaults()
         {
-            npc.lifeMax = 120;
-            npc.defense = 2;
+            npc.lifeMax = Main.hardMode ? 80 : 40;
+            npc.defense = 7;
             npc.damage = 15;
             npc.knockBackResist = 0f;
 
