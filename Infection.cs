@@ -269,7 +269,9 @@ namespace Erilipah
 
             if (darknessCounter < 0)
                 darknessCounter = 0;
-
+        }
+        public override void PostUpdate()
+        {
             if (Infection > infectionMax * 0.9f && !player.buffImmune[BuffID.Weak])
             {
                 player.AddBuff(BuffID.Weak, 1);
@@ -278,9 +280,7 @@ namespace Erilipah
             {
                 player.AddBuff(BuffID.Slow, 1);
             }
-        }
-        public override void PostUpdate()
-        {
+
             const float infectionInErilipah = 8f / 3600f;
             if (player.InErilipah())
             {
