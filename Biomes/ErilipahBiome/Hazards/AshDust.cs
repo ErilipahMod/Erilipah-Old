@@ -10,7 +10,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void OnSpawn(Dust dust)
         {
             dust.customData = Main.rand.NextFloat(1, 5f);
-            dust.scale = MathHelper.Lerp(0.6f, 1.5f, ((float)dust.customData - 1f) / 5f);
+            dust.scale = MathHelper.Lerp(0.75f, 1.6f, ((float)dust.customData - 1f) / 5f);
         }
 
         public override bool Update(Dust dust)
@@ -42,7 +42,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return new Color(255, 255, 255, 255);
+            return new Color(0.65f, 0.65f, 0.65f, 1f);
         }
     }
 }

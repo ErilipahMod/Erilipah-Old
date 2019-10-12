@@ -59,7 +59,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     BreakBase(left, j);
                 }
 
-                if (!Main.tile[left, j].active() || !Main.tile[left + 1, j].active() || !Main.tile[left + 2, j].active())
+                if (!Main.tile[left, j + 1].ValidTop() || !Main.tile[left + 1, j + 1].ValidTop() || !Main.tile[left + 2, j + 1].ValidTop())
                 {
                     BreakBase(left, j);
                 }
@@ -123,7 +123,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
                 // 8% chance to start the tip of the cane. Also starts the tip of there's a tile that will prevent it
                 // Otherwise, continue growing the stalk
-                if (Main.rand.Chance(0.08f) || Main.tile[i, j - 6].active())
+                if (Main.rand.Chance(0.1f))
                 {
                     above.type = Type;
                     above.active(true);

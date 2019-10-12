@@ -171,6 +171,9 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         private static bool IsLight(int i, int j)
         {
+            if (i == 0 && j == 0)
+                return false;
+
             Tile candidate = Main.tile[i, j];
             bool light = candidate.type == TileID.Torches || candidate.type == TileID.Campfire || TileLoader.IsTorch(candidate.type);
             return candidate.active() && light;

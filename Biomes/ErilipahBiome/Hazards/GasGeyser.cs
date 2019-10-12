@@ -149,8 +149,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             projectile.rotation += Math.Sign(Main.windSpeed) * 0.1f;
 
-            projectile.velocity.X += Main.windSpeed * 0.04f;
-            projectile.velocity.X = MathHelper.Clamp(projectile.velocity.X, -6, 6);
+            projectile.velocity.X += Main.windSpeed * 0.02f;
+            projectile.velocity.X = MathHelper.Clamp(projectile.velocity.X, -4, 4);
 
             projectile.velocity.Y += 0.06f;
             if (projectile.velocity.Y > 0)

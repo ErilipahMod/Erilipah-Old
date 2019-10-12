@@ -215,6 +215,21 @@ namespace Erilipah
             }
         }
 
+        public static bool ValidTop(this Tile t)
+        {
+            bool isSolid = Main.tileSolidTop[t.type] || Main.tileSolid[t.type];
+            bool notSloped = (t.slope() == 0 || t.bottomSlope()) && !t.halfBrick();
+            return t.active() && isSolid && notSloped;
+        }
+
+        public static bool ValidTop(int i, int j)
+        {
+            Tile t = Main.tile[i, j];
+            bool isSolid = Main.tileSolidTop[t.type] || Main.tileSolid[t.type];
+            bool notSloped = (t.slope() == 0 || t.topSlope()) && !t.halfBrick();
+            return t.active() && isSolid && notSloped;
+        }
+
         internal static Vector2 To(this Vector2 from, Vector2 to, float speed = 1)
         {
             Vector2 velocity;

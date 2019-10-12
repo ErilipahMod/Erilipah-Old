@@ -1134,16 +1134,37 @@ namespace Erilipah
         }
         public static void PlaceHazard(int i, int j, Mod mod)
         {
-            bool
-                isLostCity = Main.tile[i, j].active() && Main.tile[i, j].type == mod.TileType<TaintedBrick>();
+            PlaceHazard(i, j, WorldGen.genRand.Next(7), mod);
+        }
+        public static void PlaceHazard(int i, int j, int type, Mod mod)
+        {
+            /* 0= stalk
+             * 1= bubble
+             * 2= vine
+             * 3= geyser
+             * 4= giant pf
+             * 5= vent
+             * 6= hive */
+
+            bool isLostCity = Main.tile[i, j].active() && Main.tile[i, j].type == mod.TileType<TaintedBrick>();
             isLostCity |= Main.tile[i, j + 1].active() && Main.tile[i, j + 1].type == mod.TileType<TaintedBrick>();
             if (isLostCity)
                 return;
 
-            switch (Main.rand.Next(7))
+            switch (type)
             {
                 default:
-                    WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>()); break;
+                    if (Stalk.IsValid(i, j) && Stalk.IsValid(i - 1, j) && Stalk.IsValid(i + 1, j))
+                    {
+                        short frameY = (short)(Main.rand.Next(5, 8) * 18);
+                        for (int n = -1; n <= 1; n++)
+                        {
+                            Main.tile[i + n, j - 1].active(true);
+                            Main.tile[i + n, j - 1].type = (ushort)mod.TileType<Stalk>();
+                            Main.tile[i + n, j - 1].frameX = (short)(72 + n * 18);
+                            Main.tile[i + n, j - 1].frameY = frameY;
+                        }
+                    } break;
 
                 case 1:
                     WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<Flower>()); break;
@@ -1161,23 +1182,12 @@ namespace Erilipah
                     break;
 
                 case 3:
-                    if (Stalk.IsValid(i, j) && Stalk.IsValid(i - 1, j) && Stalk.IsValid(i + 1, j))
-                    {
-                        short frameY = (short)(Main.rand.Next(5, 8) * 18);
-                        for (int n = -1; n <= 1; n++)
-                        {
-                            Main.tile[i + n, j - 1].active(true);
-                            Main.tile[i + n, j - 1].type = (ushort)mod.TileType<Stalk>();
-                            Main.tile[i + n, j - 1].frameX = (short)(72 + n * 18);
-                            Main.tile[i + n, j - 1].frameY = frameY;
-                        }
-                    }
+                    WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
                     break;
 
                 case 4:
                     if (WorldGen.genRand.Chance(0.5f))
-                        goto case 3;
-
+                        goto default;
                     WorldGen.Place3x2(i, j - 1, (ushort)mod.TileType<GiantPF>()); break;
 
                 case 5:
