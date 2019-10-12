@@ -25,7 +25,6 @@ namespace Erilipah.Items.ErilipahBiome
             projectile.width = 36;
             projectile.height = 32;
             projectile.tileCollide = false;
-            projectile.netImportant = true;
 
             Follow = 255;
             projectile.frame = 0;
@@ -38,7 +37,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         private static Vector2 AboveAltar => ErilipahWorld.AltarPosition - Vector2.UnitY * 100;
         private bool Taken => Follow != 255;
-        private bool SummonComplete => Timer > 1110;
+        private bool SummonComplete => Timer > 1030;
 
         private float Timer { get => projectile.ai[0]; set => projectile.ai[0] = value; }
         private float ShockTimer { get => projectile.ai[1]; set => projectile.ai[1] = value; }
@@ -62,10 +61,11 @@ namespace Erilipah.Items.ErilipahBiome
             // Never die!
             projectile.timeLeft = 180;
             projectile.aiStyle = 0;
+            projectile.netUpdate = true;
 
             if (projectile.frame > 0)
             {
-                Lighting.AddLight(projectile.Center, new Vector3(1.2f, 1.0f, 1.2f * projectile.scale) * projectile.scale * Math.Abs(pulse * 1.2f));
+                Lighting.AddLight(projectile.Center, new Vector3(1.2f, 1.0f, 1.2f * projectile.scale) * projectile.scale);
             }
 
             // Run shockwave. To start a shockwave set ShockTimer = 1
@@ -99,16 +99,24 @@ namespace Erilipah.Items.ErilipahBiome
                 if (SummonComplete && taranysDespawn || Timer >= 1e9f)
                 {
                     Timer = 1e9f;
-                    if (projectile.scale > 0.02f)
-                        projectile.scale -= 0.01f;
+                    if (projectile.scale > 0.03f)
+                        projectile.scale -= 0.03f;
                     else
                         projectile.Kill();
                 }
                 else if (SummonComplete && taranys == -1 || Timer < 0)
                 {
                     // Shrink back down then go to the altar
-                    Effects(Vector2.Zero, true);
-                    AlAltar();
+                    if (projectile.scale > 1.09f)
+                    {
+                        ScaleTimer = -107;
+                        projectile.scale -= 0.01f;
+                    }
+                    else
+                    {
+                        Effects(Vector2.Zero, true);
+                        AlAltar();
+                    }
                 }
                 else if (SummonComplete && taranys > -1 && taranysIsDying)
                 {
@@ -121,6 +129,7 @@ namespace Erilipah.Items.ErilipahBiome
                 {
                     // Follow player during fight
                     projectile.velocity = Vector2.Zero;
+                    Effects(Vector2.Zero, true);
                     projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.1f);
                 }
                 else if (Timer >= 0)
@@ -314,8 +323,8 @@ namespace Erilipah.Items.ErilipahBiome
                 // TODO: Add "if player can dash" check here
                 if (!ErilipahWorld.downedTaintedSkull && dist > 300 && Main.LocalPlayer.InErilipah())
                 {
-                    float numDust = dist / 50f;
-                    Vector2 pos = Vector2.Lerp(Main.LocalPlayer.Center, projectile.Center - Vector2.UnitY * 16, (inc += 0.25f / numDust) % 1);
+                    float numDust = dist / 65f;
+                    Vector2 pos = Vector2.Lerp(Main.LocalPlayer.Center, projectile.Center - Vector2.UnitY * 16, (inc += 0.35f / numDust) % 1);
                     Dust.NewDustPerfect(pos, mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.35f)
                         .noGravity = true;
                 }
@@ -328,11 +337,13 @@ namespace Erilipah.Items.ErilipahBiome
             }
             else if (distanceToAltar < 200)
             {
-                projectile.velocity = dirToAltar * 10 * (distanceToAltar / 200f);
+                if (projectile.velocity.Length() > 3)
+                projectile.velocity *= 0.8f;
             }
             else if (projectile.velocity.Length() < 10)
             {
                 projectile.velocity += dirToAltar * 0.0225f;
+                projectile.velocity = Vector2.Clamp(projectile.velocity, Vector2.One * -10, Vector2.One * 10);
             }
         }
 

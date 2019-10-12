@@ -775,7 +775,7 @@ namespace Erilipah.NPCs.Taranys
                         {
                             Player p = Main.player[i];
                             float distance = p.Distance(npc.position + new Vector2(50, 78));
-                            float speed = MathHelper.SmoothStep(6.75f, 0, distance / 1000f);
+                            float speed = MathHelper.SmoothStep(7f, 0, distance / 1200f);
                             Vector2 vel = new Vector2(p.Center.X < npc.Center.X ? speed : -speed, 0);
 
                             p.position += Collision.TileCollision(p.position, vel, p.width, p.height);
@@ -884,6 +884,13 @@ namespace Erilipah.NPCs.Taranys
                 for (int i = 0; i < 5; i++)
                 {
                     Gore.NewGore(npc.Center, Main.rand.NextVector2CircularEdge(3, 3), Type(i));
+                }
+
+                for (int i = 0; i < 35; i++)
+                {
+                    float rot = i / 35f * MathHelper.TwoPi;
+                    float intensity = i % 2 == 0 ? 10 : 6;
+                    Dust.NewDustPerfect(npc.Center, mod.DustType<CrystallineDust>(), rot.ToRotationVector2() * intensity).customData = -60f;
                 }
                 return true;
             }

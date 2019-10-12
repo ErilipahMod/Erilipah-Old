@@ -32,7 +32,7 @@ namespace Erilipah.Items.Crystalline
                 dust.customData = (float)dust.customData + 1;
                 if ((float)dust.customData < 100)
                 {
-                    dust.velocity *= 0.96f;
+                    dust.velocity *= 0.965f;
                 }
                 else
                 {

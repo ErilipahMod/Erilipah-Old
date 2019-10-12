@@ -150,7 +150,7 @@ namespace Erilipah
             if (infection > 0)
                 CombatText.NewText(loc, Color.PaleVioletRed, Math.Round(infection, 1).ToString(), infection > infectionMax / 3f);
             if (infection < 0)
-                CombatText.NewText(loc, Color.CornflowerBlue, Math.Round(-infection, 1).ToString(), infection > infectionMax / 3f);
+                CombatText.NewText(loc, Color.AliceBlue, Math.Round(-infection, 1).ToString(), infection > infectionMax / 3f);
         }
         public void InfectPerSecond(float perSecond)
         {
@@ -224,7 +224,10 @@ namespace Erilipah
                     player.lifeRegen = 0;
 
                 if (counter % (int)Math.Max(30 / (Infection - infectionMax), 1) == 0)
+                {
+                    player.netLife = true;
                     player.statLife--;
+                }
 
                 if (counter % 30 == 0 && Infection - infectionMax >= 1)
                     CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, (int)Math.Floor(Infection - infectionMax), true, true);
@@ -262,9 +265,9 @@ namespace Erilipah
             }
             else
             {
-                if (darknessCounter > 500)
-                    darknessCounter = 500;
-                darknessCounter--;
+                if (darknessCounter > 300)
+                    darknessCounter = 300;
+                darknessCounter -= 2;
             }
 
             if (darknessCounter < 0)

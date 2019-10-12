@@ -103,21 +103,26 @@ namespace Erilipah
             switch (reader.ReadByte())
             {
                 case (byte)PacketType.Infection:
-                    byte playernumber = reader.ReadByte();
-                    InfectionPlr other = Main.player[playernumber].GetModPlayer<InfectionPlr>();
-                    other.Infection = reader.ReadSingle();
-                    other.infectionMax = reader.ReadSingle();
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        var packet = GetPacket();
-                        packet.Write((byte)PacketType.Infection);
-                        packet.Write(playernumber);
-                        packet.Write(other.Infection);
-                        packet.Write(other.infectionMax);
-                        packet.Send(-1, playernumber);
-                    }
+                    HandleInfectionPacket(reader);
                     break;
+            }
+        }
+
+        private void HandleInfectionPacket(BinaryReader reader)
+        {
+            byte playernumber = reader.ReadByte();
+            InfectionPlr other = Main.player[playernumber].GetModPlayer<InfectionPlr>();
+            other.Infection = reader.ReadSingle();
+            other.infectionMax = reader.ReadSingle();
+
+            if (Main.netMode == NetmodeID.Server)
+            {
+                var packet = GetPacket();
+                packet.Write((byte)PacketType.Infection);
+                packet.Write(playernumber);
+                packet.Write(other.Infection);
+                packet.Write(other.infectionMax);
+                packet.Send(-1, playernumber);
             }
         }
 

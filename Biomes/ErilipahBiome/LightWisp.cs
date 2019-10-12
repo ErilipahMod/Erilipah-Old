@@ -41,6 +41,7 @@ namespace Erilipah.Biomes.ErilipahBiome
             npc.defense = 0;
             npc.damage = 0;
             npc.knockBackResist = 1f;
+            npc.dontTakeDamageFromHostiles = false;
 
             npc.aiStyle = 64;
             npc.noGravity = true;

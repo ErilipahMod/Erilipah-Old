@@ -111,6 +111,7 @@ namespace Erilipah
             else if (args[0] == "goblins") NPC.downedGoblins = yes;
             else if (args[0] == "boss2") NPC.downedBoss2 = yes;
             else if (args[0] == "skeletron") NPC.downedBoss3 = yes;
+            else if (args[0] == "taranys") ErilipahWorld.downedTaintedSkull = yes;
             else if (args[0] == "wall") Main.hardMode = yes;
             else if (args[0] == "allMech") { NPC.downedMechBossAny = yes; NPC.downedMechBoss1 = yes; NPC.downedMechBoss2 = yes; NPC.downedMechBoss3 = yes; }
             else if (args[0] == "plant") NPC.downedPlantBoss = yes;
