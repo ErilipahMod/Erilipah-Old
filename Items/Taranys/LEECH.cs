@@ -77,6 +77,8 @@ namespace Erilipah.Items.Taranys
             {
                 type = mod.ProjectileType<CrystalBolt>();
                 vel /= 2;
+                damage += 10;
+                knockBack *= 1.5f;
 
                 Main.PlaySound(SoundID.Item101, position);
             }
@@ -125,7 +127,7 @@ namespace Erilipah.Items.Taranys
             projectile.extraUpdates = 3;
 
             projectile.ranged = true;
-            projectile.maxPenetrate = 2;
+            projectile.maxPenetrate = 1;
             projectile.hostile = !
                 (projectile.friendly = true);
         }
@@ -187,6 +189,12 @@ namespace Erilipah.Items.Taranys
                 Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.5f);
                 d.velocity = new Vector2(0, -5);
                 d.noGravity = true;
+            }
+
+            int other = npc.FindClosestNPC(100);
+            if (other != -1)
+            {
+                Main.npc[other].AddBuff(Type, npc.buffTime[buffIndex]);
             }
         }
     }

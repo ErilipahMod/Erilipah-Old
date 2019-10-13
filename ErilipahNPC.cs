@@ -13,7 +13,7 @@ namespace Erilipah
 
         public int witherStack = 0;
         private int crystalInfec = 0;
-        public int CrystalInfectionDamage => (int)MathHelper.Clamp(crystalInfec / 30, 1, 15);
+        public int CrystalInfectionDamage => (int)MathHelper.Clamp(crystalInfec / 60, 1, 15);
 
         public override bool CheckDead(NPC npc)
         {
@@ -38,9 +38,9 @@ namespace Erilipah
                 int myTime = npc.buffTime[bIndex];
 
                 if (!other.HasBuff(wither))
-                    other.AddBuff(wither, myTime + 60);
+                    other.AddBuff(wither, myTime + 30);
                 else
-                    BuffLoader.ReApply(wither, other, myTime + 60, bIndex);
+                    BuffLoader.ReApply(wither, other, myTime + 30, bIndex);
 
                 for (int i = 0; i < 30; i++)
                 {
@@ -63,24 +63,21 @@ namespace Erilipah
             bool wither = npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>());
             bool crystal = npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>());
 
-            if (wither)
-            {
-                damage = witherStack;
-            }
             if (crystal)
             {
-                damage = CrystalInfectionDamage;
+                damage = 3;
                 crystalInfec++;
-                
-                // If crystal && wither, then display the higher of the two values.
-                if (wither)
-                {
-                    damage = Math.Max(CrystalInfectionDamage, witherStack);
-                }
             }
             else
             {
                 crystalInfec = 0;
+            }
+
+            if (wither)
+            {
+                if (witherStack > 22)
+                    witherStack = 22;
+                damage = witherStack;
             }
         }
 
