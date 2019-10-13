@@ -88,6 +88,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool CanPlace(int i, int j) => IsValid(i, j);
 
+        private void GrowMoreStalks(int i, int j)
+        {
+            for (int v = -1; v <= 1; v++)
+            {
+                bool left = Main.tile[i + 5, j + v].active();
+                ErilipahWorld.PlaceHazard(i + (left ? -5 : 5), j + v, 0, mod);
+            }
+        }
+
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
@@ -111,6 +120,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     above.active(true);
                     GetStalkFrame(out above.frameX, out above.frameY);
                 }
+
+                GrowMoreStalks(i, j);
             }
             else if (isStalk)
             {
@@ -129,9 +140,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     return;
                 }
 
-                // 7% chance to start the tip of the stalk
+                // % chance to start the tip of the stalk
                 // Otherwise, continue growing the stalk
-                if (Main.rand.Chance(0.07f) || Main.tile[i, j - 5].active())
+                if (Main.rand.Chance(0.075f) || Main.tile[i, j - 5].active())
                 {
                     above.type = Type;
                     above.active(true);
@@ -177,7 +188,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 #endif
 
             if (Main.netMode == 2 /*Sync to clients when run on the server*/)
-                NetMessage.SendTileSquare(-1, i, j, 1);
+                NetMessage.SendTileSquare(-1, i, j, 3);
         }
 
         private void GetStalkFrame(out short x, out short y)
