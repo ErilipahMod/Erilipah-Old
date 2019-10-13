@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Erilipah.NPCs.ErilipahBiome;
+using System;
+using Microsoft.Xna.Framework;
 
 namespace Erilipah
 {
@@ -12,24 +12,56 @@ namespace Erilipah
         public override bool InstancePerEntity => true;
 
         public int witherStack = 0;
+        private int crystalInfec = 0;
+        public int CrystalInfectionDamage => Math.Min(12, crystalInfec / 90);
 
         public override bool CheckDead(NPC npc)
         {
+            // Spread Wither to nearby NPCs
             if (witherStack > 0)
             {
                 int closestNPC = npc.FindClosestNPC(1000);
                 if (closestNPC == -1)
                     return true;
 
-                Main.npc[closestNPC].GetGlobalNPC<ErilipahNPC>().witherStack += this.witherStack;
+                int wither = mod.BuffType<Items.ErilipahBiome.Wither>();
+                int myTime = npc.buffTime[npc.FindBuffIndex(wither)];
+                int theirTime = Main.npc[closestNPC].buffTime[npc.FindBuffIndex(wither)];
+                Main.npc[closestNPC].AddBuff(wither, myTime + theirTime);
             }
             return true;
         }
+
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
+            if (npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>()))
+            {
+                damage = crystalInfec;
+                crystalInfec++;
+            }
+            else
+            {
+                crystalInfec = 0;
+            }
+
             if (npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>()))
+            {
                 damage = witherStack;
+            }
         }
+
+        public override void DrawEffects(NPC npc, ref Color drawColor)
+        {
+            if (npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>()))
+            {
+                int type = mod.BuffType<Items.Taranys.CrystalInfection>();
+                int time = npc.buffTime[npc.FindBuffIndex(type)];
+                float intensity = Math.Min(time / 300f, 0.35f);
+
+                drawColor = Color.Lerp(drawColor, Color.MediumVioletRed, intensity);
+            }
+        }
+
         public override void SetupShop(int type, Chest shop, ref int nextSlot)
         {
             if (type == NPCID.Merchant && NPC.downedBoss1)
