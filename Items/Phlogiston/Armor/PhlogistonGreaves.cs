@@ -18,10 +18,9 @@ namespace Erilipah.Items.Phlogiston.Armor
         protected override int Defense => 9;
         public override void UpdateEquip(Player player)
         {
-            if ((player.velocity.X != 0 || player.velocity.Y != 0) && Main.rand.NextBool(5))
+            if (player.velocity != Vector2.Zero && Main.rand.NextBool(5))
             {
-                const int yOffSet = 20;
-                Dust dust = Dust.NewDustDirect(player.position + Vector2.UnitY * yOffSet, player.width, player.legFrame.Height - yOffSet, mod.DustType("DeepFlames"), Scale: 1.375f);
+                Dust dust = Dust.NewDustDirect(player.BottomLeft, player.width, 2, mod.DustType("DeepFlames"), Scale: 1.2f);
                 dust.noGravity = true;
                 if (player.InErilipah())
                     dust.noLight = true;

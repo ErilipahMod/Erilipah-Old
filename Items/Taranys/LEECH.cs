@@ -18,6 +18,7 @@ namespace Erilipah.Items.Taranys
             DisplayName.SetDefault("L.E.E.C.H.");
             Tooltip.SetDefault(
                 "Barrages your enemies with volleys of plague and death\n" +
+                "Sustaining attacks strengthens these plagues\n" +
                 "'You get a cookie if you can guess what it stands for'"
                 );
 
@@ -26,44 +27,84 @@ namespace Erilipah.Items.Taranys
 
         public override void SetDefaults()
         {
-            item.width = 44;
+            item.width = 34;
             item.height = 28;
 
-            item.damage = 33;
-            item.knockBack = 2f;
+            item.damage = 30;
+            item.knockBack = 2.5f;
             item.crit = 6;
 
             item.ranged = true;
             item.noMelee = true;
+            item.useAmmo = AmmoID.Bullet;
             item.shoot = ProjectileID.Bullet;
-            item.shootSpeed = 9.5f;
+            item.shootSpeed = 11f;
 
             item.useTime =
-            item.useAnimation = 20;
+            item.useAnimation = 10;
 
-            item.useStyle = ItemUseStyleID.SwingThrow;
+            item.useStyle = ItemUseStyleID.HoldingOut;
             item.autoReuse = true;
-            item.useTurn = true;
-
-            item.UseSound = SoundID.Item1;
+            item.useTurn = false;
 
             item.maxStack = 1;
             item.value = 1000;
-            item.rare = ItemRarityID.Blue;
+            item.rare = ItemRarityID.LightRed;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            position.X += speedX;
-            position.Y += speedY;
+            Vector2 vel = new Vector2(speedX, speedY);
+            Vector2 offset = vel.SafeNormalize(Vector2.Zero) * 40;
+            if (!Collision.CanHitLine(position, 1, 1, position + offset, 1, 1))
+                return false;
 
-            if (type == ProjectileID.Bullet && Main.rand.NextBool(8))
+            position += offset;
+
+            // Standard gun
+            if (type != ProjectileID.Bullet)
+            {
+                vel = vel.RotateRandom(0.1);
+                speedX = vel.X;
+                speedY = vel.Y;
+
+                Main.PlaySound(SoundID.Item11, position);
+                return true;
+            }
+
+            // Spechull
+            if (Main.rand.NextBool(8))
+            {
                 type = mod.ProjectileType<CrystalBolt>();
+                vel /= 2;
 
-            if (type == ProjectileID.Bullet)
+                Main.PlaySound(SoundID.Item101, position);
+            }
+            else
+            {
                 type = mod.ProjectileType<VoidBolt>();
+                vel = vel.RotateRandom(0.15);
+                vel /= 2;
+
+                Main.PlaySound(SoundID.Item111, position);
+            }
+
+            speedX = vel.X;
+            speedY = vel.Y;
+
             return true;
         }
+
+        public override Vector2? HoldoutOrigin()
+        {
+            return null;
+        }
+
+        // TODO A
+        //public override Vector2? HoldoutOffset()
+        //{
+        //    return base.HoldoutOffset();
+        //}
     }
 
     public class VoidBolt : ModProjectile
@@ -81,10 +122,10 @@ namespace Erilipah.Items.Taranys
             projectile.tileCollide = true;
             projectile.aiStyle = 0;
             projectile.timeLeft = 300;
-            projectile.extraUpdates = 1;
+            projectile.extraUpdates = 3;
 
             projectile.ranged = true;
-            projectile.maxPenetrate = 1;
+            projectile.maxPenetrate = 2;
             projectile.hostile = !
                 (projectile.friendly = true);
         }
@@ -92,13 +133,14 @@ namespace Erilipah.Items.Taranys
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             target.AddBuff(mod.BuffType<Wither>(), 80);
-            projectile.Kill();
         }
 
         public override void AI()
         {
-            projectile.velocity.Y += 0.015f;
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<VoidParticle>(), Vector2.Zero)
+            projectile.velocity.Y += 0.04f;
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero)
+                .noGravity = true;
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 0.7f)
                 .noGravity = true;
         }
 
@@ -107,12 +149,16 @@ namespace Erilipah.Items.Taranys
             Main.PlaySound(SoundID.NPCDeath9, projectile.Center);
             for (int i = 0; i < 10; i++)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidParticle>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi))
+                Dust.NewDustPerfect(projectile.Center, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi))
+                    .noGravity = true;
+                Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidParticle>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi), Scale: 0.7f)
                     .noGravity = true;
             }
             for (int i = 0; i < 10; i++)
             {
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<VoidParticle>(), Vector2.Zero)
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero)
+                    .noGravity = true;
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 0.7f)
                     .noGravity = true;
             }
         }
@@ -133,14 +179,14 @@ namespace Erilipah.Items.Taranys
 
         public override void Update(NPC npc, ref int buffIndex)
         {
-            npc.GetGlobalNPC<ErilipahNPC>().witherStack = npc.buffTime[buffIndex] / 60;
-
             npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
             npc.lifeRegen -= npc.GetGlobalNPC<ErilipahNPC>().CrystalInfectionDamage;
 
-            if (Main.rand.NextBool(3))
+            if (Main.rand.NextBool())
             {
-                Main.dust[Dust.NewDust(npc.position, npc.width, npc.height, 109, newColor: Color.MediumVioletRed)].noGravity = true;
+                Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.5f);
+                d.velocity = new Vector2(0, -5);
+                d.noGravity = true;
             }
         }
     }
@@ -160,7 +206,7 @@ namespace Erilipah.Items.Taranys
             projectile.tileCollide = true;
             projectile.aiStyle = 0;
             projectile.timeLeft = 300;
-            projectile.extraUpdates = 1;
+            projectile.extraUpdates = 2;
 
             projectile.ranged = true;
             projectile.maxPenetrate = 1;
@@ -170,14 +216,21 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(mod.BuffType<CrystalInfection>(), 300);
+            target.AddBuff(mod.BuffType<CrystalInfection>(), 500);
             projectile.Kill();
         }
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
-                .noGravity = true;
+            projectile.velocity.Y += 0.04f;
+
+            for (int i = 0; i < 2; i++)
+            {
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
+                    .noGravity = true;
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.25f)
+                    .noGravity = true;
+            }
         }
 
         public override void Kill(int timeLeft)
@@ -197,7 +250,6 @@ namespace Erilipah.Items.Taranys
             projectile.width += 20;
             projectile.height += 20;
             projectile.Center -= Vector2.One * 10;
-            projectile.Damage();
         }
     }
 }

@@ -48,6 +48,7 @@ namespace Erilipah.Items.ErilipahBiome
             r.AddRecipe();
         }
     }
+
     public class Wither : ModBuff
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -63,8 +64,9 @@ namespace Erilipah.Items.ErilipahBiome
         private int Stack(NPC npc) => npc.GetGlobalNPC<ErilipahNPC>().witherStack;
         public override bool ReApply(NPC npc, int time, int buffIndex)
         {
-            npc.buffTime[buffIndex] += time / Stack(npc);
-
+            // The increase in time, decreases over time
+            float inc = time / (npc.buffTime[buffIndex] / 120f);
+            npc.buffTime[buffIndex] += (int)inc;
             return true;
         }
         public override void Update(NPC npc, ref int buffIndex)

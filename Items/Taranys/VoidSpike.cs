@@ -18,7 +18,7 @@ namespace Erilipah.Items.Taranys
         public override void SetDefaults()
         {
             item.damage = 45;
-            item.knockBack = 3.5f;
+            item.knockBack = 2.2f;
             item.crit = 9;
             item.mana = 0;
 
@@ -75,14 +75,13 @@ namespace Erilipah.Items.Taranys
             return !AnyShards(player);
         }
 
-        //TODO add
-        //public override void MeleeEffects(Player player, Rectangle hitbox)
-        //{
-        //    if (Main.rand.NextBool(5))
-        //    {
-        //        Dust.NewDustDirect(hitbox.Location.ToVector2(), hitbox.Width, hitbox.Height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.25f).noGravity = true;
-        //    }
-        //}
+        public override void MeleeEffects(Player player, Rectangle hitbox)
+        {
+            if (Main.rand.NextBool(4))
+            {
+                Dust.NewDustDirect(hitbox.Location.ToVector2(), hitbox.Width, hitbox.Height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.25f).noGravity = true;
+            }
+        }
 
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {

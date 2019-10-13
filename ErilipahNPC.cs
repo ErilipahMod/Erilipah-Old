@@ -13,40 +13,74 @@ namespace Erilipah
 
         public int witherStack = 0;
         private int crystalInfec = 0;
-        public int CrystalInfectionDamage => Math.Min(12, crystalInfec / 90);
+        public int CrystalInfectionDamage => (int)MathHelper.Clamp(crystalInfec / 30, 1, 15);
 
         public override bool CheckDead(NPC npc)
         {
             // Spread Wither to nearby NPCs
             if (witherStack > 0)
             {
+                int dustT = mod.DustType<NPCs.ErilipahBiome.VoidParticle>();
+                for (int i = 0; i < 30; i++)
+                {
+                    float rot = i / 30f * MathHelper.TwoPi;
+                    Dust.NewDustPerfect(npc.Center, dustT, rot.ToRotationVector2() * Main.rand.NextFloat(8, 11), newColor: Color.Black, Scale: 1.6f).noGravity = true;
+                }
+
                 int closestNPC = npc.FindClosestNPC(1000);
                 if (closestNPC == -1)
                     return true;
 
+                NPC other = Main.npc[closestNPC];
+
                 int wither = mod.BuffType<Items.ErilipahBiome.Wither>();
-                int myTime = npc.buffTime[npc.FindBuffIndex(wither)];
-                int theirTime = Main.npc[closestNPC].buffTime[npc.FindBuffIndex(wither)];
-                Main.npc[closestNPC].AddBuff(wither, myTime + theirTime);
+                int bIndex = npc.FindBuffIndex(wither);
+                int myTime = npc.buffTime[bIndex];
+
+                if (!other.HasBuff(wither))
+                    other.AddBuff(wither, myTime + 60);
+                else
+                    BuffLoader.ReApply(wither, other, myTime + 60, bIndex);
+
+                for (int i = 0; i < 30; i++)
+                {
+                    float rot = i / 30f * MathHelper.TwoPi;
+                    Vector2 vel = rot.ToRotationVector2() * Main.rand.NextFloat(7.5f, 10);
+                    Dust.NewDustPerfect(other.Center + vel * 10, dustT, -vel, newColor: Color.Black, Scale: 1.6f).noGravity = true;
+                }
+
+                for (int i = 0; i < 30; i++)
+                {
+                    Vector2 pos = Vector2.Lerp(npc.Center, other.Center, i / 30f);
+                    Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(6, 6), dustT, Vector2.Zero, newColor: Color.Black, Scale: 1.5f).noGravity = true;
+                }
             }
             return true;
         }
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
-            if (npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>()))
+            bool wither = npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>());
+            bool crystal = npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>());
+
+            if (wither)
             {
-                damage = crystalInfec;
+                damage = witherStack;
+            }
+            if (crystal)
+            {
+                damage = CrystalInfectionDamage;
                 crystalInfec++;
+                
+                // If crystal && wither, then display the higher of the two values.
+                if (wither)
+                {
+                    damage = Math.Max(CrystalInfectionDamage, witherStack);
+                }
             }
             else
             {
                 crystalInfec = 0;
-            }
-
-            if (npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>()))
-            {
-                damage = witherStack;
             }
         }
 
