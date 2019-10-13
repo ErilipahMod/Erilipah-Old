@@ -10,7 +10,7 @@ namespace Erilipah.Items.Phlogiston
         protected override float Knockback => 0;
 
         protected override bool FiresProjectile => false;
-        protected override int[] Dimensions => new int[] { 20, 36 };
+        protected override int[] Dimensions => new int[] { 32, 30 };
         protected override int Rarity => 3;
         protected override UseTypes UseType => UseTypes.Material;
         protected override string Tooltip => "Items crafted with Phlogiston have a small chance to ignite enemies for a long time";

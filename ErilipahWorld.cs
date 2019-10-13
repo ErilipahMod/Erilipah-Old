@@ -69,7 +69,8 @@ namespace Erilipah
         public override void TileCountsAvailable(int[] tileCounts)
         {
             lostCityTiles = tileCounts[mod.TileType<TaintedBrick>()] + tileCounts[mod.TileType<TaintedRubble>()];
-            erilipahTiles = tileCounts[mod.TileType<InfectedClump>()] + tileCounts[mod.TileType<SpoiledClump>()] + lostCityTiles;
+            erilipahTiles = tileCounts[mod.TileType<InfectedClump>()] + tileCounts[mod.TileType<SpoiledClump>()] + 
+                tileCounts[mod.TileType<Biomes.ErilipahBiome.Hazards.Stalk>()] + lostCityTiles;
         }
     }
 }

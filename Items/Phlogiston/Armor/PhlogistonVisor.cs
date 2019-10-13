@@ -46,15 +46,17 @@ namespace Erilipah.Items.Phlogiston.Armor
                 }
             }
 
-            for (int i = 0; i < 8; i++)
-            {
-                Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2CircularEdge(damageRadius, damageRadius), mod.DustType<NPCs.Drone.DeepFlames>());
-                dust.noGravity = true;
-                dust.scale = 0.7f;
-                dust.fadeIn = 0.2f;
-                dust.noLight = true;
-                Main.playerDrawDust.Add(dust.dustIndex);
-            }
+            // Spawn some dusts if the player is still
+            if (player.velocity == Microsoft.Xna.Framework.Vector2.Zero)
+                for (int i = 0; i < 8; i++)
+                {
+                    Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2CircularEdge(damageRadius, damageRadius), mod.DustType<NPCs.Drone.DeepFlames>());
+                    dust.noGravity = true;
+                    dust.scale = 0.7f;
+                    dust.fadeIn = 0.2f;
+                    dust.noLight = true;
+                    Main.playerDrawDust.Add(dust.dustIndex);
+                }
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs) =>

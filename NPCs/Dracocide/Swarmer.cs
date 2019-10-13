@@ -85,6 +85,7 @@ namespace Erilipah.NPCs.Dracocide
 
         public override void AI()
         {
+            Lighting.AddLight(npc.Center, 0.4f, 0.3f, 0.1f);
             npc.spriteDirection = -1;
             npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
             // Run

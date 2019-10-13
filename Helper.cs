@@ -14,12 +14,12 @@ namespace Erilipah
         internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => chance >= 1f || random.NextFloat() < chance;
         internal const string Invisible = "Terraria/Projectile_294";
 
-        internal static void SimpleRecipe(this Mod mod, int result, int tile, int ingredient, int ingredientCount)
+        internal static void SimpleRecipe<Result>(this Mod mod, int tile, int ingredient, int ingredientCount) where Result : ModItem
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ingredient, ingredientCount);
             recipe.AddTile(tile);
-            recipe.SetResult(result);
+            recipe.SetResult(mod.ItemType<Result>());
             recipe.AddRecipe();
         }
 

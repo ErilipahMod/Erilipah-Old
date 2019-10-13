@@ -287,8 +287,9 @@ namespace Erilipah.NPCs.Dracocide
 
             npc.netUpdate = true;
 
-            float numNPCs = 2.5f;
-            if (Main.expertMode)
+            bool plr = target is Player;
+            float numNPCs = plr ? 2.5f : 1.5f;
+            if (Main.hardMode || Main.expertMode && plr)
                 numNPCs++;
 
             int[] validDrones = { mod.NPCType<Swarmer>(), mod.NPCType<MiniSwarmer>(), mod.NPCType<AssaultDrone>() };
@@ -307,22 +308,17 @@ namespace Erilipah.NPCs.Dracocide
 
             List<int> types = new List<int>() {
                 mod.NPCType<ArcCaster>(),
-                mod.NPCType<ArcCaster>(),
-                mod.NPCType<ArcCaster>(),
                 mod.NPCType<AssaultDrone>(),
                 mod.NPCType<AssaultDrone>(),
                 mod.NPCType<Swarmer>(),
-                mod.NPCType<Swarmer>()
             };
 
-            int[] typeOf = new int[4];
             for (int i = 0; i < numNPCs; i++)
             {
                 int type = Main.rand.Next(types);
                 types.Remove(type);
-                typeOf[i] = Main.npc[SpawnBackupNPC(type)].type;
             }
-            if (typeOf.Contains(mod.NPCType<ArcCaster>()))
+            if (!types.Contains(mod.NPCType<ArcCaster>()))
                 SpawnBackupNPC(mod.NPCType<ArcCaster>());
         }
 

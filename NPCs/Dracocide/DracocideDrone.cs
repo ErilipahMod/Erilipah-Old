@@ -104,6 +104,7 @@ namespace Erilipah.NPCs.Dracocide
                 if (motherIndex == -1 || npc.type != mod.NPCType<AssaultDrone>())
                 {
                     npc.netUpdate = true;
+                    npc.noTileCollide = true;
                     npc.velocity.Y -= 0.1f;
                     return false;
                 }
@@ -115,10 +116,15 @@ namespace Erilipah.NPCs.Dracocide
 
                 if (Vector2.Distance(atMother, npc.Center) > 400)
                 {
+                    npc.noTileCollide = true;
                     npc.rotation = npc.velocity.ToRotation();
 
                     npc.velocity = npc.Center.To(atMother, 3);
                     npc.velocity = Vector2.Clamp(npc.velocity, Vector2.One * -5, Vector2.One * 5);
+                }
+                else
+                {
+                    npc.noTileCollide = false;
                 }
 
                 return false;

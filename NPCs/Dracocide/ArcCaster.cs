@@ -48,16 +48,16 @@ namespace Erilipah.NPCs.Dracocide
                 npc.Center,
                 friend.Center);
 
-                if (hittingLine && PlayerTarget) // If it's a yes and the target is a player, run that player's hurt code.
+                if (hittingLine && Target is Player tPlayer) // If it's a yes and the target is a player, run that player's hurt code.
                 {
-                    (Target as Player).Hurt(PlayerDeathReason.ByNPC(npc.whoAmI), npc.damage - 10, 0);
-                    (Target as Player).immune = true;
+                    tPlayer.Hurt(PlayerDeathReason.ByNPC(npc.whoAmI), npc.damage - 10, 0);
+                    tPlayer.immune = true;
                 }
 
-                else if (hittingLine) // Otherwise (and if yes), run the NPC's code. 
+                else if (hittingLine && Target is NPC tNPC && tNPC.immune[255] <= 0) // Otherwise (and if yes), run the NPC's code. 
                 {
-                    (Target as NPC).StrikeNPC(npc.damage, 2f, 0);
-                    (Target as NPC).immune[255] = 15;
+                    tNPC.StrikeNPC(npc.damage, 2f, 0);
+                    tNPC.immune[255] = 15;
                 }
 
                 // Zoop

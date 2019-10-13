@@ -68,7 +68,7 @@ namespace Erilipah.Items.Taranys
 
     public class VoidBolt : ModProjectile
     {
-        public override string GlowTexture => Texture;
+        public override string Texture => Helper.Invisible;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("LEECH");
@@ -147,7 +147,7 @@ namespace Erilipah.Items.Taranys
 
     public class CrystalBolt : ModProjectile
     {
-        public override string GlowTexture => Texture;
+        public override string Texture => Helper.Invisible;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("LEECH");
@@ -176,7 +176,7 @@ namespace Erilipah.Items.Taranys
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
                 .noGravity = true;
         }
 

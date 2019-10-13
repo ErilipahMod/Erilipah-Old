@@ -48,7 +48,7 @@ namespace Erilipah
             float o = Main.expertMode ? expertMult : 1;
             int e = Main.rand.Next((int)(o * minValue), (int)(o * (maxValue + 1)));
             float a = percent * (Main.expertMode ? 2 : 1);
-            if (Main.rand.NextFloat() < (percent * a / 100f))
+            if (Main.rand.NextFloat() < (a / 100f))
             {
                 i = Item.NewItem(rect, item, e);
             }

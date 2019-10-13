@@ -57,32 +57,46 @@ namespace Erilipah.Items.Taranys
 
         public override bool CanUseItem(Player player)
         {
-            if (player.altFunctionUse == 2)
+            if (player.altFunctionUse == 2 && player.itemTime <= 0)
             {
                 Main.PlaySound(2, player.Center, 29);
 
-                Projectile p = Main.projectile.FirstOrDefault(p => p.active && p.type == mod.ProjectileType<VoidSpikeProj>() && p.owner == player.whoAmI);
-                if (p != null)
-                    p.ai[0] = -2;
+                Projectile proj/*changed to pv error*/ = Main.projectile.FirstOrDefault(p => p.active && p.type == mod.ProjectileType<VoidSpikeProj>() && p.owner == player.whoAmI);
+                if (proj != null)
+                {
+                    proj.ai[0] = -2;
+                    proj.netUpdate = true;
+                }
+
+                player.itemTime = 35;
 
                 return false;
             }
             return !AnyShards(player);
         }
 
+        //TODO add
+        //public override void MeleeEffects(Player player, Rectangle hitbox)
+        //{
+        //    if (Main.rand.NextBool(5))
+        //    {
+        //        Dust.NewDustDirect(hitbox.Location.ToVector2(), hitbox.Width, hitbox.Height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.25f).noGravity = true;
+        //    }
+        //}
+
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
-            bool smallTarget = target.lifeMax < 700 && !target.boss && target.life < 0.50 * target.lifeMax;
-            bool lowLife = smallTarget || target.life < 0.25 * target.lifeMax;
+            bool smallTarget = target.life < 700 && !target.boss && target.life < 0.50 * target.lifeMax;
+            bool lowLife = smallTarget || target.life < 0.30 * target.lifeMax;
             if (!AnyShards(player) && target.life > damage && lowLife && !target.immortal && !target.dontTakeDamage)
             {
                 if (Main.netMode != 1)
                 {
                     Projectile p = Main.projectile[Projectile.NewProjectile(
                         player.itemLocation,
-                        new Vector2(player.direction * 5, 0),
+                        new Vector2(player.direction * 6, Main.rand.NextFloat(-3.5f, 3.5f)),
                         mod.ProjectileType<VoidSpikeProj>(),
-                        item.damage, item.knockBack, player.whoAmI, target.whoAmI)];
+                        player.GetWeaponDamage(item), item.knockBack, player.whoAmI, target.whoAmI, 21)];
                     p.magic = item.magic;
                     p.melee = item.melee;
                 }
@@ -109,10 +123,10 @@ namespace Erilipah.Items.Taranys
 
             projectile.tileCollide = false;
             projectile.aiStyle = 0;
-            projectile.timeLeft = 100;
+            projectile.timeLeft = 10000;
 
-            projectile.maxPenetrate = 100;
-            projectile.penetrate = 100;
+            projectile.maxPenetrate = 250;
+            projectile.penetrate = 250;
 
             projectile.maxPenetrate = 1;
             projectile.hostile = !
@@ -125,20 +139,30 @@ namespace Erilipah.Items.Taranys
             // Local0 = blur length
             projectile.ai[1]++;
             projectile.rotation += projectile.velocity.Length() / 20;
-            projectile.timeLeft = 2;
 
             if (projectile.Distance(Owner.Center) > 1200 || projectile.damage <= 0 || !projectile.friendly || projectile.hostile)
             {
                 projectile.Kill();
             }
 
+            Vector2 tip = projectile.position + new Vector2(36, 0).RotatedBy(projectile.rotation, projectile.Size / 2);
+            Vector2 lerp = (projectile.position - projectile.oldPosition) / 2 + projectile.oldPosition + new Vector2(36, 0).RotatedBy(projectile.rotation, projectile.Size / 2);
+            Dust.NewDustPerfect(tip, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.4f).noGravity = true;
+            Dust.NewDustPerfect(lerp, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.4f).noGravity = true;
+
             if (Target == -1)
             {
+                projectile.ai[1] = 0;
                 projectile.netUpdate = true;
                 for (int i = 0; i < Main.maxNPCs; i++)
                 {
+                    if (Main.npc[i].boss && ValidNPC(Main.npc[i]))
+                    {
+                        projectile.ai[0] = i;
+                        return;
+                    }
                     bool close = Vector2.Distance(Main.npc[i].Center, projectile.Center) < 350 && Vector2.Distance(Main.npc[i].Center, Owner.Center) < 500;
-                    if (close && !Main.npc[i].boss && ValidNPC(Main.npc[i], 0))
+                    if (close && !Main.npc[i].boss && ValidNPC(Main.npc[i]))
                     {
                         projectile.ai[0] = i;
                         return;
@@ -148,12 +172,12 @@ namespace Erilipah.Items.Taranys
             }
             else if (Target == -2)
             {
-                // Slow down other velocities; accelerate to player when done swingin
-                if (projectile.ai[1] >= 20)
+                // Slow down other velocities; accealerate to player when done swingin
+                if (projectile.ai[1] > 20)
                 {
                     float speed = MathHelper.Lerp(6f, 12f, Vector2.Distance(Owner.Center, projectile.Center) / 500f);
                     projectile.velocity = projectile.Center.To(Owner.Center, speed);
-                    projectile.localAI[0] = 2;
+                    projectile.localAI[0] = 3;
                 }
                 else
                 {
@@ -166,7 +190,7 @@ namespace Erilipah.Items.Taranys
             }
             else if (ValidNPC(Main.npc[Target]))
             {
-                if (projectile.ai[1] < 20)
+                if (projectile.ai[1] <= 20)
                 {
                     projectile.netUpdate = true;
                     projectile.velocity *= 0.90f;
@@ -174,30 +198,32 @@ namespace Erilipah.Items.Taranys
                 }
                 else
                 {
+                    if (projectile.Hitbox.Intersects(Main.npc[Target].Hitbox))
+                    {
+                        projectile.ai[1] = 0;
+                    }
+
                     projectile.velocity = projectile.Center.To(Main.npc[Target].Center, 17);
                     projectile.localAI[0] = 3;
                 }
             }
             else
+            {
                 projectile.ai[0] = -1;
+            }
         }
 
-        // TODO REMOVE
-        private static bool ValidNPC(NPC n)
+        private bool ValidNPC(NPC n)
         {
-            return n.active && !n.immortal && !n.friendly && !n.dontTakeDamage && (n.life < n.lifeMax * 0.25 || n.lifeMax < 700 && n.defense < 50 && !n.boss);
-        }
-        private bool ValidNPC(NPC n, int o = 293485)
-        {
-            return n.active && !n.immortal && !n.friendly && !n.dontTakeDamage && projectile.CanHit(n) && (n.life < n.lifeMax * 0.25 || n.lifeMax < 700 && n.defense < 50 && !n.boss);
+            return n.active && !n.immortal && !n.friendly && !n.dontTakeDamage && projectile.CanHit(n) && (n.life < n.lifeMax * 0.30 || n.life < 700 && n.defense < 50 && !n.boss);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             if (damage <= 1)
                 projectile.ai[0] = -1;
-            if (target.whoAmI == Target)
-                projectile.ai[1] = 0;
+            //if (target.whoAmI == Target && projectile.ai[1] > 20)
+            //    projectile.ai[1] = 0;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -210,7 +236,7 @@ namespace Erilipah.Items.Taranys
                 for (int i = 0; i < variable; i++)
                 {
                     Vector2 drawPos = projectile.oldPos[i] - Main.screenPosition + rect.Size() / 2 + new Vector2(0, projectile.gfxOffY);
-                    Color color = projectile.GetAlpha(drawColor) * ((variable - i) / variable);
+                    Color color = projectile.GetAlpha(drawColor) * ((variable - i) / variable) * 0.8f;
                     SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                     spriteBatch.Draw(

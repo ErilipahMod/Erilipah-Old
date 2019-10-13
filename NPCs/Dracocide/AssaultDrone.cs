@@ -34,10 +34,14 @@ namespace Erilipah.NPCs.Dracocide
                 var likeMe = Main.npc.Where(x => x.active && x.type == npc.type && x.ai[1] == npc.ai[1] && x.ai[2] == npc.ai[2]);
                 clockwise = likeMe.ToList().IndexOf(npc) % 2 == 0;
 
-                if (npc.Distance(Target.Center) > 400) // if too far, get closer
+                bool canSee = Collision.CanHitLine(npc.position, npc.width, npc.height, Target.Center, 1, 1);
+
+                if (npc.Distance(Target.Center) > 400 || !canSee) // if too far, get closer
                     npc.velocity += dir;
                 if (npc.Distance(Target.Center) < 150) // if too close, get farther
                     npc.velocity -= dir;
+
+                npc.noTileCollide = !canSee;
 
                 if (clockwise) moveFactor++;
                 else moveFactor--;
@@ -109,7 +113,7 @@ namespace Erilipah.NPCs.Dracocide
             npc.dontTakeDamageFromHostiles = false;
             npc.lifeMax = 300;
             npc.defense = 25;
-            npc.damage = 20;
+            npc.damage = Main.hardMode ? 35 : 20;
             npc.knockBackResist = 0f;
 
             npc.aiStyle = 0;

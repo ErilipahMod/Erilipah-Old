@@ -11,7 +11,7 @@ namespace Erilipah.Items.Taranys
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Scepter of Ethereal Abyss");
+            DisplayName.SetDefault("Night Scepter");
             Tooltip.SetDefault("Fires powerful ethereal knives");
             Item.staff[item.type] = true;
         }

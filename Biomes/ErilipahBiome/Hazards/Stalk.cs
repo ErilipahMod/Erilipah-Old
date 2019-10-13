@@ -48,7 +48,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (!isBase && Main.tile[i, j + 1].type != Type)
             {
-                WorldGen.KillTile(i, j, Main.rand.NextBool());
+                WorldGen.KillTile(i, j, Main.rand.NextBool(3));
             }
             if (isBase)
             {
@@ -97,8 +97,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 return;
 
             bool isBase = tile.frameX >= 54 && tile.frameY >= 90;
-            bool isTop = tile.frameX >= 54 && tile.frameY <= 72;
-            bool isStalk = (tile.frameX == 00 && tile.frameY >= 54) || (tile.frameX <= 36 && tile.frameY >= 72);
+            bool isTop = tile.frameX >= 54 && tile.frameY < 90;
+            bool isStalk = tile.frameX < 54 && tile.frameY >= 54;
 
             if (isBase)
             {
@@ -115,22 +115,23 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             else if (isStalk)
             {
                 Tile above = Main.tile[i, j - 1];
+                if (above == null)
+                {
+                    above = new Tile();
+                    above.active(false);
+                }
 
                 // Move up the stalk!
-                if (above.active() && above.type == Type)
+                if (above.active())
                 {
-                    Terraria.ModLoader.TileLoader.RandomUpdate(i, j - 1, Type);
+                    if (above.type == Type)
+                        Terraria.ModLoader.TileLoader.RandomUpdate(i, j - 1, Type);
                     return;
                 }
 
-                if (Main.tile[i, j - 1].active())
-                {
-                    return;
-                }
-
-                // 10% chance to start the tip of the stalk
+                // 7% chance to start the tip of the stalk
                 // Otherwise, continue growing the stalk
-                if (Main.rand.Chance(0.1f))
+                if (Main.rand.Chance(0.07f) || Main.tile[i, j - 5].active())
                 {
                     above.type = Type;
                     above.active(true);
@@ -148,10 +149,22 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             {
                 Tile above = Main.tile[i, j - 1];
 
-                if (!above.active())
+                // Move up the stalk!
+                if (above.active())
                 {
+                    if (above.type == Type)
+                        Terraria.ModLoader.TileLoader.RandomUpdate(i, j - 1, Type);
+                    return;
+                }
+                else
+                {
+                    if (above == null)
+                    {
+                        above = new Tile();
+                    }
                     above.type = Type;
                     above.active(true);
+                    above.frameX = tile.frameX;
                     above.frameY = (short)(tile.frameY - 18);
                 }
             }

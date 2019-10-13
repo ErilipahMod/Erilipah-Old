@@ -84,7 +84,7 @@ namespace Erilipah.NPCs.Taranys
                 for (int i = 0; i < 2; i++)
                 {
                     int chosen = Main.rand.Next(types);
-                    player.QuickSpawnItem(chosen);
+                    Loot.DropItem(npc, chosen);
                     types.Remove(chosen);
                 }
             }

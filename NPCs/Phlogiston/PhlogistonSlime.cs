@@ -51,7 +51,8 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<StablePhlogiston>(), 1, 2, npc.scale * 8);
+            if (npc.scale >= 0.8f)
+                Loot.DropItem(npc, mod.ItemType<StablePhlogiston>(), 1, 1, 20);
 
             if (npc.scale > 0.65f && Main.netMode != 1)
                 for (int i = -1; i < 2; i += 2)

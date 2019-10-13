@@ -15,7 +15,7 @@ namespace Erilipah.NPCs.Phlogiston
         }
         public override void SetDefaults()
         {
-            npc.lifeMax = 40;
+            npc.lifeMax = Main.hardMode ? 120 : 60;
             npc.defense = 12;
             npc.damage = 30;
             npc.knockBackResist = 0.5f;
@@ -43,7 +43,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Items.Phlogiston.StablePhlogiston>(), 1, 3, 100);
+            Loot.DropItem(npc, mod.ItemType<Items.Phlogiston.StablePhlogiston>(), 2, 3, 100, 1.5f);
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -75,6 +75,7 @@ namespace Erilipah.NPCs.Phlogiston
                 Point tilePos = worldPos.ToTileCoordinates();
 
                 if (Main.tile[tilePos.X, tilePos.Y].liquid < 10 &&
+                    Vector2.Distance(worldPos, player.Center) > 80 &&
                     !Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y - 1, tilePos.Y + 2) &&
                     Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y + 3, tilePos.Y + 3))
                 {
@@ -124,11 +125,19 @@ namespace Erilipah.NPCs.Phlogiston
             }
 
             // Spawns dust that goes to where the fireball will go
-            if (percent > 0.5f)
+            if (percent > 0.33f)
             {
-                float speed = 40;
-                Vector2 position = Vector2.Lerp(DustBallPosition, HeldPosition + (HeldPosition - DustBallPosition), currentTime / speed % 1);
-                Dust.NewDustPerfect(position, mod.DustType<DeepFlames>(), Vector2.Zero).noGravity = true;
+                const int totalSpan = 250;
+                const int spacing = 10;
+                float dustSpanNormally = MathHelper.SmoothStep(0, totalSpan, (percent - 0.33f) * 1.5f);
+                float distanceTarget = Vector2.Distance(HeldPosition, DustBallPosition);
+                int currentSpan = (int)Math.Min(dustSpanNormally, distanceTarget);
+
+                Vector2 direction = (HeldPosition - DustBallPosition).SafeNormalize(Vector2.Zero);
+                for (int i = 0; i < currentSpan; i += spacing)
+                {
+                    Dust.NewDustPerfect(DustBallPosition + direction * 20 + direction * i, mod.DustType<DeepFlames>(), Vector2.Zero, Scale: 0.8f).noGravity = true;
+                }
             }
         }
 
@@ -163,32 +172,43 @@ namespace Erilipah.NPCs.Phlogiston
             {
                 DustFx((int)npc.ai[0] - restTime, cycleTime - restTime);
 
-                int leeway = (Main.expertMode ? cycleTime - 8 : cycleTime - 15);
+                int leeway = (Main.expertMode ? cycleTime - 12 : cycleTime - 18);
                 if (npc.ai[0] < leeway)
                 {
                     npc.ai[1] = Main.player[npc.target].Center.X;
                     npc.ai[2] = Main.player[npc.target].Center.Y;
                 }
             }
-            else
+            else if (npc.ai[0] == cycleTime)
             {
                 Main.PlaySound(SoundID.Item45, npc.Center);
                 if (Main.netMode != 1)
                 {
                     Vector2 to = DustBallPosition.To(HeldPosition);
                     int damage = Main.expertMode ? 40 : 50;
+                    if (Main.hardMode)
+                        damage = (int)(damage * 1.5);
 
                     Projectile.NewProjectile(DustBallPosition, to * 6.5f, mod.ProjectileType<Fireball>(), damage, 1, 255, HeldPosition.X, HeldPosition.Y);
                 }
-
-                Teleport();
                 npc.netUpdate = true;
+            }
+            else if (npc.ai[0] > cycleTime + 80)
+            {
+                Teleport();
                 npc.ai[0] = 0;
+                npc.netUpdate = true;
             }
         }
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
+            if (damage > npc.lifeMax / 2)
+            {
+                Teleport();
+                npc.ai[0] = 0;
+                npc.netUpdate = true;
+            }
             target.AddBuff(BuffID.OnFire, 180);
         }
     }
