@@ -73,11 +73,19 @@ namespace Erilipah.NPCs.Taranys
                 Loot.DropItem(npc, mod.ItemType<ShellChunk>(), 6, 11);
                 Loot.DropItem(npc, mod.ItemType<MadnessFocus>(), 9, 16);
 
-                switch (Main.rand.Next(3))
+                System.Collections.Generic.List<int> types = new System.Collections.Generic.List<int> {
+                mod.ItemType<TyrantEye>(),
+                mod.ItemType<VoidSpike>(),
+                mod.ItemType<TorchOfSoul>(),
+                mod.ItemType<ScepterOfEternalAbyss>(),
+                mod.ItemType<LEECH>()
+                };
+
+                for (int i = 0; i < 2; i++)
                 {
-                    default: Loot.DropItem(npc, mod.ItemType<TyrantEye>()); break;
-                    case 1: Loot.DropItem(npc, mod.ItemType<VoidSpike>()); break;
-                    case 3: Loot.DropItem(npc, mod.ItemType<ScepterOfEternalAbyss>()); break;
+                    int chosen = Main.rand.Next(types);
+                    player.QuickSpawnItem(chosen);
+                    types.Remove(chosen);
                 }
             }
         }

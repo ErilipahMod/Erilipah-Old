@@ -16,29 +16,12 @@ namespace Erilipah.Items.Taranys
 
         public override void AddRecipes()
         {
-            ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(this, 7);
-            r.AddTile(mod.TileType<Altar>());
-            r.SetResult(mod.ItemType<TorchOfSoul>());
-            r.AddRecipe();
+            void ItemRecipe(int item, int chunks) => mod.SimpleRecipe(item, mod.ItemType<ScepterOfEternalAbyss>(), mod.ItemType<ShellChunk>(), chunks);
 
-            r = new ModRecipe(mod);
-            r.AddIngredient(this, 6);
-            r.AddTile(mod.TileType<Altar>());
-            r.SetResult(mod.ItemType<TyrantEye>());
-            r.AddRecipe();
-
-            r = new ModRecipe(mod);
-            r.AddIngredient(this, 5);
-            r.AddTile(mod.TileType<Altar>());
-            r.SetResult(mod.ItemType<VoidSpike>());
-            r.AddRecipe();
-
-            r = new ModRecipe(mod);
-            r.AddIngredient(this, 7);
-            r.AddTile(mod.TileType<Altar>());
-            r.SetResult(mod.ItemType<ScepterOfEternalAbyss>());
-            r.AddRecipe();
+            ItemRecipe(mod.ItemType<TyrantEye>(), 6);
+            ItemRecipe(mod.ItemType<VoidSpike>(), 7);
+            ItemRecipe(mod.ItemType<ScepterOfEternalAbyss>(), 7);
+            ItemRecipe(mod.ItemType<LEECH>(), 6);
         }
     }
 }

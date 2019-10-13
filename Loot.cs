@@ -26,7 +26,7 @@ namespace Erilipah
                 SanguineOre();
             }
 
-            Player player = Main.player.First(p => p.active && p.whoAmI == Main.myPlayer);
+            Player player = Main.player[Player.FindClosest(npc.position, npc.width, npc.height)];
 
             if (player.ZoneUndergroundDesert || player.ZoneDesert)
             {

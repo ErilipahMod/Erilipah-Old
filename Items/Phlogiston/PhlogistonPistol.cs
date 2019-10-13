@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 
 namespace Erilipah.Items.Phlogiston
 {
+    // Shut the fuck up I know it's not a pistol
     public class PhlogistonPistol : ModItem
     {
         public override void SetStaticDefaults()
