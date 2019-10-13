@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,8 +12,9 @@ namespace Erilipah.Items.Taranys
     {
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("Shatters when hitting an enemy at low health, mauling it");
+            Tooltip.SetDefault("Hunts enemies down when they're close to death\nRight click to return it");
         }
+
         public override void SetDefaults()
         {
             item.damage = 45;
@@ -41,18 +42,6 @@ namespace Erilipah.Items.Taranys
             item.shootSpeed = 0f;
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            if (item.melee)
-            {
-                tooltips.Add(new TooltipLine(mod, "RC", "Right click to use magic damage"));
-            }
-            else
-            {
-                tooltips.Add(new TooltipLine(mod, "RC", "Right click to use melee damage"));
-            }
-        }
-
         public override bool AltFunctionUse(Player player) => true;
 
         private bool AnyShards(Player player)
@@ -65,42 +54,37 @@ namespace Erilipah.Items.Taranys
             }
             return false;
         }
+
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
                 Main.PlaySound(2, player.Center, 29);
-                item.magic = !item.magic;
-                item.melee = !item.magic;
 
-                if (item.magic)
-                {
-                    item.damage = 38;
-                    item.useTime = item.useAnimation = 16;
-                    item.mana = 4;
-                }
-                else
-                {
-                    item.damage = 45;
-                    item.useTime = item.useAnimation = 21;
-                    item.mana = 0;
-                }
-                return true;
+                Projectile p = Main.projectile.FirstOrDefault(p => p.active && p.type == mod.ProjectileType<VoidSpikeProj>() && p.owner == player.whoAmI);
+                if (p != null)
+                    p.ai[0] = -2;
+
+                return false;
             }
             return !AnyShards(player);
         }
 
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
-            if (!AnyShards(player) && target.lifeMax > 200 && target.life < 0.25 * target.lifeMax && !target.immortal && !target.dontTakeDamage)
+            bool smallTarget = target.lifeMax < 700 && !target.boss && target.life < 0.50 * target.lifeMax;
+            bool lowLife = smallTarget || target.life < 0.25 * target.lifeMax;
+            if (!AnyShards(player) && target.life > damage && lowLife && !target.immortal && !target.dontTakeDamage)
             {
                 if (Main.netMode != 1)
                 {
-                    Projectile.NewProjectile(
+                    Projectile p = Main.projectile[Projectile.NewProjectile(
                         player.itemLocation,
-                        new Vector2(player.direction * Main.rand.NextFloat(3, 5), Main.rand.NextFloat(-2, 2)),
+                        new Vector2(player.direction * 5, 0),
                         mod.ProjectileType<VoidSpikeProj>(),
-                        55, item.knockBack, player.whoAmI, target.whoAmI);
+                        item.damage, item.knockBack, player.whoAmI, target.whoAmI)];
+                    p.magic = item.magic;
+                    p.melee = item.melee;
                 }
             }
         }
@@ -117,6 +101,7 @@ namespace Erilipah.Items.Taranys
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 6;
             DisplayName.SetDefault("Void");
         }
+
         public override void SetDefaults()
         {
             projectile.width = 42;
@@ -129,7 +114,6 @@ namespace Erilipah.Items.Taranys
             projectile.maxPenetrate = 100;
             projectile.penetrate = 100;
 
-            projectile.melee = true;
             projectile.maxPenetrate = 1;
             projectile.hostile = !
                 (projectile.friendly = true);
@@ -143,11 +127,38 @@ namespace Erilipah.Items.Taranys
             projectile.rotation += projectile.velocity.Length() / 20;
             projectile.timeLeft = 2;
 
+            if (projectile.Distance(Owner.Center) > 1200 || projectile.damage <= 0 || !projectile.friendly || projectile.hostile)
+            {
+                projectile.Kill();
+            }
+
             if (Target == -1)
             {
-                // Slow down other velocities; accelerate to player
-                projectile.velocity = projectile.Center.To(Owner.Center, 8f);
-                projectile.localAI[0] = 2;
+                projectile.netUpdate = true;
+                for (int i = 0; i < Main.maxNPCs; i++)
+                {
+                    bool close = Vector2.Distance(Main.npc[i].Center, projectile.Center) < 350 && Vector2.Distance(Main.npc[i].Center, Owner.Center) < 500;
+                    if (close && !Main.npc[i].boss && ValidNPC(Main.npc[i], 0))
+                    {
+                        projectile.ai[0] = i;
+                        return;
+                    }
+                }
+                projectile.ai[0] = -2;
+            }
+            else if (Target == -2)
+            {
+                // Slow down other velocities; accelerate to player when done swingin
+                if (projectile.ai[1] >= 20)
+                {
+                    float speed = MathHelper.Lerp(6f, 12f, Vector2.Distance(Owner.Center, projectile.Center) / 500f);
+                    projectile.velocity = projectile.Center.To(Owner.Center, speed);
+                    projectile.localAI[0] = 2;
+                }
+                else
+                {
+                    projectile.velocity *= 0.90f;
+                }
 
                 // Die when returned
                 if (projectile.Distance(Owner.Center) < 20)
@@ -157,6 +168,7 @@ namespace Erilipah.Items.Taranys
             {
                 if (projectile.ai[1] < 20)
                 {
+                    projectile.netUpdate = true;
                     projectile.velocity *= 0.90f;
                     projectile.localAI[0] = 0;
                 }
@@ -170,9 +182,14 @@ namespace Erilipah.Items.Taranys
                 projectile.ai[0] = -1;
         }
 
+        // TODO REMOVE
         private static bool ValidNPC(NPC n)
         {
-            return n.active && !n.friendly && !n.dontTakeDamage && (n.life < n.lifeMax * 0.20 || n.lifeMax < 200 && n.defense < 50);
+            return n.active && !n.immortal && !n.friendly && !n.dontTakeDamage && (n.life < n.lifeMax * 0.25 || n.lifeMax < 700 && n.defense < 50 && !n.boss);
+        }
+        private bool ValidNPC(NPC n, int o = 293485)
+        {
+            return n.active && !n.immortal && !n.friendly && !n.dontTakeDamage && projectile.CanHit(n) && (n.life < n.lifeMax * 0.25 || n.lifeMax < 700 && n.defense < 50 && !n.boss);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -197,7 +214,7 @@ namespace Erilipah.Items.Taranys
                     SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                     spriteBatch.Draw(
-                        texture: texture, position: drawPos, sourceRectangle: rect, color: color, rotation: projectile.oldRot[i],
+                        texture: texture, position: drawPos, sourceRectangle: rect, color: color, rotation: projectile.rotation,
                         origin: rect.Size() / 2, scale: projectile.scale, effects: effects, layerDepth: 0
                         );
                 }

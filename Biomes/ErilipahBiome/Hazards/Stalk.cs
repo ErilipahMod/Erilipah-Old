@@ -116,7 +116,19 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             {
                 Tile above = Main.tile[i, j - 1];
 
-                // 8% chance to start the tip of the cane. Also starts the tip of there's a tile that will prevent it
+                // Move up the stalk!
+                if (above.active() && above.type == Type)
+                {
+                    Terraria.ModLoader.TileLoader.RandomUpdate(i, j - 1, Type);
+                    return;
+                }
+
+                if (Main.tile[i, j - 1].active())
+                {
+                    return;
+                }
+
+                // 10% chance to start the tip of the stalk
                 // Otherwise, continue growing the stalk
                 if (Main.rand.Chance(0.1f))
                 {

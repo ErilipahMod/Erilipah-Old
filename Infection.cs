@@ -253,7 +253,7 @@ namespace Erilipah
             if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && playerBrightness <= 0.1f)
             {
                 darknessCounter++;
-                if (darknessCounter == 320)
+                if (darknessCounter == 360)
                 {
                     Main.PlaySound(15, (int)player.Center.X + Main.rand.Next(-150, 150), (int)player.Center.Y + Main.rand.Next(-150, 150), 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
                 }
@@ -265,8 +265,8 @@ namespace Erilipah
             }
             else
             {
-                if (darknessCounter > 300)
-                    darknessCounter = 300;
+                if (darknessCounter > 280)
+                    darknessCounter = 280;
                 darknessCounter -= 2;
             }
 

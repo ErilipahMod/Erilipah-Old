@@ -263,7 +263,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 drop = mod.ItemType("TaintedBrickWallItem");
                 dustType = DustID.PurpleCrystalShard;
                 AddMapEntry(new Color(15, 20, 45, 175));
-
+                
                 soundType = 0;
                 soundStyle = 0;
             }

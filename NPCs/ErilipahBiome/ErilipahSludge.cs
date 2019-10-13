@@ -21,14 +21,14 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void SetDefaults()
         {
-            npc.lifeMax = 120;
+            npc.lifeMax = Main.hardMode ? 180 : 100;
             npc.defense = 12;
-            npc.damage = 30;
+            npc.damage = Main.hardMode ? 45 : 30;
             npc.SetInfecting(1.75f);
             npc.knockBackResist = 0f;
 
             animationType = NPCID.BlueSlime;
-            npc.aiStyle = 1;
+            npc.aiStyle = Main.hardMode ? 25 : 1;
             npc.noGravity = false;
             npc.HitSound = SoundID.NPCHit1.WithPitchVariance(-0.4f);
             npc.DeathSound = SoundID.NPCDeath22.WithPitchVariance(-0.6f);
@@ -47,6 +47,14 @@ namespace Erilipah.NPCs.ErilipahBiome
         public override void AI()
         {
             Player target = Main.player[npc.target];
+
+            if (Main.hardMode)
+            {
+                Dust.NewDustPerfect(npc.BottomLeft + new Vector2(4, 0), mod.DustType<VoidParticle>(), Vector2.Zero);
+                Dust.NewDustPerfect(npc.BottomRight + new Vector2(-4, 0), mod.DustType<VoidParticle>(), Vector2.Zero);
+                return;
+            }
+
             float distance = npc.Distance(target.Center);
             bool canSeeTarget = Collision.CanHitLine(target.Center, 1, 1, npc.Top, 1, 1);
             if (timer >= 300 || (canSeeTarget && distance < 1000))
@@ -146,7 +154,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.InErilipah() ? SpawnCondition.OverworldDaySlime.Chance * 0.08f : 0;
+            return spawnInfo.player.InErilipah() ? SpawnCondition.OverworldDaySlime.Chance * 0.07f : 0;
         }
     }
 }

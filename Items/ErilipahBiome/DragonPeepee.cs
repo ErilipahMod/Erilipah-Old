@@ -63,13 +63,14 @@ namespace Erilipah.Items.ErilipahBiome
         private int Stack(NPC npc) => npc.GetGlobalNPC<ErilipahNPC>().witherStack;
         public override bool ReApply(NPC npc, int time, int buffIndex)
         {
-            npc.GetGlobalNPC<ErilipahNPC>().witherStack++;
             npc.buffTime[buffIndex] += time / Stack(npc);
 
             return true;
         }
         public override void Update(NPC npc, ref int buffIndex)
         {
+            npc.GetGlobalNPC<ErilipahNPC>().witherStack = npc.buffTime[buffIndex] / 60;
+
             npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
             npc.lifeRegen -= Stack(npc) * 4 + 4;
             if (Main.rand.NextBool(3))
@@ -87,5 +88,4 @@ namespace Erilipah.Items.ErilipahBiome
             }
         }
     }
-
 }

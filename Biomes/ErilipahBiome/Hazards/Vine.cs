@@ -111,8 +111,19 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 }
             }
 
+            GrowMoreVines(i, j);
+
             if (Main.netMode == 2 /*Sync to clients when run on the server*/)
                 NetMessage.SendTileSquare(-1, i, j, 1);
+        }
+
+        private void GrowMoreVines(int i, int j)
+        {
+            bool left = Main.tile[i + 1, j].active();
+            int growToI = left ? i - 1 : i + 1;
+
+            ErilipahWorld.PlaceHazard(growToI, j, 2, mod);
+            ErilipahWorld.PlaceHazard(growToI + (left ? -3 : 3), j, 2, mod);
         }
 
         private NPC AnyBulb(int i, int j)

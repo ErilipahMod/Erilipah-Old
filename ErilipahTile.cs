@@ -18,9 +18,9 @@ namespace Erilipah
 
         public override void RandomUpdate(int i, int j, int type)
         {
-            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.005f) && OffScreen(i, j)) 
+            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.012f) && OffScreen(i, j)) 
             {
-                /* 0= 2x    stalk
+                /* 0= 3x    stalk
                  * 1= 1x    bubble
                  * 2= 3x    vine
                  * 3= 1x    geyser
@@ -29,7 +29,7 @@ namespace Erilipah
                  * 6= 1.25x hive */
 
                 Terraria.Utilities.WeightedRandom<int> rand = new Terraria.Utilities.WeightedRandom<int>();
-                rand.Add(0, 2);
+                rand.Add(0, 3);
                 rand.Add(1, 1);
                 rand.Add(2, 3);
                 rand.Add(3, 1);
@@ -37,7 +37,8 @@ namespace Erilipah
                 rand.Add(5, 0.85);
                 rand.Add(6, 1.25);
 
-                ErilipahWorld.PlaceHazard(i, j, rand, mod);
+                int selectedType = rand.Get();
+                ErilipahWorld.PlaceHazard(i, j, selectedType, mod);
 
                 if (Main.netMode == 2 /*Sync to clients when run on the server*/)
                     NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);

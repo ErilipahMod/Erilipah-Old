@@ -52,6 +52,11 @@ namespace Erilipah
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
+            if (spawnInfo.player.InErilipah())
+            {
+                if (pool.ContainsKey(NPCID.BlueSlime))
+                    pool[NPCID.BlueSlime] *= 0.25f;
+            }
         }
 
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
@@ -59,7 +64,7 @@ namespace Erilipah
             if (player.InErilipah())
             {
                 spawnRate = (int)(spawnRate * 1.25);
-                maxSpawns = (int)(maxSpawns * 1.50);
+                maxSpawns = (int)(maxSpawns * 1.75);
             }
         }
     }

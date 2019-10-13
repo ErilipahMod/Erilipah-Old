@@ -21,7 +21,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void SetDefaults()
         {
-            npc.lifeMax = Main.hardMode ? 80 : 40;
+            npc.lifeMax = Main.hardMode ? 100 : 40;
             npc.defense = 7;
             npc.damage = 15;
             npc.knockBackResist = 0f;
@@ -231,7 +231,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.InErilipah() ? 0.06f : 0;
+            return spawnInfo.player.InErilipah() ? 0.065f : 0;
         }
 
         public override void NPCLoot()
