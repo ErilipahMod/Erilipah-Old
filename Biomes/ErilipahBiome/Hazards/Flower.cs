@@ -77,7 +77,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             }
 
             if (Main.netMode == 2 /*Sync to clients when run on the server*/)
-                NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
+                NetMessage.SendTileSquare(-1, i, j, 2, TileChangeType.None);
         }
 
         private void Burst(int i, int j)

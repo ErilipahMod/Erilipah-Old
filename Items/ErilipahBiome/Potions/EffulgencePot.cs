@@ -34,7 +34,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             ModRecipe recipe = new ModRecipe(mod);
 
             recipe.AddIngredient(ItemID.SoulofLight, 3);
-            recipe.AddIngredient(mod.ItemType<SoulRubble>());
+            recipe.AddIngredient(mod.ItemType<Biomes.ErilipahBiome.Hazards.MushroomItem>(), 2);
             recipe.AddIngredient(ItemID.BottledWater);
             recipe.AddTile(TileID.Bottles);
 

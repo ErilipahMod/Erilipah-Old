@@ -19,4 +19,7 @@
   <ItemGroup>
     <Folder Include="Effects\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Erilipah.sln" />
+  </ItemGroup>
 </Project>

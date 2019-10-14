@@ -47,6 +47,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             ModRecipe recipe = new ModRecipe(mod);
 
             recipe.AddIngredient(mod.ItemType<Items.Crystalline.CrystallineTileItem>(), 6);
+            recipe.AddIngredient(mod.ItemType<Biomes.ErilipahBiome.Hazards.MushroomItem>(), 1);
             recipe.AddIngredient(ItemID.BottledWater);
             recipe.AddTile(TileID.Bottles);
 
