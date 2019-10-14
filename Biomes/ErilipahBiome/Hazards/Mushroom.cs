@@ -141,6 +141,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool ConsumeItem(Player player)
         {
+            item.consumable = true;
+
             player.immune = false;
             player.immuneTime = 0;
             player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " thought eating wild shrooms was a good idea."), 60, 0);
