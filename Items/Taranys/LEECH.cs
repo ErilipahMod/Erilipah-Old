@@ -55,8 +55,8 @@ namespace Erilipah.Items.Taranys
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             Vector2 vel = new Vector2(speedX, speedY);
-            Vector2 offset = vel.SafeNormalize(Vector2.Zero) * 40;
-            if (!Collision.CanHitLine(position, 1, 1, position + offset, 1, 1))
+            Vector2 offset = vel.SafeNormalize(Vector2.Zero) * 40 - (Vector2)HoldoutOffset();
+            if (!Collision.CanHitLine(position, 0, 0, position + offset, 0, 0))
                 return false;
 
             position += offset;
@@ -97,16 +97,10 @@ namespace Erilipah.Items.Taranys
             return true;
         }
 
-        public override Vector2? HoldoutOrigin()
+        public override Vector2? HoldoutOffset()
         {
-            return null;
+            return new Vector2(8, 0);
         }
-
-        // TODO A
-        //public override Vector2? HoldoutOffset()
-        //{
-        //    return base.HoldoutOffset();
-        //}
     }
 
     public class VoidBolt : ModProjectile

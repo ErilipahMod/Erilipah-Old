@@ -142,7 +142,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
                 // % chance to start the tip of the stalk
                 // Otherwise, continue growing the stalk
-                if (Main.rand.Chance(0.075f) || Main.tile[i, j - 5].active())
+                if (Main.rand.Chance(0.045f) || Main.tile[i, j - 5].active())
                 {
                     above.type = Type;
                     above.active(true);

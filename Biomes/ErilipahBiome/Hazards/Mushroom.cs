@@ -24,7 +24,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.AnchorValidTiles = new int[]
                 { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>() };
                 TileObjectData.newTile.AnchorBottom = new AnchorData(
-                    AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+                    AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
+                TileObjectData.newTile.AnchorBottom = new AnchorData(
+                    AnchorType.SolidBottom | AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 
                 return TileObjectData.newTile;
             }
@@ -39,7 +41,28 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             drop = mod.ItemType<MushroomItem>();
         }
 
-        public static bool TryPlace(int i, int j) => WorldGen.PlaceTile(i, j, Erilipah.Instance.TileType<Mushroom>(), false, false, -1, Main.rand.Next(5));
+        public static bool TryPlace(int i, int j)
+        {
+            int mushType = Erilipah.Instance.TileType<Mushroom>();
+            int clumpType = Erilipah.Instance.TileType<InfectedClump>();
+            int spoilType = Erilipah.Instance.TileType<SpoiledClump>();
+
+            bool rightSlope = Main.tile[i, j + 1].slope() == 0 || Main.tile[i, j + 1].topSlope();
+            rightSlope |= Main.tile[i, j - 1].slope() == 0 || Main.tile[i, j - 1].bottomSlope();
+
+            bool rightType = Main.tile[i, j + 1].active() && (Main.tile[i, j + 1].type == clumpType || Main.tile[i, j + 1].type == spoilType);
+            rightType |= Main.tile[i, j - 1].active() && (Main.tile[i, j - 1].type == clumpType || Main.tile[i, j - 1].type == spoilType);
+
+            if (!Main.tile[i, j].active() && rightType && rightSlope)
+            {
+                Main.tile[i, j].type = (ushort)mushType;
+                Main.tile[i, j].active(true);
+                Main.tile[i, j].frameX = (short)(Main.rand.Next(5) * 18);
+                Main.tile[i, j].frameY = 0;
+                return true;
+            }
+            return false;
+        }
 
         public override void RandomUpdate(int i, int j)
         {
@@ -66,6 +89,17 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             return false;
         }
 
+        public override void SetSpriteEffects(int i, int j, ref Microsoft.Xna.Framework.Graphics.SpriteEffects spriteEffects)
+        {
+            if ((i + j) % 2 == 0)
+                spriteEffects |= Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally;
+
+            if (!Main.tile[i, j + 1].active() && Main.tile[i, j - 1].active())
+            {
+                spriteEffects |= Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
+            }
+        }
+
         public override void DrawEffects(int i, int j, Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             drawColor *= 1.2f;
@@ -85,17 +119,19 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     {
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("'It smells horrible, but it seems edible...'");
+            DisplayName.SetDefault("Infected Fungus");
+            Tooltip.SetDefault("'It smells horrible...'");
         }
 
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.Mushroom);
 
-            item.potion = false;
-            item.healLife = 0;
-
             item.maxStack = 999;
+
+            item.healLife = 0;
+            item.potion = true;
+            item.consumable = true;
 
             item.width = 26;
             item.height = 32;
@@ -103,12 +139,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             item.value = 10;
         }
 
-        public override void OnConsumeItem(Player player)
+        public override bool ConsumeItem(Player player)
         {
             player.immune = false;
             player.immuneTime = 0;
             player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " thought eating wild shrooms was a good idea."), 60, 0);
             player.I().Infect(5f);
+            return true;
         }
     }
 }
