@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -431,7 +432,6 @@ namespace Erilipah
             infectionMax = tag.GetFloat("infectionMax");
         }
 
-        // Infection packet manager: <type, player, infection, infection max>
         public override void clientClone(ModPlayer clientClone)
         {
             InfectionPlr clone = clientClone as InfectionPlr;
@@ -441,24 +441,32 @@ namespace Erilipah
         }
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            ModPacket packet = mod.GetPacket();
-            packet.Write((byte)Erilipah.PacketType.Infection);
-            packet.Write((byte)player.whoAmI);
-            packet.Write(Infection);
-            packet.Write(infectionMax);
-            packet.Send();
+            InfectionPacket.SendPacket(player.whoAmI, Infection, infectionMax);
         }
         public override void SendClientChanges(ModPlayer clientPlayer)
         {
             InfectionPlr clone = clientPlayer as InfectionPlr;
             if (clone.Infection != Infection || clone.infectionMax != infectionMax)
             {
-                var packet = mod.GetPacket();
-                packet.Write((byte)Erilipah.PacketType.Infection);
-                packet.Write((byte)player.whoAmI);
-                packet.Write(Infection);
-                packet.Write(infectionMax);
-                packet.Send();
+                InfectionPacket.SendPacket(player.whoAmI, Infection, infectionMax);
+            }
+        }
+
+        private readonly static InfectionHandler InfectionPacket = new InfectionHandler();
+        private class InfectionHandler : PacketHandler
+        {
+            protected override void WritePacket(ModPacket packet, params object[] info)
+            {
+                packet.Write((int)info[0]);
+                packet.Write((float)info[1]);
+                packet.Write((float)info[2]);
+            }
+
+            public override void HandlePacket(BinaryReader reader, int whoAmI)
+            {
+                Player player = Main.player[reader.ReadInt32()];
+                player.I().Infection = reader.ReadSingle();
+                player.I().infectionMax = reader.ReadSingle();
             }
         }
     }

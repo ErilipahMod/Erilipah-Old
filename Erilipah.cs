@@ -4,6 +4,7 @@ using Erilipah.Items.Templar;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -16,7 +17,7 @@ namespace Erilipah
 {
     public partial class Erilipah : Mod
     {
-        public Erilipah() 
+        public Erilipah()
         {
             Instance = this;
         }
@@ -83,6 +84,8 @@ namespace Erilipah
         }
         public override void Unload()
         {
+            Instance = null;
+
             Bandolier = null;
             SoulBank = null;
 
@@ -95,35 +98,22 @@ namespace Erilipah
 
             infectionBar = null;
             infectUI = null;
+
+            handlers.Clear();
+            handlers = null;
         }
 
-        internal enum PacketType : byte { Infection }
+        private static List<PacketHandler> handlers = new List<PacketHandler>();
+        public static void AddPacketHandler(PacketHandler handler, out int id)
+        {
+            handlers.Add(handler);
+            id = handlers.IndexOf(handler);
+        }
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            switch (reader.ReadByte())
-            {
-                case (byte)PacketType.Infection:
-                    HandleInfectionPacket(reader);
-                    break;
-            }
-        }
-
-        private void HandleInfectionPacket(BinaryReader reader)
-        {
-            byte playernumber = reader.ReadByte();
-            InfectionPlr other = Main.player[playernumber].GetModPlayer<InfectionPlr>();
-            other.Infection = reader.ReadSingle();
-            other.infectionMax = reader.ReadSingle();
-
-            if (Main.netMode == NetmodeID.Server)
-            {
-                var packet = GetPacket();
-                packet.Write((byte)PacketType.Infection);
-                packet.Write(playernumber);
-                packet.Write(other.Infection);
-                packet.Write(other.infectionMax);
-                packet.Send(-1, playernumber);
-            }
+            // HANDLE THIS STUFF
+            int id = reader.ReadInt32();
+            handlers[id].HandlePacket(reader, whoAmI);
         }
 
         public static float totalBright = 1f;
@@ -203,6 +193,22 @@ namespace Erilipah
             Mod bossChecklist = ModLoader.GetMod("BossChecklist");
             if (bossChecklist != null)
             {
+                /* SlimeKing = 1f;
+                 * EyeOfCthulhu = 2f;
+                 * EaterOfWorlds = 3f;
+                 * QueenBee = 4f;
+                 * Skeletron = 5f;
+                 * WallOfFlesh = 6f;
+                 * TheTwins = 7f;
+                 * TheDestroyer = 8f;
+                 * SkeletronPrime = 9f;
+                 * Plantera = 10f;
+                 * Golem = 11f;
+                 * DukeFishron = 12f;
+                 * LunaticCultist = 13f;
+                 * Moonlord = 14f;
+                */
+
                 void AddBoss(string name, float difficulty, bool downed, string description)
                 {
                     bossChecklist.Call("AddBossWithInfo", name, difficulty, (Func<bool>)(() => downed), description);
@@ -212,20 +218,40 @@ namespace Erilipah
                 AddBoss("Taranys", 5.9999f, ErilipahWorld.downedTaintedSkull, "Use and hold [i:" + ItemType("ModelMoon") + "] in darkness in Erilipah");
             }
         }
+    }
 
-        //SlimeKing = 1f;
-        //EyeOfCthulhu = 2f;
-        //EaterOfWorlds = 3f;
-        //QueenBee = 4f;
-        //Skeletron = 5f;
-        //WallOfFlesh = 6f;
-        //TheTwins = 7f;
-        //TheDestroyer = 8f;
-        //SkeletronPrime = 9f;
-        //Plantera = 10f;
-        //Golem = 11f;
-        //DukeFishron = 12f;
-        //LunaticCultist = 13f;
-        //Moonlord = 14f;
+    public abstract class PacketHandler
+    {
+        private readonly int ID = 0;
+        public PacketHandler()
+        {
+            Erilipah.AddPacketHandler(this, out ID);
+        }
+
+        /// <summary>
+        /// Send a packet out with specified info.
+        /// </summary>
+        /// <param name="info">Information.</param>
+        public void SendPacket(params object[] info)
+        {
+            ModPacket packet = Erilipah.Instance.GetPacket();
+            packet.Write(ID);
+
+            WritePacket(packet, info);
+
+            packet.Send();
+        }
+
+        /// <summary>
+        /// Used to <b>write</b>, and only write, to the packet using provided info.
+        /// </summary>
+        /// <param name="info">Information.</param>
+        protected abstract void WritePacket(ModPacket packet, params object[] info);
+
+        /// <summary>
+        /// Used to handle packets.
+        /// </summary>
+        /// <param name="whoAmI">The whoAmI of the client who sent this ModPacket.</param>
+        public abstract void HandlePacket(BinaryReader reader, int whoAmI);
     }
 }
