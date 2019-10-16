@@ -292,7 +292,7 @@ namespace Erilipah.NPCs.Dracocide
             if (Main.hardMode || Main.expertMode && plr)
                 numNPCs++;
 
-            int[] validDrones = { NPCType<Swarmer>(), NPCType<MiniSwarmer>(), mod.NPCType<AssaultDrone>() };
+            int[] validDrones = { NPCType<Swarmer>(), NPCType<MiniSwarmer>(), NPCType<AssaultDrone>() };
             if (npc.FindClosestNPC(2000, validDrones) != -1)
             {
                 var existentFriends = Main.npc.Where(x => validDrones.Contains(x.type));

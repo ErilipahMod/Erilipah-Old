@@ -110,7 +110,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             }
             else
             {
-                statue = TileEntity.ByID[mod.GetTileEntity<TESoulStatue>().Place(x, y)] as TESoulStatue;
+                statue = TileEntity.ByID[GetInstance<TESoulStatue>().Place(x, y)] as TESoulStatue;
                 if (statue == null)
                     return false;
             }
@@ -122,7 +122,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             Main.tileLavaDeath[Type] = false;
             TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Statues, 12));
             TileObjectData.newTile.HookPlaceOverride =
-                new PlacementHook(mod.GetTileEntity<TESoulStatue>().Hook_AfterPlacement, -1, 0, true);
+                new PlacementHook(GetInstance<TESoulStatue>().Hook_AfterPlacement, -1, 0, true);
             TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<TaintedBrick>() };
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.Width = 2;

@@ -1,6 +1,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sanguine.SanguineArmor
 {
@@ -33,7 +34,7 @@ namespace Erilipah.Items.Sanguine.SanguineArmor
             player.setBonus = "Sanguine/normal items heal you 5/10% of damage dealt, respectively" +
                 "\n5% increased damage taken and potion cooldowns are 1.5 times longer";
             Lighting.AddLight(player.Center, 0.3f, 0.1f, 0);
-            player.GetModPlayer<SanguineSet>(mod).sanguineSet = true;
+            player.GetModPlayer<SanguineSet>().sanguineSet = true;
         }
 
         public override void UpdateEquip(Player player)
@@ -45,7 +46,7 @@ namespace Erilipah.Items.Sanguine.SanguineArmor
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.GetItem<SanguineAlloy>(), 7);
+            recipe.AddIngredient(GetInstance<SanguineAlloy>(), 7);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();

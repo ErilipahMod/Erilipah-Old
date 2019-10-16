@@ -1,6 +1,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sanguine.SanguineArmor
 {
@@ -33,7 +34,7 @@ namespace Erilipah.Items.Sanguine.SanguineArmor
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.GetItem<SanguineAlloy>(), 9);
+            recipe.AddIngredient(ItemType<SanguineAlloy>(), 9);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();

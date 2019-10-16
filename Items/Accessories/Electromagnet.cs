@@ -16,28 +16,20 @@ namespace Erilipah.Items.Accessories
         {
             ModRecipe r = new ModRecipe(mod);
 
-            c(r, "IronBar", 4);
-            c(r, "Erilipah:SilverBars", 4);
-            a(r, ItemID.MeteoriteBar, 8);
+            r.AddRecipeGroup("IronBar", 4);
+            r.AddRecipeGroup("Erilipah:SilverBars", 4);
+            r.AddIngredient(ItemID.MeteoriteBar, 8);
 
-            b(r, TileID.Anvils);
-            c(r, Erilipah.Copper, 8);
-            d(r);
-        }
+            r.AddTile(TileID.Anvils);
+            r.AddRecipeGroup(Erilipah.Copper, 8);
 
-        private void a(ModRecipe r, int i, int s) => r.AddIngredient(i, s);
-        private void b(ModRecipe r, int t) => r.AddTile(t);
-        private void c(ModRecipe r, string n, int s) => r.AddRecipeGroup(n, s);
-
-        private void d(ModRecipe r)
-        {
             r.SetResult(this);
             r.AddRecipe();
         }
 
         public override void UpdateEquip(Player player)
         {
-            player.GetModPlayer<ErilipahPlayer>(mod).extraItemReach += 4 * 16;
+            player.GetModPlayer<ErilipahPlayer>().extraItemReach += 4 * 16;
         }
     }
 }
