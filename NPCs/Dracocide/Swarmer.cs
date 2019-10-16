@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Dracocide
 {
@@ -29,7 +30,7 @@ namespace Erilipah.NPCs.Dracocide
                         NPC.NewNPC(
                             (int)npc.Center.X,
                             (int)npc.Center.Y,
-                            mod.NPCType<MiniSwarmer>(),
+                            NPCType<MiniSwarmer>(),
                             ai1: (int)npc.ai[1],
                             ai2: PlayerTarget ? 1 : 0)];
 
@@ -72,7 +73,7 @@ namespace Erilipah.NPCs.Dracocide
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Dracocell>(), 1, 1, 55);
+            Loot.DropItem(npc, ItemType<Dracocell>(), 1, 1, 55);
             Loot.DropItem(npc, ItemID.SilverCoin, 30, 50, 100, 2);
         }
 
@@ -92,7 +93,7 @@ namespace Erilipah.NPCs.Dracocide
             if (fuckingRun || TargetIndex == -1 || Target == null || !Target.active || (Target is Player player && player.dead))
             {
                 TargetIndex = -1;
-                int motherIndex = npc.FindClosestNPC(1500, mod.NPCType<Observer>());
+                int motherIndex = npc.FindClosestNPC(1500, NPCType<Observer>());
                 if (motherIndex == -1)
                 {
                     npc.netUpdate = true;
@@ -176,7 +177,7 @@ namespace Erilipah.NPCs.Dracocide
 
         public override bool? CanBeHitByProjectile(Projectile projectile)
         {
-            return projectile.type != mod.ProjectileType<HostileDracocideExplosion>();
+            return projectile.type != ProjectileType<HostileDracocideExplosion>();
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -194,7 +195,7 @@ namespace Erilipah.NPCs.Dracocide
 
         public override bool PreNPCLoot() => loot;
 
-        public override void NPCLoot() => Loot.DropItem(npc, mod.ItemType<Dracocell>(), 1, 1, 3);
+        public override void NPCLoot() => Loot.DropItem(npc, ItemType<Dracocell>(), 1, 1, 3);
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => false;
 
@@ -203,7 +204,7 @@ namespace Erilipah.NPCs.Dracocide
         private void SpawnProj()
         {
             npc.life = 0;
-            Projectile.NewProjectile(npc.Center, Vector2.Zero, mod.ProjectileType<HostileDracocideExplosion>(), npc.damage, 3f, Main.myPlayer);
+            Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<HostileDracocideExplosion>(), npc.damage, 3f, Main.myPlayer);
         }
     }
 

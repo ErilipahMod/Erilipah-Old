@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sacracite
 {
@@ -65,7 +66,7 @@ namespace Erilipah.Items.Sacracite
             if (shoot > 48)
             {
                 shoot = 0;
-                Projectile.NewProjectile(position, new Vector2(speedX, speedY) * 2.5f, mod.ProjectileType<SacraciteGrandstaffProjProj>(), (int)(damage * 0.85f), knockBack, player.whoAmI);
+                Projectile.NewProjectile(position, new Vector2(speedX, speedY) * 2.5f, ProjectileType<SacraciteGrandstaffProjProj>(), (int)(damage * 0.85f), knockBack, player.whoAmI);
             }
             return true;
         }
@@ -91,8 +92,8 @@ namespace Erilipah.Items.Sacracite
         {
             ModRecipe r = new ModRecipe(mod);
 
-            r.AddIngredient(mod.ItemType<SacraciteIngot>(), 3);
-            r.AddIngredient(mod.ItemType<SacraciteCore>(), 1);
+            r.AddIngredient(ItemType<SacraciteIngot>(), 3);
+            r.AddIngredient(ItemType<SacraciteCore>(), 1);
             r.AddTile(Terraria.ID.TileID.Anvils);
             r.SetResult(this, 1);
             r.AddRecipe();
@@ -178,14 +179,14 @@ namespace Erilipah.Items.Sacracite
             // These dusts are added later, for the 'ExampleMod' effect
             if (Main.rand.Next(3) == 0)
             {
-                Dust dust = Dust.NewDustDirect(projectile.position, projectile.height, projectile.width, mod.DustType<GreenGemDust>(),
+                Dust dust = Dust.NewDustDirect(projectile.position, projectile.height, projectile.width, DustType<GreenGemDust>(),
                     projectile.velocity.X * .2f, projectile.velocity.Y * .2f, 200, Scale: 1.2f);
                 dust.velocity += projectile.velocity * 0.3f;
                 dust.velocity *= 0.2f;
             }
             if (Main.rand.Next(4) == 0)
             {
-                Dust dust = Dust.NewDustDirect(projectile.position, projectile.height, projectile.width, mod.DustType<GreenGemDust>(),
+                Dust dust = Dust.NewDustDirect(projectile.position, projectile.height, projectile.width, DustType<GreenGemDust>(),
                     0, 0, 254, Scale: 0.3f);
                 dust.velocity += projectile.velocity * 0.5f;
                 dust.velocity *= 0.5f;

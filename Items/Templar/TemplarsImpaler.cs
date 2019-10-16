@@ -22,7 +22,7 @@ namespace Erilipah.Items.Templar
 
         private const int vitality = 10;
 
-        private int Proj2 => mod.ProjectileType<TemplarsImpalerProjProj>();
+        private int Proj2 => ProjectileType<TemplarsImpalerProjProj>();
 
         public override bool AltFunctionUse(Player player) => player.GetModPlayer<Vitality>().CurrentVitality >= vitality;
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
@@ -23,7 +24,7 @@ namespace Erilipah.Items.Taranys
             item.expert = true;
         }
 
-        public override int BossBagNPC => mod.NPCType<NPCs.Taranys.Taranys>();
+        public override int BossBagNPC => NPCType<NPCs.Taranys.Taranys>();
 
         public override bool CanRightClick()
         {
@@ -32,17 +33,17 @@ namespace Erilipah.Items.Taranys
 
         public override void OpenBossBag(Player player)
         {
-            player.QuickSpawnItem(mod.ItemType<VoidFlower>(), 10);
+            player.QuickSpawnItem(ItemType<VoidFlower>(), 10);
 
-            player.QuickSpawnItem(mod.ItemType<ShellChunk>(), Main.rand.Next(6, 15));
-            player.QuickSpawnItem(mod.ItemType<MadnessFocus>(), Main.rand.Next(15, 23));
+            player.QuickSpawnItem(ItemType<ShellChunk>(), Main.rand.Next(6, 15));
+            player.QuickSpawnItem(ItemType<MadnessFocus>(), Main.rand.Next(15, 23));
 
             List<int> types = new List<int>() {
-                mod.ItemType<TyrantEye>(),
-                mod.ItemType<VoidSpike>(),
-                mod.ItemType<TorchOfSoul>(),
-                mod.ItemType<ScepterOfEternalAbyss>(),
-                mod.ItemType<LEECH>()
+                ItemType<TyrantEye>(),
+                ItemType<VoidSpike>(),
+                ItemType<TorchOfSoul>(),
+                ItemType<ScepterOfEternalAbyss>(),
+                ItemType<LEECH>()
             };
             for (int i = 0; i < 2; i++)
             {

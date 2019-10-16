@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -22,7 +23,7 @@ namespace Erilipah.Items.Crystalline
             }
             if (dust.customData is float timer)
             {
-                Projectile sigil = Main.projectile.FirstOrDefault(p => p.active && p.type == mod.ProjectileType<AbProj>());
+                Projectile sigil = Main.projectile.FirstOrDefault(p => p.active && p.type == ProjectileType<AbProj>());
                 if (sigil == null)
                 {
                     dust.active = false;
@@ -51,7 +52,7 @@ namespace Erilipah.Items.Crystalline
             }
             if (dust.customData is double portion)
             {
-                Projectile sigil = Main.projectile.FirstOrDefault(p => p.active && p.frame == 1 && p.type == mod.ProjectileType<AbProj>());
+                Projectile sigil = Main.projectile.FirstOrDefault(p => p.active && p.frame == 1 && p.type == ProjectileType<AbProj>());
                 if (sigil == null)
                 {
                     dust.active = false;

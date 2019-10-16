@@ -1,5 +1,6 @@
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.LunarBee
 {
@@ -20,7 +21,7 @@ namespace Erilipah.Items.LunarBee
             item.rare = 1;
             item.expert = true;
         }
-        public override int BossBagNPC => mod.NPCType<NPCs.LunarBee.LunarBee>();
+        public override int BossBagNPC => NPCType<NPCs.LunarBee.LunarBee>();
 
         public override bool CanRightClick()
         {

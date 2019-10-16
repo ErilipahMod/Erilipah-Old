@@ -1,5 +1,6 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -17,7 +18,7 @@ namespace Erilipah.Items.Crystalline
         {
             ModRecipe r = new ModRecipe(mod);
 
-            r.AddIngredient(mod.ItemType<CrystallineTileItem>(), 6);
+            r.AddIngredient(ItemType<CrystallineTileItem>(), 6);
             r.AddTile(mod.TileType("ShadaineCompressorTile"));
             r.SetResult(this, 1);
             r.AddRecipe();

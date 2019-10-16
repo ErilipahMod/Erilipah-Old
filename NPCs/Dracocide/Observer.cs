@@ -1,11 +1,11 @@
 ﻿using Erilipah.Items.Dracocide;
-using Erilipah.NPCs.Drone;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Dracocide
 {
@@ -212,7 +212,7 @@ namespace Erilipah.NPCs.Dracocide
             for (int i = 0; i < projectiles.Length; i++)
             {
                 Projectile proj = Main.projectile[projectiles[i]];
-                if (proj.ai[0] == 1 && proj.type == mod.ProjectileType<ObserverProj>() && proj.active)
+                if (proj.ai[0] == 1 && proj.type == ProjectileType<ObserverProj>() && proj.active)
                 {
                     FoundTarget = true;
                     Say("!");
@@ -239,7 +239,7 @@ namespace Erilipah.NPCs.Dracocide
                         projectiles[i + 4] = Projectile.NewProjectile(
                             npc.Center,
                             direction * 6,
-                            mod.ProjectileType<ObserverProj>(),
+                            ProjectileType<ObserverProj>(),
                             20,
                             0.5f,
                             Main.myPlayer,
@@ -292,7 +292,7 @@ namespace Erilipah.NPCs.Dracocide
             if (Main.hardMode || Main.expertMode && plr)
                 numNPCs++;
 
-            int[] validDrones = { mod.NPCType<Swarmer>(), mod.NPCType<MiniSwarmer>(), mod.NPCType<AssaultDrone>() };
+            int[] validDrones = { NPCType<Swarmer>(), NPCType<MiniSwarmer>(), mod.NPCType<AssaultDrone>() };
             if (npc.FindClosestNPC(2000, validDrones) != -1)
             {
                 var existentFriends = Main.npc.Where(x => validDrones.Contains(x.type));
@@ -301,16 +301,16 @@ namespace Erilipah.NPCs.Dracocide
                     drone.ai[1] = target.whoAmI;
                     drone.ai[2] = target is Player ? 1 : 0;
 
-                    if (drone.type != mod.NPCType<MiniSwarmer>())
+                    if (drone.type != NPCType<MiniSwarmer>())
                         numNPCs -= drone.life / drone.lifeMax; // Decrease the number of needed drones by however strong the existent drones are
                 }
             }
 
             List<int> types = new List<int>() {
-                mod.NPCType<ArcCaster>(),
-                mod.NPCType<AssaultDrone>(),
-                mod.NPCType<AssaultDrone>(),
-                mod.NPCType<Swarmer>(),
+                NPCType<ArcCaster>(),
+                NPCType<AssaultDrone>(),
+                NPCType<AssaultDrone>(),
+                NPCType<Swarmer>(),
             };
 
             for (int i = 0; i < numNPCs; i++)
@@ -318,8 +318,8 @@ namespace Erilipah.NPCs.Dracocide
                 int type = Main.rand.Next(types);
                 types.Remove(type);
             }
-            if (!types.Contains(mod.NPCType<ArcCaster>()))
-                SpawnBackupNPC(mod.NPCType<ArcCaster>());
+            if (!types.Contains(NPCType<ArcCaster>()))
+                SpawnBackupNPC(NPCType<ArcCaster>());
         }
 
         private int SpawnBackupNPC(int type)
@@ -355,7 +355,7 @@ namespace Erilipah.NPCs.Dracocide
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Dracocell>(), 1, 1, 70);
+            Loot.DropItem(npc, ItemType<Dracocell>(), 1, 1, 70);
             Loot.DropItem(npc, ItemID.SilverCoin, 30, 50, 100, 2);
         }
 
@@ -405,7 +405,7 @@ namespace Erilipah.NPCs.Dracocide
             projectile.friendly = true;
             if (projectile.ai[1]++ % 5 == 0)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<DracocideDust>(), Main.rand.NextVector2Unit() * 0.05f);
+                Dust.NewDustPerfect(projectile.Center, DustType<DracocideDust>(), Main.rand.NextVector2Unit() * 0.05f);
                 Lighting.AddLight(projectile.Center, 0.20f, 0.10f, 0f);
             }
         }
@@ -419,6 +419,6 @@ namespace Erilipah.NPCs.Dracocide
             projectile.ai[0] = 1;
         }
 
-        public override bool? CanHitNPC(NPC target) => target.type != mod.NPCType<Observer>();
+        public override bool? CanHitNPC(NPC target) => target.type != NPCType<Observer>();
     }
 }

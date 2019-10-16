@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -13,7 +14,7 @@ namespace Erilipah.Items.Phlogiston
 
         protected override bool FiresProjectile => true;
         protected override float ShootSpeed => 10;
-        protected override int ShootType => mod.ProjectileType<PhlogistonMagicDaggerProj>();
+        protected override int ShootType => ProjectileType<PhlogistonMagicDaggerProj>();
 
         protected override int[] Dimensions => new int[] { 18, 40 };
         protected override int Rarity => 3;
@@ -57,7 +58,7 @@ namespace Erilipah.Items.Phlogiston
             if (++projectile.ai[0] % 2 == 0)
             {
                 Terraria.Projectile.NewProjectile(projectile.Center, projectile.velocity * 0,
-                    mod.ProjectileType<PhlogistonMagicDaggerProjProj>(), (int)(projectile.damage / 4f), 0, projectile.owner);
+                    ProjectileType<PhlogistonMagicDaggerProjProj>(), (int)(projectile.damage / 4f), 0, projectile.owner);
             }
         }
     }

@@ -1,5 +1,5 @@
 ﻿using Terraria;
-using Terraria.ID;
+using Terraria.ID;using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -14,9 +14,9 @@ namespace Erilipah.Items.Crystalline
         protected override int[,] CraftingIngredients => new int[,]
         {
             { ItemID.WoodenArrow, 111 },
-            { mod.ItemType<InfectionModule>(), 1 }
+            { ItemType<InfectionModule>(), 1 }
         };
-        protected override int CraftingTile => mod.TileType<ShadaineCompressorTile>();
+        protected override int CraftingTile => TileType<ShadaineCompressorTile>();
     }
     public class CrystallineArrowProj : NewModProjectile
     {
@@ -64,7 +64,7 @@ namespace Erilipah.Items.Crystalline
 
         public override void Kill(int timeLeft)
         {
-            Helper.FireInCircle(projectile.Center, 6, mod.ProjectileType<CrystallineArrowProjProj>(), projectile.damage / 2, 10);
+            Helper.FireInCircle(projectile.Center, 6, ProjectileType<CrystallineArrowProjProj>(), projectile.damage / 2, 10);
         }
     }
     public class CrystallineArrowProjProj : NewModProjectile

@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Materials
 {
@@ -61,7 +62,7 @@ namespace Erilipah.Items.Materials
             TileObjectData.newTile.Height = 2;
             TileObjectData.addTile(Type);
             adjTiles = new int[1] { TileID.Furnaces };
-            dustType = mod.DustType<MoonFire>();
+            dustType = DustType<MoonFire>();
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Material Fabricator");

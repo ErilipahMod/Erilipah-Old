@@ -2,12 +2,12 @@
 using Erilipah.Items.Taranys;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -33,7 +33,7 @@ namespace Erilipah
 
         private void AutoHeal(int damage)
         {
-            if (player.FindEquip(mod.ItemType<SoulHearth>()) == null)
+            if (player.FindEquip(ItemType<SoulHearth>()) == null)
                 return;
 
             if (bankedDamage <= 0)
@@ -57,8 +57,8 @@ namespace Erilipah
         }
         private void TorchOfSoul(NPC target, int damage)
         {
-            Item i = player.FindEquip(mod.ItemType<TorchOfSoul>());
-            Item i2 = player.FindEquip(mod.ItemType<SoulHearth>());
+            Item i = player.FindEquip(ItemType<TorchOfSoul>());
+            Item i2 = player.FindEquip(ItemType<SoulHearth>());
 
             if (i == null && i2 == null || target.immortal || target.dontTakeDamage || soulBankHealing)
                 return;
@@ -134,7 +134,7 @@ namespace Erilipah
         }
         public override void UpdateBadLifeRegen()
         {
-            if (player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
+            if (player.HasBuff(BuffType<Items.Niter.NiterPotionBuff>()))
             {
                 player.lifeRegenTime = 0;
                 if (player.lifeRegen > 0)
@@ -144,19 +144,19 @@ namespace Erilipah
 
         public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
-            if (player.statLife == 1 && player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
+            if (player.statLife == 1 && player.HasBuff(BuffType<Items.Niter.NiterPotionBuff>()))
             {
                 r -= 0.35f;
                 b -= 0.35f;
                 g = Math.Max(0.80f, g);
-                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, mod.DustType<Items.Niter.NiterDust>(), Scale: 0.75f)];
+                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, DustType<Items.Niter.NiterDust>(), Scale: 0.75f)];
                 d.velocity = new Vector2(0, -0.25f);
             }
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (player.FindEquip(mod.ItemType<TorchOfSoul>()) != null && Erilipah.SoulBank.JustReleased)
+            if (player.FindEquip(ItemType<TorchOfSoul>()) != null && Erilipah.SoulBank.JustReleased)
             {
                 if (player.statLife >= player.statLifeMax2)
                 {

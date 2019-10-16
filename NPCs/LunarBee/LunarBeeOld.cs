@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Bosses.LunarBee
 {
@@ -51,7 +52,7 @@ namespace Erilipah.NPCs.Bosses.LunarBee
         public override void HitEffect(int hitDirection, double damage)
         {
             for (int j = 0; j <= damage / 2; j++)
-                Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType<Dusts.MoonFire>(), hitDirection * 3, -1f, 0, default(Color), 1.1f);
+                Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.MoonFire>(), hitDirection * 3, -1f, 0, default(Color), 1.1f);
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -250,7 +251,7 @@ namespace Erilipah.NPCs.Bosses.LunarBee
 //    protected override int Width => 124;
 //    protected override int Height => 100;
 //    protected override int NPCFrameCount => 8;
-//    protected override int? TreasureBag => mod.ItemType<Items.LunarBee.LunarBeeBag>();
+//    protected override int? TreasureBag => ItemType<Items.LunarBee.LunarBeeBag>();
 //    protected override string TitleOfMusic => "Moon_Lander_B_Cut";
 //    protected override string Title => "Lunaemia";
 
@@ -354,7 +355,7 @@ namespace Erilipah.NPCs.Bosses.LunarBee
 //                    return;
 //                }
 //            }
-//            Despawn(mod.DustType<Items.LunarBee.MoonFire>());
+//            Despawn(DustType<Items.LunarBee.MoonFire>());
 //        }
 //        if (!Charging)
 //        {
@@ -559,7 +560,7 @@ namespace Erilipah.NPCs.Bosses.LunarBee
 //        if (RingFiring && Timer % (int)(80 / attackSpeed) == 0)
 //        {
 //            npc.ai[3] = Main.rand.Next(4, 8);
-//            Helper.FireInCircle(npc.Center, npc.ai[3] * 3, mod.ProjectileType<CrystalShard>(), npc.damage, 40 * MPH);
+//            Helper.FireInCircle(npc.Center, npc.ai[3] * 3, ProjectileType<CrystalShard>(), npc.damage, 40 * MPH);
 
 //            if (++npc.ai[2] > numRingFires)
 //            {
@@ -576,7 +577,7 @@ namespace Erilipah.NPCs.Bosses.LunarBee
 
 //            if (npc.ai[2] > 120)
 //            {
-//                NewProjectile(pos, new Vector2(0, 58 * MPH), mod.ProjectileType<CrystalChunk>(), npc.damage, 5);
+//                NewProjectile(pos, new Vector2(0, 58 * MPH), ProjectileType<CrystalChunk>(), npc.damage, 5);
 //                npc.ai[2] = 0;
 //            }
 //            else if (npc.ai[2] > 48)
@@ -596,13 +597,13 @@ namespace Erilipah.NPCs.Bosses.LunarBee
 //        }
 //        if (Attack == (int)AI0.LargeChunks && Timer % (int)(80f / attackSpeed) == 0)
 //        {
-//            FireAtTarget(npc.Center, TCen, mod.ProjectileType<CrystalShard>(),
+//            FireAtTarget(npc.Center, TCen, ProjectileType<CrystalShard>(),
 //            npc.damage, 42 * MPH);
 //        }
 
 //        else if (Summoning && Timer % (int)(300f / attackSpeed) == 0)
 //        {
-//            NewNPC(npc.Center, mod.NPCType<MoonWasp>(), ai1: npc.whoAmI, target: npc.target);
+//            NewNPC(npc.Center, NPCType<MoonWasp>(), ai1: npc.whoAmI, target: npc.target);
 //        }
 
 //        else if (Attack == (int)AI0.Summon && Timer % (int)(70 / attackSpeed) == 0)
@@ -610,7 +611,7 @@ namespace Erilipah.NPCs.Bosses.LunarBee
 //            if (Main.netMode != 1)
 //            {
 //                Projectile proj = Main.projectile[
-//                    FireAtTarget(npc.Center, TCen, mod.ProjectileType<CrystalShard>(),
+//                    FireAtTarget(npc.Center, TCen, ProjectileType<CrystalShard>(),
 //                    10, 43 * MPH)];
 
 //                npc.ai[3] = Main.rand.Next(-4, 5);

@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome.Potions
 {
@@ -26,7 +27,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             item.rare = ItemRarityID.Green;
 
             item.buffTime = (int)(3600 * 2.5f);
-            item.buffType = mod.BuffType<EffulgencePotBuff>();
+            item.buffType = BuffType<EffulgencePotBuff>();
         }
 
         public override void AddRecipes()
@@ -34,7 +35,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             ModRecipe recipe = new ModRecipe(mod);
 
             recipe.AddIngredient(ItemID.SoulofLight, 3);
-            recipe.AddIngredient(mod.ItemType<Biomes.ErilipahBiome.Hazards.MushroomItem>(), 2);
+            recipe.AddIngredient(ItemType<Biomes.ErilipahBiome.Hazards.MushroomItem>(), 2);
             recipe.AddIngredient(ItemID.BottledWater);
             recipe.AddTile(TileID.Bottles);
 

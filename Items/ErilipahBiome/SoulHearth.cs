@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -45,9 +46,9 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AddRecipes()
         {
             ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(mod.ItemType<Taranys.TorchOfSoul>());
-            r.AddIngredient(mod.ItemType<SoulCleanser>());
-            r.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
+            r.AddIngredient(ItemType<Taranys.TorchOfSoul>());
+            r.AddIngredient(ItemType<SoulCleanser>());
+            r.AddTile(TileType<Biomes.ErilipahBiome.Tiles.Altar>());
             r.SetResult(this);
             r.AddRecipe();
         }

@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -216,9 +217,9 @@ namespace Erilipah
 
             if (Main.rand.Chance(proportion / 4))
             {
-                int type = player.InErilipah() ? mod.DustType<VoidParticle>() : (player.ZoneCrimson ? DustID.Blood : DustID.GreenBlood);
+                int type = player.InErilipah() ? DustType<VoidParticle>() : (player.ZoneCrimson ? DustID.Blood : DustID.GreenBlood);
                 if (!player.InErilipah() && !player.ZoneCrimson && !player.ZoneCrimson)
-                    type = mod.DustType<VoidParticle>();
+                    type = DustType<VoidParticle>();
                 int dustInd = Dust.NewDust(player.position, player.width, player.height, type, 0, 0);
                 Main.playerDrawDust.Add(dustInd);
 
@@ -235,13 +236,13 @@ namespace Erilipah
         {
             counter++;
 
-            if (!player.HasBuff(mod.BuffType<EffulgencePot.EffulgencePotBuff>()))
+            if (!player.HasBuff(BuffType<EffulgencePot.EffulgencePotBuff>()))
             {
                 Erilipah.erilipahIsBright = false;
             }
             if (player.InErilipah())
             {
-                player.AddBuff(mod.BuffType<Watched>(), 2);
+                player.AddBuff(BuffType<Watched>(), 2);
             }
 
             if (Infection > infectionMax)
@@ -257,7 +258,7 @@ namespace Erilipah
         {
             float playerBrightness = player.Brightness();
 
-            if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && playerBrightness <= 0.1f)
+            if (!NPC.AnyNPCs(NPCType<Taranys>()) && playerBrightness <= 0.1f)
             {
                 darknessCounter++;
                 if (darknessCounter == 360)
@@ -452,7 +453,7 @@ namespace Erilipah
             }
         }
 
-        private readonly static InfectionHandler InfectionPacket = new InfectionHandler();
+        private static readonly InfectionHandler InfectionPacket = new InfectionHandler();
         private class InfectionHandler : PacketHandler
         {
             protected override void WritePacket(ModPacket packet, params object[] info)

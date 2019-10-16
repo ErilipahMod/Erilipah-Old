@@ -6,6 +6,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -19,7 +20,7 @@ namespace Erilipah
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ingredient, ingredientCount);
             recipe.AddTile(tile);
-            recipe.SetResult(mod.ItemType<Result>());
+            recipe.SetResult(ItemType<Result>());
             recipe.AddRecipe();
         }
 
@@ -56,24 +57,22 @@ namespace Erilipah
         internal static bool InLostCity(this Player player) => player.GetModPlayer<ErilipahPlayer>().ZoneLostCity;
         internal static bool IsErilipahTile(this Tile tile)
         {
-            var mod = Erilipah.Instance;
-            return tile.type == mod.TileType<InfectedClump>() ||
-                tile.type == mod.TileType<SpoiledClump>() ||
-                tile.type == mod.TileType<TaintedRubble>() ||
-                tile.type == mod.TileType<TaintedBrick>() ||
-                tile.type == mod.TileType<Items.Crystalline.CrystallineTileTile>();
+            return tile.type == TileType<InfectedClump>() ||
+                tile.type == TileType<SpoiledClump>() ||
+                tile.type == TileType<TaintedRubble>() ||
+                tile.type == TileType<TaintedBrick>() ||
+                tile.type == TileType<Items.Crystalline.CrystallineTileTile>();
         }
         internal static bool IsErilipahWall(this Tile tile)
         {
-            var mod = Erilipah.Instance;
-            return tile.wall == mod.WallType<InfectedClump.InfectedClumpWall>() ||
-                tile.wall == mod.WallType<TaintedBrick.TaintedBrickWall>();
+            return tile.wall == WallType<InfectedClump.InfectedClumpWall>() ||
+                tile.wall == WallType<TaintedBrick.TaintedBrickWall>();
         }
 
         internal static InfectionPlr I(this Player player) => player.GetModPlayer<InfectionPlr>();
 
-        internal static void SetInfecting(this NPC npc, float infecting) => npc.GetGlobalNPC<InfectionPlr.InfectionNPC>().infecting = infecting;
-        internal static void SetInfecting(this Projectile npc, float infecting) => npc.GetGlobalProjectile<InfectionPlr.InfectionProj>().infecting = infecting;
+        public static void SetInfecting(this NPC npc, float infecting) => npc.GetGlobalNPC<InfectionPlr.InfectionNPC>().infecting = infecting;
+        public static void SetInfecting(this Projectile projectile, float infecting) => projectile.GetGlobalProjectile<InfectionPlr.InfectionProj>().infecting = infecting;
 
         internal static int AutoValue(this Item item)
         {

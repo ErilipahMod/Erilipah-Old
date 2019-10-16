@@ -3,6 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories
 {
@@ -11,8 +12,7 @@ namespace Erilipah.Items.Accessories
         protected override UseTypes UseType => UseTypes.Gun;
         protected override int[] Dimensions => new int[] { 66, 32 };
         protected override int Rarity => 2;
-        protected override string Tooltip => "Rapidly fires powerful energy blasts inaccurately\n" +
-            "'It's so beautiful, it could melt you alive!'";
+        protected override string Tooltip => "Rapidly fires powerful energy blasts inaccurately\nGreatly improved if used with an Enormous Geode equipped";
         protected override int Mana => 13;
 
         protected override int Damage => 28;
@@ -36,10 +36,10 @@ namespace Erilipah.Items.Accessories
         }
         public override void UpdateInventory(Player player)
         {
-            bool hasGeode = player.armor.Take(10).Any(x => x.type == mod.ItemType<EnormousGeode>());
+            bool hasGeode = player.armor.Take(10).Any(x => x.type == ItemType<EnormousGeode>());
             if (hasGeode)
             {
-                item.GetGlobalItem<ItemBuff>().NewBuff(ItemBuffID.Geode, 2, false);
+                mod.GetGlobalItem<ItemBuff>().NewBuff(ItemBuffID.Geode, 2, false);
                 item.mana = (int)((Mana - 6) * player.manaCost);
                 degreeSpread = ShootInaccuracy - 6;
                 item.useTime = item.useAnimation = 10;
@@ -54,8 +54,8 @@ namespace Erilipah.Items.Accessories
         public override void AddRecipes()
         {
             ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(mod.ItemType<EnormousGeode>());
-            r.AddIngredient(mod.ItemType<Sacracite.SacraciteCore>(), 2);
+            r.AddIngredient(ItemType<EnormousGeode>());
+            r.AddIngredient(ItemType<Sacracite.SacraciteCore>(), 2);
             r.AddIngredient(ItemID.Diamond, 2);
             r.AddIngredient(ItemID.IllegalGunParts, 1);
             r.AddTile(TileID.Anvils);
@@ -64,7 +64,7 @@ namespace Erilipah.Items.Accessories
         }
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            item.shoot = mod.ProjectileType<TheGrandGeodeProj>();
+            item.shoot = ProjectileType<TheGrandGeodeProj>();
             base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 
             float pitchOffset = Main.rand.NextFloat() * (Main.rand.NextBool(2) ? 1 : -1) / 2;

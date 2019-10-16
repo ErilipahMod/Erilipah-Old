@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Dracocide
 {
@@ -67,7 +68,7 @@ namespace Erilipah.NPCs.Dracocide
                     shield = Main.npc[NPC.NewNPC(
                         (int)(npc.Center.X + dir.X * 32),
                         (int)(npc.Center.Y + dir.Y * 32),
-                        mod.NPCType<HDracocideShield>())];
+                        NPCType<HDracocideShield>())];
                 shield.Center = npc.Center + dir * 35;
                 shield.rotation = dir.ToRotation() + MathHelper.PiOver2;
             }
@@ -86,7 +87,7 @@ namespace Erilipah.NPCs.Dracocide
                             ));
 
                     if (Main.netMode != 1)
-                        Projectile.NewProjectile(npc.Center + fireTo * 34, fireTo * projSpeed, mod.ProjectileType<AssaultBolt>(), npc.damage, 2f, Main.myPlayer);
+                        Projectile.NewProjectile(npc.Center + fireTo * 34, fireTo * projSpeed, ProjectileType<AssaultBolt>(), npc.damage, 2f, Main.myPlayer);
 
                     npc.velocity -= dir * 0.15f;
                     npc.rotation = fireTo.ToRotation();
@@ -131,8 +132,8 @@ namespace Erilipah.NPCs.Dracocide
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Dracocell>(), 1, 1, 55);
-            Loot.DropItem(npc, mod.ItemType<MalleableShard>(), 1, 1, 20);
+            Loot.DropItem(npc, ItemType<Dracocell>(), 1, 1, 55);
+            Loot.DropItem(npc, ItemType<MalleableShard>(), 1, 1, 20);
             Loot.DropItem(npc, ItemID.SilverCoin, 30, 50, 100, 2);
         }
     }
@@ -199,8 +200,8 @@ namespace Erilipah.NPCs.Dracocide
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<MalleableShard>(), 1, 1, 25);
-            Loot.DropItem(npc, mod.ItemType<Dracocell>(), 1, 1, 25);
+            Loot.DropItem(npc, ItemType<MalleableShard>(), 1, 1, 25);
+            Loot.DropItem(npc, ItemType<Dracocell>(), 1, 1, 25);
             Loot.DropItem(npc, ItemID.SilverCoin, 30, 50, 100, 2);
         }
     }
@@ -233,7 +234,7 @@ namespace Erilipah.NPCs.Dracocide
         {
             return
                 !(target.modNPC != null && target.modNPC is DracocideDrone) &&
-                target.type != mod.NPCType<Observer>();
+                target.type != NPCType<Observer>();
         }
     }
 }

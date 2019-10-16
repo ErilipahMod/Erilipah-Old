@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.LunarBee
 {
@@ -73,7 +74,7 @@ namespace Erilipah.Items.LunarBee
     {
         private int Pierce => 3;
 
-        private int Dust => mod.DustType<MoonFire>();
+        private int Dust => DustType<MoonFire>();
 
         public override string Texture => "Terraria/Projectile_" + ProjectileID.ShadowBeamFriendly;
         public override void SetDefaults()

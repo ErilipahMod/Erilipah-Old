@@ -2,13 +2,14 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
     public class Hive : HazardTile
     {
         public override string MapName => "Light Hive";
-        public override int DustType => mod.DustType<FlowerDust>();
+        public override int DustType => DustType<FlowerDust>();
         public override TileObjectData Style
         {
             get
@@ -16,7 +17,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
                 TileObjectData.newTile.AnchorTop = new Terraria.DataStructures.AnchorData(Terraria.Enums.AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
                 TileObjectData.newTile.AnchorBottom = Terraria.DataStructures.AnchorData.Empty;
-                TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>(), mod.TileType<Tiles.SpoiledClump>() };
+                TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<Tiles.InfectedClump>(), TileType<Tiles.SpoiledClump>() };
                 return TileObjectData.newTile;
             }
         }
@@ -29,11 +30,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
-            if (NPC.CountNPCS(mod.NPCType<LightWisp>()) < 15 && Main.netMode != 1)
+            if (NPC.CountNPCS(NPCType<LightWisp>()) < 15 && Main.netMode != 1)
             {
                 Vector2 spawn = GetSpawn(i, j);
 
-                NPC n = Main.npc[NPC.NewNPC((int)spawn.X, (int)spawn.Y, mod.NPCType<LightWisp>())];
+                NPC n = Main.npc[NPC.NewNPC((int)spawn.X, (int)spawn.Y, NPCType<LightWisp>())];
                 (n.modNPC as LightWisp).returnPos = spawn;
             }
         }
@@ -54,10 +55,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             // Spawn some wisps & guards
             for (int n = 0; n < 6; n++)
             {
-                Main.npc[NPC.NewNPC((int)spawn.X, (int)spawn.Y, mod.NPCType<LightWisp>())]
+                Main.npc[NPC.NewNPC((int)spawn.X, (int)spawn.Y, NPCType<LightWisp>())]
                     .timeLeft = 700;
                 if (n < 2)
-                    NPC.NewNPC((int)spawn.X, (int)spawn.Y, mod.NPCType<LightWispGuard>(), Target: Helper.FindClosestPlayer(spawn, 300));
+                    NPC.NewNPC((int)spawn.X, (int)spawn.Y, NPCType<LightWispGuard>(), Target: Helper.FindClosestPlayer(spawn, 300));
             }
         }
 

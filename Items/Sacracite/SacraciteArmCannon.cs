@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sacracite
 {
@@ -11,7 +12,7 @@ namespace Erilipah.Items.Sacracite
         protected override int[] UseSpeedArray => new int[] { 20, 20 };
         protected override float Knockback => 3;
 
-        protected override int ShootType => mod.ProjectileType<SacraciteArmCannonFlak>();
+        protected override int ShootType => ProjectileType<SacraciteArmCannonFlak>();
         protected override float ShootSpeed => 9;
         protected override float ShootDistanceOffset => 14;
         protected override bool FiresProjectile => true;
@@ -34,14 +35,14 @@ namespace Erilipah.Items.Sacracite
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
-            if (player.ownedProjectileCounts[mod.ProjectileType<SacraciteArmCannonProj>()] < 1)
+            if (player.ownedProjectileCounts[ProjectileType<SacraciteArmCannonProj>()] < 1)
             {
-                Projectile.NewProjectile(position, Vector2.Zero, mod.ProjectileType<SacraciteArmCannonProj>(), 0, 0, player.whoAmI);
+                Projectile.NewProjectile(position, Vector2.Zero, ProjectileType<SacraciteArmCannonProj>(), 0, 0, player.whoAmI);
             }
 
             if (type == ItemID.MusketBall)
             {
-                type = mod.ProjectileType<SacraciteArmCannonFlak>();
+                type = ProjectileType<SacraciteArmCannonFlak>();
             }
             position += Vector2.UnitY * 2;
             return true;
@@ -117,7 +118,7 @@ namespace Erilipah.Items.Sacracite
                     float toRotateBy = MathHelper.PiOver4 / 5f;
                     float rotatedBy = -toRotateBy + (i * toRotateBy);
                     Projectile proj = Main.projectile[Projectile.NewProjectile(projectile.Center, projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(rotatedBy) * 4.5f,
-                        mod.ProjectileType<SacraciteArmCannonFlakProj>(), damage, 0, projectile.owner)];
+                        ProjectileType<SacraciteArmCannonFlakProj>(), damage, 0, projectile.owner)];
                     proj.friendly = true;
                     proj.damage = damage;
                 }

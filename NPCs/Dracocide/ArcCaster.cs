@@ -68,7 +68,7 @@ namespace Erilipah.NPCs.Dracocide
 
                 Dust dust = Dust.NewDustPerfect(
                     Vector2.Lerp(npc.Center + dir, friend.Center - dir, dustSpawnPos),
-                    mod.DustType<DracocideDust>());
+                    DustType<DracocideDust>());
                 dust.noLight = true;
                 dust.velocity = Vector2.Zero;
                 dust.customData = -20;
@@ -86,8 +86,8 @@ namespace Erilipah.NPCs.Dracocide
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Dracocell>(), 1, 1, 30);
-            Loot.DropItem(npc, mod.ItemType<ArcJoint>(), 1, 1, 15);
+            Loot.DropItem(npc, ItemType<Dracocell>(), 1, 1, 30);
+            Loot.DropItem(npc, ItemType<ArcJoint>(), 1, 1, 15);
             Loot.DropItem(npc, ItemID.SilverCoin, 30, 50, 100, 2);
         }
 

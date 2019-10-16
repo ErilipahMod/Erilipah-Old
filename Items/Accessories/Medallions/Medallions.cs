@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories.Medallions
 {
@@ -126,16 +127,16 @@ namespace Erilipah.Items.Accessories.Medallions
 
         public override void UpdateEquip(Item item, Player player)
         {
-            if (item.type == mod.ItemType<SentryMedallion>())
+            if (item.type == ItemType<SentryMedallion>())
             {
                 player.maxTurrets += 1;
             }
-            if (item.type == mod.ItemType<MinionMedallion>())
+            if (item.type == ItemType<MinionMedallion>())
             {
                 player.maxMinions += 2;
                 player.minionDamage += 0.10f;
             }
-            if (item.type == mod.ItemType<ThrownItemMedallion>())
+            if (item.type == ItemType<ThrownItemMedallion>())
             {
                 player.thrownDamage += 1.10f;
                 player.thrownCrit += 10;
@@ -168,7 +169,7 @@ namespace Erilipah.Items.Accessories.Medallions
         {
             get
             {
-                if (item.type == mod.ItemType<SentryMedallion>())
+                if (item.type == ItemType<SentryMedallion>())
                     return "Empowers Sentries";
                 return "Empowers " + Regex.Replace(GetType().Name.Replace("Medallion", "") + 's', "([A-Z])", " $1").Trim();
             }
@@ -181,7 +182,7 @@ namespace Erilipah.Items.Accessories.Medallions
         public override void AddRecipes()
         {
             ModRecipe r = new ModRecipe(mod);
-            r.AddIngredient(mod.ItemType<BlankMedallion>());
+            r.AddIngredient(ItemType<BlankMedallion>());
             r.AddIngredient(i, i == ItemID.BouncyDynamite ? 25 : 1);
             r.AddTile(TileID.TinkerersWorkbench);
             r.SetResult(item.type);
@@ -190,7 +191,7 @@ namespace Erilipah.Items.Accessories.Medallions
             if (i2 != 0)
             {
                 r = new ModRecipe(mod);
-                r.AddIngredient(mod.ItemType<BlankMedallion>());
+                r.AddIngredient(ItemType<BlankMedallion>());
                 r.AddIngredient(i2, i2 == ItemID.BouncyGrenade ? 25 : 1);
                 r.AddTile(TileID.TinkerersWorkbench);
                 r.SetResult(item.type);

@@ -3,6 +3,7 @@ using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.ErilipahBiome
 {
@@ -32,7 +33,7 @@ namespace Erilipah.NPCs.ErilipahBiome
         public override void AI()
         {
             for (int c = 0; c < 3; c++)
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(8, 8), mod.DustType<FlowerDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(8, 8), DustType<FlowerDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
 
             if (Torch == Point.Zero || Main.tile[Torch.X, Torch.Y].frameX < 66)
             {
@@ -59,7 +60,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                     for (int i = 0; i < 25; i++)
                     {
                         float rot = i / 25f * MathHelper.TwoPi;
-                        Dust.NewDustPerfect(projectile.Center, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 5).noGravity = true;
+                        Dust.NewDustPerfect(projectile.Center, DustType<FlowerDust>(), rot.ToRotationVector2() * 5).noGravity = true;
                     }
                     Main.tile[Torch.X, Torch.Y].frameX -= 66;
                     Main.PlaySound(Terraria.ID.SoundID.Item45, projectile.Center);
@@ -82,7 +83,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                     Tile candidate = Main.tile[i, j];
 
                     float currentDistance = Vector2.Distance(new Vector2(i, j), tilePos.ToVector2());
-                    bool validTile = candidate.active() && candidate.type == mod.TileType<ArkenTorchTile>() && candidate.frameX >= 66;
+                    bool validTile = candidate.active() && candidate.type == TileType<ArkenTorchTile>() && candidate.frameX >= 66;
                     if (currentDistance < closestDistance && validTile)
                     {
                         closestDistance = currentDistance;

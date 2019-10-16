@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sanguine
 {
@@ -30,7 +31,7 @@ namespace Erilipah.Items.Sanguine
 
             item.UseSound = SoundID.Item1;
             item.value = Item.sellPrice(silver: 10);
-            item.shoot = mod.ProjectileType<SanguineJavelinProj>();
+            item.shoot = ProjectileType<SanguineJavelinProj>();
         }
         public override void SetStaticDefaults()
             => Tooltip.SetDefault("Heals you for 15% of damage dealt");
@@ -116,7 +117,7 @@ namespace Erilipah.Items.Sanguine
             }
             // Drop a javelin item, 1 in 18 chance (~5.5% chance)
             int item = Main.rand.NextBool(18) ?
-                Item.NewItem(projectile.Hitbox, mod.ItemType<SanguineJavelin>()) : 0;
+                Item.NewItem(projectile.Hitbox, ItemType<SanguineJavelin>()) : 0;
 
             // Sync the drop for multiplayer
             // Note the usage of Terraria.ID.MessageID, please use this!

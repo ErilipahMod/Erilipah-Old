@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -38,7 +39,7 @@ namespace Erilipah.Items.Phlogiston
         public override void Kill(int timeLeft)
         {
             base.Kill(timeLeft);
-            Helper.FireInCircle(projectile.Center, 6, mod.ProjectileType<PhlogistonThrowingDaggerProjProj>(), 7, 4, 2, owner: projectile.owner);
+            Helper.FireInCircle(projectile.Center, 6, ProjectileType<PhlogistonThrowingDaggerProjProj>(), 7, 4, 2, owner: projectile.owner);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

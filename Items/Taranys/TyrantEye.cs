@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
@@ -44,7 +45,7 @@ namespace Erilipah.Items.Taranys
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
 
-            item.shoot = mod.ProjectileType<EyeProj>();
+            item.shoot = ProjectileType<EyeProj>();
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -80,12 +81,12 @@ namespace Erilipah.Items.Taranys
                     Vector2 dustPos = Main.MouseWorld + Vector2.UnitX.RotatedBy(i / 30f * MathHelper.TwoPi) * 50;
                     float bright = Lighting.Brightness((int)(dustPos.X / 16), (int)(dustPos.Y / 16));
 
-                    Dust dust = Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(1, 1), mod.DustType<VoidParticle>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(1, 1), DustType<VoidParticle>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = bright * 0.8f;
 
-                    dust = Dust.NewDustPerfect(dustPos, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
+                    dust = Dust.NewDustPerfect(dustPos, DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = (1 - bright) * 0.8f;
@@ -184,12 +185,12 @@ namespace Erilipah.Items.Taranys
                     if (i == 0 && projectile.localAI[0] % 15 == 0)
                         Main.PlaySound(2, (int)dustPos.X, (int)dustPos.Y, 9, 1, -0.3f + Math.Min(0.6f, Pulse / 500f));
 
-                    Dust dust = Dust.NewDustPerfect(dustPos, mod.DustType<VoidParticle>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(dustPos, DustType<VoidParticle>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = bright * 1.25f;
 
-                    dust = Dust.NewDustPerfect(dustPos, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
+                    dust = Dust.NewDustPerfect(dustPos, DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = (1 - bright) * 1.25f;
@@ -210,12 +211,12 @@ namespace Erilipah.Items.Taranys
                     Vector2 position = projectile.Center + Vector2.UnitX.RotatedBy(rotation) * Pulse;
                     float bright = Lighting.Brightness((int)(position.X / 16), (int)(position.Y / 16));
 
-                    Dust dust = Dust.NewDustPerfect(position, mod.DustType<VoidParticle>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(position, DustType<VoidParticle>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = bright * 1.25f;
 
-                    dust = Dust.NewDustPerfect(position, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
+                    dust = Dust.NewDustPerfect(position, DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = (1 - bright) * 1.1f;

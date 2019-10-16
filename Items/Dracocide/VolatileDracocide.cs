@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -34,7 +35,7 @@ namespace Erilipah.Items.Dracocide
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
 
-            item.shoot = mod.ProjectileType<VolatileDracocideProj>();
+            item.shoot = ProjectileType<VolatileDracocideProj>();
             item.shootSpeed = 9;
         }
 
@@ -42,7 +43,7 @@ namespace Erilipah.Items.Dracocide
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<Dracocell>(), 8);
+            recipe.AddIngredient(ItemType<Dracocell>(), 8);
             recipe.AddTile(TileID.MythrilAnvil);
 
             recipe.SetResult(this, 1);
@@ -76,7 +77,7 @@ namespace Erilipah.Items.Dracocide
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.NPCDeath14, projectile.Center);
-            Projectile.NewProjectile(projectile.Center, Vector2.Zero, mod.ProjectileType<DracocideExplosion>(), projectile.damage, 6.5f, projectile.owner);
+            Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileType<DracocideExplosion>(), projectile.damage, 6.5f, projectile.owner);
         }
     }
 

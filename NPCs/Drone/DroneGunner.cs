@@ -1,11 +1,4 @@
-﻿//using Erilipah.NPCs.Dracocide;
-//using Microsoft.Xna.Framework;
-//using System;
-//using Terraria;
-//using Terraria.Audio;
-//using Terraria.ID;
-//using Terraria.ModLoader;
-
+﻿
 //namespace Erilipah.NPCs.Drone
 //{
 //    public class DroneGunner : NewModNPC
@@ -43,11 +36,11 @@
 //                int h = Helper.FindClosestNPC(
 //                    npc,
 //                    2000,
-//                    mod.NPCType<Observer>(),
-//                    mod.NPCType<ArcCaster>(),
-//                    mod.NPCType<Swarmer>(),
-//                    mod.NPCType<MiniSwarmer>(),
-//                    mod.NPCType<AssaultDrone>());
+//                    NPCType<Observer>(),
+//                    NPCType<ArcCaster>(),
+//                    NPCType<Swarmer>(),
+//                    NPCType<MiniSwarmer>(),
+//                    NPCType<AssaultDrone>());
 //                if (h > -1)
 //                {
 //                    npc.target = h;
@@ -248,7 +241,7 @@
 
 //                    if (Main.netMode != 1)
 //                        Projectile.NewProjectile(npc.Center + ToPlayer * -30, ToPlayer * -speed,
-//                            mod.ProjectileType<DroneGunnerProj>(), Damage, 0, Main.myPlayer);
+//                            ProjectileType<DroneGunnerProj>(), Damage, 0, Main.myPlayer);
 
 //                    int type = mod.DustType("DeepFlames");
 //                    for (int i = 0; i < 3; i++)
@@ -353,7 +346,7 @@
 
 //        public override bool? CanHitNPC(NPC target)
 //        {
-//            return target.type == mod.NPCType<DroneGunner>() ? false : true;
+//            return target.type == NPCType<DroneGunner>() ? false : true;
 //        }
 //    }
 //}

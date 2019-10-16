@@ -7,6 +7,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories
 {
@@ -214,7 +215,7 @@ namespace Erilipah.Items.Accessories
             public override void AddRecipes()
             {
                 ModRecipe r = new ModRecipe(mod);
-                r.AddIngredient(mod.ItemType<Bandolier>(), 1);
+                r.AddIngredient(ItemType<Bandolier>(), 1);
                 r.AddIngredient(ItemID.EndlessMusketPouch, 1);
                 r.AddIngredient(TileID.Crystals, 3);
                 r.AddTile(TileID.CrystalBall);

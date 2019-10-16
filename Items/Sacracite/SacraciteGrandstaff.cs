@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sacracite
 {
@@ -63,8 +64,8 @@ namespace Erilipah.Items.Sacracite
         {
             ModRecipe r = new ModRecipe(mod);
 
-            r.AddIngredient(mod.ItemType<SacraciteIngot>(), 4);
-            r.AddIngredient(mod.ItemType<SacraciteCore>(), 1);
+            r.AddIngredient(ItemType<SacraciteIngot>(), 4);
+            r.AddIngredient(ItemType<SacraciteCore>(), 1);
             r.AddTile(Terraria.ID.TileID.Anvils);
             r.SetResult(this, 1);
             r.AddRecipe();
@@ -75,7 +76,7 @@ namespace Erilipah.Items.Sacracite
     {
         private int Pierce => 0;
 
-        private int Dust => mod.DustType<GreenGemDust>();
+        private int Dust => DustType<GreenGemDust>();
 
         private int FlightTime => 0;
 
@@ -139,12 +140,12 @@ namespace Erilipah.Items.Sacracite
             }
             if (projectile.ai[0] != 1)
             {
-                Helper.FireInCircle(projectile.Center, 5, mod.ProjectileType<SacraciteGrandstaffProjProj>(), projectile.damage / 3, 10, owner: projectile.owner);
+                Helper.FireInCircle(projectile.Center, 5, ProjectileType<SacraciteGrandstaffProjProj>(), projectile.damage / 3, 10, owner: projectile.owner);
             }
             else
             {
                 const int degSpread = 25;
-                foreach (Projectile proj in Helper.FireInCircle(projectile.Center, 10, mod.ProjectileType<SacraciteGrandstaffProjProj>(), projectile.damage / 3, 10))
+                foreach (Projectile proj in Helper.FireInCircle(projectile.Center, 10, ProjectileType<SacraciteGrandstaffProjProj>(), projectile.damage / 3, 10))
                 {
                     projectile.ai[1] = Main.rand.Next(-degSpread, degSpread + 1) + Main.rand.NextFloat() - Main.rand.NextFloat();
                     proj.velocity.RotatedBy(MathHelper.ToRadians(projectile.ai[1]));
@@ -156,7 +157,7 @@ namespace Erilipah.Items.Sacracite
     {
         private int Pierce => 0;
 
-        private int Dust => mod.DustType<GreenGemDust>();
+        private int Dust => DustType<GreenGemDust>();
 
         private int FlightTime => 0;
 

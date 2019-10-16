@@ -6,6 +6,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
@@ -15,8 +16,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             soundType = 3;
             soundStyle = 1;
-            dustType = mod.DustType<FlowerDust>();
-            drop = mod.ItemType<MushroomItem>();
+            dustType = DustType<FlowerDust>();
+            drop = ItemType<MushroomItem>();
             disableSmartCursor = true;
 
             Main.tileFrameImportant[Type] = true;
@@ -29,7 +30,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             TileObjectData.newTile.Width = 1;
             TileObjectData.newTile.Height = 1;
             TileObjectData.newTile.CoordinateWidth = 16;
-            TileObjectData.newTile.CoordinateHeights = new int[]{ 16 };
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16 };
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.newTile.DrawYOffset = -1;
             TileObjectData.newTile.StyleHorizontal = true;
@@ -37,8 +38,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             //TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.MushroomPlants, 0));
             TileObjectData.newTile.AnchorValidTiles = new[]
             {
-                mod.TileType<InfectedClump>(),
-                mod.TileType<SpoiledClump>()
+                TileType<InfectedClump>(),
+                TileType<SpoiledClump>()
             };
 
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
@@ -51,11 +52,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public static bool TryPlace(int i, int j)
         {
             int typePrevious = Main.tile[i, j].type;
-            int type = Erilipah.Instance.TileType<Mushroom>();
+            int type = TileType<Mushroom>();
             WorldGen.Place1x1(i, j, type, 0);
             if (type != typePrevious)
             {
-                Main.tile[i, j].frameX =(short)(Main.rand.Next(5) * 18);
+                Main.tile[i, j].frameX = (short)(Main.rand.Next(5) * 18);
                 Main.tile[i, j].frameY = 0;
                 return true;
             }
@@ -124,7 +125,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             for (int h = 0; h < 7; h++)
             {
                 float rotation = h / 7f * MathHelper.Pi + MathHelper.Pi;
-                Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), mod.DustType<FlowerDust>(), rotation.ToRotationVector2() * 5, Scale: 1.8f).noGravity = true;
+                Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), DustType<FlowerDust>(), rotation.ToRotationVector2() * 5, Scale: 1.8f).noGravity = true;
             }
         }
     }
@@ -154,7 +155,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             item.value = 10;
 
-            item.buffType = mod.BuffType<Hallucinating>();
+            item.buffType = BuffType<Hallucinating>();
             item.buffTime = 900;
         }
 

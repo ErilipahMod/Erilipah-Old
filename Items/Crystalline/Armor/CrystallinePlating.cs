@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline.Armor
 {
@@ -17,10 +18,10 @@ namespace Erilipah.Items.Crystalline.Armor
 
         protected override int[,] CraftingIngredients => new int[,] {
             {
-                mod.ItemType<InfectionModule>(), 10
+                ItemType<InfectionModule>(), 10
             }
         };
-        protected override int CraftingTile => mod.TileType<ShadaineCompressorTile>();
+        protected override int CraftingTile => TileType<ShadaineCompressorTile>();
         public override void UpdateEquip(Player player)
         {
             player.moveSpeed += 0.05f;

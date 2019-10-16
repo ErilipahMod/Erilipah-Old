@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Erilipah.Items.ErilipahBiome;
+using Erilipah.NPCs.ErilipahBiome;
+using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Erilipah.NPCs.ErilipahBiome;
-using Erilipah.Items.ErilipahBiome;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
-    class LEECH : ModItem
+    internal class LEECH : ModItem
     {
         public override void SetStaticDefaults()
         {
@@ -75,7 +73,7 @@ namespace Erilipah.Items.Taranys
             // Spechull
             if (Main.rand.NextBool(8))
             {
-                type = mod.ProjectileType<CrystalBolt>();
+                type = ProjectileType<CrystalBolt>();
                 vel /= 2;
                 damage += 10;
                 knockBack *= 1.5f;
@@ -84,7 +82,7 @@ namespace Erilipah.Items.Taranys
             }
             else
             {
-                type = mod.ProjectileType<VoidBolt>();
+                type = ProjectileType<VoidBolt>();
                 vel = vel.RotateRandom(0.15);
                 vel /= 2;
 
@@ -128,15 +126,15 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(mod.BuffType<Wither>(), 80);
+            target.AddBuff(BuffType<Wither>(), 80);
         }
 
         public override void AI()
         {
             projectile.velocity.Y += 0.04f;
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero)
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero)
                 .noGravity = true;
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 0.7f)
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(3, 3), DustType<VoidParticle>(), Vector2.Zero, Scale: 0.7f)
                 .noGravity = true;
         }
 
@@ -145,16 +143,16 @@ namespace Erilipah.Items.Taranys
             Main.PlaySound(SoundID.NPCDeath9, projectile.Center);
             for (int i = 0; i < 10; i++)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi))
+                Dust.NewDustPerfect(projectile.Center, DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi))
                     .noGravity = true;
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidParticle>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi), Scale: 0.7f)
+                Dust.NewDustPerfect(projectile.Center, DustType<VoidParticle>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi), Scale: 0.7f)
                     .noGravity = true;
             }
             for (int i = 0; i < 10; i++)
             {
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero)
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero)
                     .noGravity = true;
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 0.7f)
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), DustType<VoidParticle>(), Vector2.Zero, Scale: 0.7f)
                     .noGravity = true;
             }
         }
@@ -180,7 +178,7 @@ namespace Erilipah.Items.Taranys
 
             if (Main.rand.NextBool())
             {
-                Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.5f);
+                Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.5f);
                 d.velocity = new Vector2(0, -5);
                 d.noGravity = true;
             }
@@ -218,7 +216,7 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(mod.BuffType<CrystalInfection>(), 500);
+            target.AddBuff(BuffType<CrystalInfection>(), 500);
             projectile.Kill();
         }
 
@@ -228,9 +226,9 @@ namespace Erilipah.Items.Taranys
 
             for (int i = 0; i < 2; i++)
             {
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
                     .noGravity = true;
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.25f)
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(6, 6), DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.25f)
                     .noGravity = true;
             }
         }
@@ -240,11 +238,11 @@ namespace Erilipah.Items.Taranys
             Main.PlaySound(SoundID.Item27, projectile.Center);
             for (int i = 0; i < 18; i++)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<Crystalline.CrystallineDust>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi));
+                Dust.NewDustPerfect(projectile.Center, DustType<Crystalline.CrystallineDust>(), 4 * Vector2.UnitX.RotatedBy(i / 10f * MathHelper.TwoPi));
             }
             for (int i = 0; i < 18; i++)
             {
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(6, 6), DustType<Crystalline.CrystallineDust>(), Vector2.Zero)
                     .noGravity = true;
             }
 

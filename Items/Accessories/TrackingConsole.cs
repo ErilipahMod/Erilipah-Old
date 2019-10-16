@@ -1,5 +1,6 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories
 {
@@ -16,11 +17,11 @@ namespace Erilipah.Items.Accessories
         {
             ModRecipe r = new ModRecipe(mod);
 
-            a(r, mod.ItemType<Crystalline.InfectionModule>(), 3);
-            a(r, mod.ItemType<Drone.PowerCoupling>(), 2);
+            a(r, ItemType<Crystalline.InfectionModule>(), 3);
+            a(r, ItemType<Drone.PowerCoupling>(), 2);
             a(r, ItemID.MeteoriteBar, 3);
 
-            b(r, mod.TileType<Materials.MaterialFabricatorTile>());
+            b(r, TileType<Materials.MaterialFabricatorTile>());
             d(r);
         }
 

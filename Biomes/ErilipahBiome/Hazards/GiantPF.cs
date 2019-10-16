@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
@@ -16,7 +17,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             Main.tileFrameImportant[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Dressers, 0));
-            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>() };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<Tiles.InfectedClump>() };
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.Width = 3;
             TileObjectData.newTile.Height = 2;
@@ -27,7 +28,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             name.SetDefault("Giant Pure Flower");
             AddMapEntry(new Color(60, 30, 70), name);
 
-            dustType = mod.DustType<FlowerDust>();
+            dustType = DustType<FlowerDust>();
         }
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
@@ -57,7 +58,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (!WorldGen.gen && Main.netMode != 1)
             {
-                Item.NewItem(i * 16, j * 16, 36, 54, mod.ItemType<VoidFlower>(), Main.rand.Next(1, 5));
+                Item.NewItem(i * 16, j * 16, 36, 54, ItemType<VoidFlower>(), Main.rand.Next(1, 5));
             }
         }
     }

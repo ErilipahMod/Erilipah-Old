@@ -5,6 +5,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
@@ -20,7 +21,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             TileObjectData.newTile.Height = 3;
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
             TileObjectData.newTile.StyleHorizontal = true;
-            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<TaintedBrick>() };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<TaintedBrick>() };
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
             TileObjectData.newTile.StyleWrapLimit = 111;
@@ -43,12 +44,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         {
             if (closer)
             {
-                Main.LocalPlayer.AddBuff(mod.BuffType<CityBannerBuff>(), 300);
+                Main.LocalPlayer.AddBuff(BuffType<CityBannerBuff>(), 300);
             }
 
             if (Main.rand.NextBool(16))
             {
-                int dustInd = Dust.NewDust(new Vector2(i, j) * 16, 16, 16, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
+                int dustInd = Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustType<NPCs.ErilipahBiome.VoidParticle>());
 
                 Dust dust = Main.dust[dustInd];
                 dust.noGravity = false;

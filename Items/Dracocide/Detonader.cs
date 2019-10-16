@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -36,7 +37,7 @@ namespace Erilipah.Items.Dracocide
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
 
-            item.shoot = mod.ProjectileType<DetonaderNade>();
+            item.shoot = ProjectileType<DetonaderNade>();
             item.shootSpeed = 7;
         }
 
@@ -44,7 +45,7 @@ namespace Erilipah.Items.Dracocide
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<Dracocell>(), 2);
+            recipe.AddIngredient(ItemType<Dracocell>(), 2);
 
             recipe.AddTile(TileID.MythrilAnvil);
 
@@ -81,14 +82,14 @@ namespace Erilipah.Items.Dracocide
                 {
                     if (i < 8) // for 8
                     {
-                        Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType<DracocideDust>(), 3, 3);
+                        Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<DracocideDust>(), 3, 3);
                         Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Fire, 3, 3);
                     }
 
                     Projectile.NewProjectile(
                         projectile.Center,
                         new Vector2(Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-6, -1.5f)),
-                        mod.ProjectileType<DetonaderProj>(),
+                        ProjectileType<DetonaderProj>(),
                         19,
                         0.2f,
                         projectile.owner);
@@ -132,7 +133,7 @@ namespace Erilipah.Items.Dracocide
                 if (++projectile.frameCounter % 5 == 0)
                 {
                     Dust dust = Dust.NewDustPerfect(projectile.Center,
-                        mod.DustType<DracocideDust>());
+                        DustType<DracocideDust>());
 
                     dust.noLight = true;
                     dust.velocity = Vector2.Zero;
@@ -143,7 +144,7 @@ namespace Erilipah.Items.Dracocide
             else
             {
                 Dust dust = Dust.NewDustPerfect(projectile.Center,
-                    mod.DustType<DracocideDust>());
+                    DustType<DracocideDust>());
 
                 dust.noLight = true;
                 dust.velocity = Vector2.Zero;

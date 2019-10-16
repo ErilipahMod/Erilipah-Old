@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
@@ -49,7 +50,7 @@ namespace Erilipah.Items.Taranys
                     int y = (int)ErilipahWorld.ChasmPosition.Y / 16;
                     Tile tile = Main.tile[x + i, y + j];
 
-                    if (tile.type != mod.TileType<Biomes.ErilipahBiome.Tiles.TaintedBrick>())
+                    if (tile.type != TileType<Biomes.ErilipahBiome.Tiles.TaintedBrick>())
                         WorldGen.KillTile(x + i, y + j);
                 }
             }

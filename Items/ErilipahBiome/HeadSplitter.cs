@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -23,7 +24,7 @@ namespace Erilipah.Items.ErilipahBiome
     public class HeadSplitterProj : NewModProjectile
     {
         protected override int[] Dimensions => AutoDimensions;
-        protected override int DustType => mod.DustType<Crystalline.CrystallineDust>();
+        protected override int DustType => DustType<Crystalline.CrystallineDust>();
         protected override int MaxMotionBlurLength => 4;
 
         protected override int Pierce => InfinitePierceAndBounce;

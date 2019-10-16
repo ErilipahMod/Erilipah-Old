@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -24,7 +25,7 @@ namespace Erilipah.Items.Crystalline
             item.autoReuse = true;
 
             item.rare = 2;
-            item.shoot = mod.ProjectileType<CrystallineStaffProj>();
+            item.shoot = ProjectileType<CrystallineStaffProj>();
             item.shootSpeed = 7.5f;
         }
         public override void SetStaticDefaults() => Item.staff[item.type] = true;

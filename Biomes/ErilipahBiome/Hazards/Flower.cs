@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-//using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
@@ -24,7 +24,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     internal class Flower : HazardTile
     {
         public override string MapName => "Infected Pustule";
-        public override int DustType => mod.DustType<FlowerDust>();
+        public override int DustType => DustType<FlowerDust>();
         public override TileObjectData Style => TileObjectData.Style2x1;
 
         public override bool KillSound(int i, int j)
@@ -83,19 +83,19 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         private void Burst(int i, int j)
         {
             if (Main.netMode != 1)
-            for (int a = 0; a < 3; a++)
-            {
-                Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
-                Projectile.NewProjectile(
-                    i * 16f + 16 + 8, j * 16f + 4,
-                    rand.X, rand.Y,
-                    mod.ProjectileType<FlowerProj>(), 21, 1, Main.myPlayer);
-            }
+                for (int a = 0; a < 3; a++)
+                {
+                    Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
+                    Projectile.NewProjectile(
+                        i * 16f + 16 + 8, j * 16f + 4,
+                        rand.X, rand.Y,
+                        ProjectileType<FlowerProj>(), 21, 1, Main.myPlayer);
+                }
 
             for (int h = 0; h < 10; h++)
             {
                 float rotation = h / 10f * MathHelper.Pi + MathHelper.Pi;
-                Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), mod.DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;
+                Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;
             }
 
             Main.PlaySound(SoundID.PlayerKilled, i * 16, j * 16, 0, 1, 0.625f);
@@ -150,7 +150,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<FlowerDust>(), Vector2.Zero, Scale: 1.5f);
+            Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(5, 5), DustType<FlowerDust>(), Vector2.Zero, Scale: 1.5f);
             if (projectile.timeLeft < 60)
                 projectile.scale -= 1 / 90f;
         }

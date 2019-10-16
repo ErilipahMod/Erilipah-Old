@@ -3,6 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Dracocide
 {
@@ -100,8 +101,8 @@ namespace Erilipah.NPCs.Dracocide
             if (fuckingRun || TargetIndex == -1 || Target == null || !Target.active || (Target is Player player && player.dead))
             {
                 TargetIndex = -1;
-                int motherIndex = npc.FindClosestNPC(1500, mod.NPCType<Observer>());
-                if (motherIndex == -1 || npc.type != mod.NPCType<AssaultDrone>())
+                int motherIndex = npc.FindClosestNPC(1500, NPCType<Observer>());
+                if (motherIndex == -1 || npc.type != NPCType<AssaultDrone>())
                 {
                     npc.netUpdate = true;
                     npc.noTileCollide = true;

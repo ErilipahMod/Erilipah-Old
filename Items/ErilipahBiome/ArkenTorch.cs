@@ -7,6 +7,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -33,7 +34,7 @@ namespace Erilipah.Items.ErilipahBiome
 
             item.useStyle = 1;
             item.consumable = true;
-            item.createTile = mod.TileType<ArkenTorchTile>();
+            item.createTile = TileType<ArkenTorchTile>();
 
             item.value = 0;
         }
@@ -64,7 +65,7 @@ namespace Erilipah.Items.ErilipahBiome
 
             item.useStyle = 1;
             item.consumable = true;
-            item.createTile = mod.TileType<ArkenTorchTile>();
+            item.createTile = TileType<ArkenTorchTile>();
 
             item.value = 0;
         }
@@ -145,7 +146,7 @@ namespace Erilipah.Items.ErilipahBiome
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Torch");
             AddMapEntry(new Color(200, 120, 215), name);
-            drop = mod.ItemType<ArkenTorch>();
+            drop = ItemType<ArkenTorch>();
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Torches };
             torch = true;
@@ -159,7 +160,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override void PlaceInWorld(int i, int j, Item item)
         {
-            if (item?.type == mod.ItemType<UnlitArkenTorch>())
+            if (item?.type == ItemType<UnlitArkenTorch>())
             {
                 Main.tile[i, j].frameX += 66;
             }
@@ -190,11 +191,11 @@ namespace Erilipah.Items.ErilipahBiome
         {
             if (IsLit(Main.tile[i, j]))
             {
-                drop = mod.ItemType<ArkenTorch>();
+                drop = ItemType<ArkenTorch>();
             }
             else
             {
-                drop = mod.ItemType<UnlitArkenTorch>();
+                drop = ItemType<UnlitArkenTorch>();
             }
             return true;
         }

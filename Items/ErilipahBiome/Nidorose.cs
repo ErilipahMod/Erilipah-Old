@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -28,7 +29,7 @@ namespace Erilipah.Items.ErilipahBiome
             item.value = 1500;
             item.rare = ItemRarityID.Pink;
 
-            item.shoot = mod.ProjectileType<NidoroseProj>();
+            item.shoot = ProjectileType<NidoroseProj>();
             item.shootSpeed = 0.01f;
         }
 
@@ -65,12 +66,12 @@ namespace Erilipah.Items.ErilipahBiome
                     Vector2 dustPos = Main.MouseWorld + Vector2.UnitX.RotatedBy(i / 50f * MathHelper.TwoPi) * 100;
                     float bright = Lighting.Brightness((int)(dustPos.X / 16), (int)(dustPos.Y / 16));
 
-                    Dust dust = Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(1, 1), mod.DustType<NPCs.ErilipahBiome.VoidParticle>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(1, 1), DustType<NPCs.ErilipahBiome.VoidParticle>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = bright * 0.8f;
 
-                    dust = Dust.NewDustPerfect(dustPos, mod.DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
+                    dust = Dust.NewDustPerfect(dustPos, DustType<Crystalline.CrystallineDust>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = (1 - bright) * 0.8f;

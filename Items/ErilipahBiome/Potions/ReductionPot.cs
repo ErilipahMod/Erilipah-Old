@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome.Potions
 {
@@ -30,7 +31,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             item.rare = ItemRarityID.Blue;
 
             item.buffTime = 3600 * 5;
-            item.buffType = mod.BuffType<ReductionPotBuff>();
+            item.buffType = BuffType<ReductionPotBuff>();
         }
 
         public override bool CanUseItem(Player player)
@@ -46,8 +47,8 @@ namespace Erilipah.Items.ErilipahBiome.Potions
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 4);
-            recipe.AddIngredient(mod.ItemType<Biomes.ErilipahBiome.Hazards.MushroomItem>(), 1);
+            recipe.AddIngredient(ItemType<PutridFlesh>(), 4);
+            recipe.AddIngredient(ItemType<Biomes.ErilipahBiome.Hazards.MushroomItem>(), 1);
             recipe.AddIngredient(ItemID.BottledWater);
             recipe.AddTile(TileID.Bottles);
 
@@ -67,7 +68,7 @@ namespace Erilipah.Items.ErilipahBiome.Potions
             public override void Update(Player player, ref int buffIndex)
             {
                 player.I().reductionDmg *= 0.50f;
-                if (player.HasBuff(mod.BuffType<SlowingPot.SlowingPotBuff>()) || player.HasBuff(mod.BuffType<PurityPot.PurityPotBuff>()))
+                if (player.HasBuff(BuffType<SlowingPot.SlowingPotBuff>()) || player.HasBuff(BuffType<PurityPot.PurityPotBuff>()))
                 {
                     player.DelBuff(buffIndex);
                     buffIndex--;

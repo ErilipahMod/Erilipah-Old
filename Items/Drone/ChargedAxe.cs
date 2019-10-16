@@ -19,7 +19,7 @@ namespace Erilipah.Items.Drone
         protected override float ShootSpeed => 9;
         protected override int Rarity => 2;
 
-        protected override int[,] CraftingIngredients => new int[,] { { mod.ItemType<PowerCoupling>(), 1 } };
+        protected override int[,] CraftingIngredients => new int[,] { { ItemType<PowerCoupling>(), 1 } };
         protected override int CraftingTile => Terraria.ID.TileID.Anvils;
         protected override int CraftingResultAmount => 75;
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -22,7 +23,7 @@ namespace Erilipah
         {
             if (Main.rand.Chance(LightSnuffRate) && player.InErilipah() && IsLight(item))
             {
-                if (item.type == mod.ItemType<CrystallineTorch>() && Main.rand.NextBool())
+                if (item.type == ItemType<CrystallineTorch>() && Main.rand.NextBool())
                     return;
 
                 Main.PlaySound(SoundID.LiquidsWaterLava, player.Center);
@@ -46,7 +47,7 @@ namespace Erilipah
 
         private bool IsLight(Item item)
         {
-            if (item.type == mod.ItemType<ArkenTorch>() || item.type == mod.ItemType<UnlitArkenTorch>())
+            if (item.type == ItemType<ArkenTorch>() || item.type == ItemType<UnlitArkenTorch>())
                 return false;
 
             bool dry = false;
@@ -75,7 +76,7 @@ namespace Erilipah
             Player player = Main.LocalPlayer;
             if (player.InErilipah() && light)
             {
-                if (item.type == mod.ItemType<CrystallineTorch>() && Main.rand.NextBool())
+                if (item.type == ItemType<CrystallineTorch>() && Main.rand.NextBool())
                     return;
 
                 Main.PlaySound(SoundID.LiquidsWaterLava, item.Center);

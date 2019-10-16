@@ -7,13 +7,14 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
     public class Stalk : HazardTile
     {
         public override string MapName => "Crystalline Stalk";
-        public override int DustType => mod.DustType<CrystallineDust>();
+        public override int DustType => DustType<CrystallineDust>();
         public override TileObjectData Style
         {
             get
@@ -22,9 +23,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.Height = 1;
                 TileObjectData.newTile.CoordinateHeights = new[] { 16 };
                 TileObjectData.newTile.LinkedAlternates = true;
-                TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Stalk>() };
+                TileObjectData.newTile.AnchorAlternateTiles = new int[] { TileType<Stalk>() };
                 TileObjectData.newTile.AnchorValidTiles = new int[]
-                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<Stalk>() };
+                { TileType<InfectedClump>(), TileType<SpoiledClump>(), TileType<Stalk>() };
                 TileObjectData.newTile.AnchorBottom = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
                 TileObjectData.newTile.AnchorTop = AnchorData.Empty;
@@ -38,7 +39,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             base.SetDefaults();
             soundType = 2;
             soundStyle = 27;
-            drop = mod.ItemType<CrystallineTileItem>();
+            drop = ItemType<CrystallineTileItem>();
 
             minPick = 65;
             mineResist = 2.5f;
@@ -96,7 +97,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             for (int v = -1; v <= 1; v++)
             {
                 bool left = Main.tile[i + 5, j + v].active();
-                ErilipahWorld.PlaceHazard(i + (left ? -5 : 5), j + v, 0, mod);
+                ErilipahWorld.PlaceHazard(i + (left ? -5 : 5), j + v, 0);
             }
         }
 
@@ -215,7 +216,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 for (int f = -7; f < 0; f++)
                 {
                     Tile t = Main.tile[i + e, j + f];
-                    bool isActive = t.active() && t.type != (ushort)Erilipah.Instance.TileType<Mushroom>();
+                    bool isActive = t.active() && t.type != (ushort)TileType<Mushroom>();
                     if (isActive || t.wall > 0)
                         return false;
                 }

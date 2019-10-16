@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using Microsoft.Xna.Framework;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -20,7 +21,7 @@ namespace Erilipah
             // Spread Wither to nearby NPCs
             if (witherStack > 0)
             {
-                int dustT = mod.DustType<NPCs.ErilipahBiome.VoidParticle>();
+                int dustT = DustType<NPCs.ErilipahBiome.VoidParticle>();
                 for (int i = 0; i < 30; i++)
                 {
                     float rot = i / 30f * MathHelper.TwoPi;
@@ -33,7 +34,7 @@ namespace Erilipah
 
                 NPC other = Main.npc[closestNPC];
 
-                int wither = mod.BuffType<Items.ErilipahBiome.Wither>();
+                int wither = BuffType<Items.ErilipahBiome.Wither>();
                 int bIndex = npc.FindBuffIndex(wither);
                 int myTime = npc.buffTime[bIndex];
 
@@ -60,8 +61,8 @@ namespace Erilipah
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
-            bool wither = npc.HasBuff(mod.BuffType<Items.ErilipahBiome.Wither>());
-            bool crystal = npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>());
+            bool wither = npc.HasBuff(BuffType<Items.ErilipahBiome.Wither>());
+            bool crystal = npc.HasBuff(BuffType<Items.Taranys.CrystalInfection>());
 
             if (crystal)
             {
@@ -83,9 +84,9 @@ namespace Erilipah
 
         public override void DrawEffects(NPC npc, ref Color drawColor)
         {
-            if (npc.HasBuff(mod.BuffType<Items.Taranys.CrystalInfection>()))
+            if (npc.HasBuff(BuffType<Items.Taranys.CrystalInfection>()))
             {
-                int type = mod.BuffType<Items.Taranys.CrystalInfection>();
+                int type = BuffType<Items.Taranys.CrystalInfection>();
                 int time = npc.buffTime[npc.FindBuffIndex(type)];
                 float intensity = Math.Min(time / 300f, 0.35f);
 

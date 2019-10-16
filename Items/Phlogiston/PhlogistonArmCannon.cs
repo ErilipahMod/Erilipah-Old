@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -11,7 +12,7 @@ namespace Erilipah.Items.Phlogiston
         protected override float Knockback => 2;
 
         protected override float ShootSpeed => 15;
-        protected override int ShootType => mod.ProjectileType<PhlogistonArmCannonProjProj>();
+        protected override int ShootType => ProjectileType<PhlogistonArmCannonProjProj>();
         protected override float ShootDistanceOffset => 14;
         protected override bool FiresProjectile => true;
 
@@ -42,8 +43,8 @@ namespace Erilipah.Items.Phlogiston
                 speedX = speed.X;
                 speedY = speed.Y;
             }
-            if (player.ownedProjectileCounts[mod.ProjectileType<PhlogistonArmCannonProj>()] < 1)
-                Projectile.NewProjectile(position, Vector2.Zero, mod.ProjectileType<PhlogistonArmCannonProj>(), 0, 0, player.whoAmI);
+            if (player.ownedProjectileCounts[ProjectileType<PhlogistonArmCannonProj>()] < 1)
+                Projectile.NewProjectile(position, Vector2.Zero, ProjectileType<PhlogistonArmCannonProj>(), 0, 0, player.whoAmI);
             position += Vector2.UnitY * 2;
             return true;
         }

@@ -4,6 +4,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome
 {
@@ -92,7 +93,7 @@ namespace Erilipah.Biomes.ErilipahBiome
             if (lightPulse > 1)
                 lightPulse = -1;
 
-            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(3, 3), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: npc.scale).noGravity = true;
+            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(3, 3), DustType<LightWispDust>(), Vector2.Zero, Scale: npc.scale).noGravity = true;
             Lighting.AddLight(npc.Center, new Vector3(0.89f, 0.58f, 0.76f) * Math.Abs(lightPulse * 1.3f) * npc.scale);
 
             if (Main.rand.NextBool(500))
@@ -182,8 +183,8 @@ namespace Erilipah.Biomes.ErilipahBiome
             if (lightPulse > 1)
                 lightPulse = -1;
 
-            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<LightWispDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
-            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(5, 5), mod.DustType<Items.Crystalline.CrystallineDust>(), Vector2.Zero, Scale: 0.8f).noGravity = true;
+            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(5, 5), DustType<LightWispDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
+            Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(5, 5), DustType<Items.Crystalline.CrystallineDust>(), Vector2.Zero, Scale: 0.8f).noGravity = true;
             Lighting.AddLight(npc.Center, new Vector3(0.89f, 0.58f, 0.76f) * Math.Abs(lightPulse) * (npc.scale) / 2f);
 
             if (Main.rand.NextBool(100))

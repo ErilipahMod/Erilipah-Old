@@ -1,11 +1,4 @@
-﻿//using Erilipah.NPCs.Dracocide;
-//using Microsoft.Xna.Framework;
-//using System;
-//using Terraria;
-//using Terraria.Audio;
-//using Terraria.ID;
-//using Terraria.ModLoader;
-
+﻿
 //namespace Erilipah.NPCs.Drone
 //{
 //#pragma warning disable CS0618 // Type or member is obsolete
@@ -35,7 +28,7 @@
 //        {
 //            get
 //            {
-//                int h = npc.FindClosestNPC(1000, mod.NPCType<Observer>(), mod.NPCType<ArcCaster>());
+//                int h = npc.FindClosestNPC(1000, NPCType<Observer>(), NPCType<ArcCaster>());
 //                if (h > -1)
 //                {
 //                    npc.target = h;

@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston.Armor
 {
@@ -20,7 +21,7 @@ namespace Erilipah.Items.Phlogiston.Armor
 
         protected override int CraftingTile => TileID.Anvils;
         protected override int[,] CraftingIngredients => new int[,] {
-            { mod.ItemType<StablePhlogiston>(), 11 },
+            { ItemType<StablePhlogiston>(), 11 },
             { ItemID.HellstoneBar, 7 }
         };
     }

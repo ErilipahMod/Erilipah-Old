@@ -3,6 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories.Arcanums
 {
@@ -21,13 +22,13 @@ namespace Erilipah.Items.Accessories.Arcanums
         public override bool CanEquipAccessory(Player player, int slot)
         {
             int[] arcanums = new int[] {
-                mod.ItemType<Monumentis>(),
-                mod.ItemType<Noctis>(),
-                mod.ItemType<Sanguis>(),
-                mod.ItemType<Subterrania>(),
-                mod.ItemType<Tenebris>(),
-                mod.ItemType<Terra>(),
-                mod.ItemType<Veritas>(), };
+                ItemType<Monumentis>(),
+                ItemType<Noctis>(),
+                ItemType<Sanguis>(),
+                ItemType<Subterrania>(),
+                ItemType<Tenebris>(),
+                ItemType<Terra>(),
+                ItemType<Veritas>(), };
 
             bool ifCan = player.armor.Take(10).Any(x => !arcanums.Contains(x.type));
             return ifCan;

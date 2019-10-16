@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
@@ -49,7 +50,7 @@ namespace Erilipah.Items.Taranys
             for (int i = 0; i < 1000; i++)
             {
                 Projectile p = Main.projectile[i];
-                if (p.active && p.owner == player.whoAmI && p.type == mod.ProjectileType<VoidSpikeProj>())
+                if (p.active && p.owner == player.whoAmI && p.type == ProjectileType<VoidSpikeProj>())
                     return true;
             }
             return false;
@@ -61,7 +62,7 @@ namespace Erilipah.Items.Taranys
             {
                 Main.PlaySound(2, player.Center, 29);
 
-                Projectile proj/*changed to pv error*/ = Main.projectile.FirstOrDefault(p => p.active && p.type == mod.ProjectileType<VoidSpikeProj>() && p.owner == player.whoAmI);
+                Projectile proj/*changed to pv error*/ = Main.projectile.FirstOrDefault(p => p.active && p.type == ProjectileType<VoidSpikeProj>() && p.owner == player.whoAmI);
                 if (proj != null)
                 {
                     proj.ai[0] = -2;
@@ -79,7 +80,7 @@ namespace Erilipah.Items.Taranys
         {
             if (Main.rand.NextBool(4))
             {
-                Dust.NewDustDirect(hitbox.Location.ToVector2(), hitbox.Width, hitbox.Height, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.25f).noGravity = true;
+                Dust.NewDustDirect(hitbox.Location.ToVector2(), hitbox.Width, hitbox.Height, DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.25f).noGravity = true;
             }
         }
 
@@ -94,7 +95,7 @@ namespace Erilipah.Items.Taranys
                     Projectile p = Main.projectile[Projectile.NewProjectile(
                         player.itemLocation,
                         new Vector2(player.direction * 6, Main.rand.NextFloat(-3.5f, 3.5f)),
-                        mod.ProjectileType<VoidSpikeProj>(),
+                        ProjectileType<VoidSpikeProj>(),
                         player.GetWeaponDamage(item), item.knockBack, player.whoAmI, target.whoAmI, 21)];
                     p.magic = item.magic;
                     p.melee = item.melee;
@@ -146,8 +147,8 @@ namespace Erilipah.Items.Taranys
 
             Vector2 tip = projectile.position + new Vector2(36, 0).RotatedBy(projectile.rotation, projectile.Size / 2);
             Vector2 lerp = (projectile.position - projectile.oldPosition) / 2 + projectile.oldPosition + new Vector2(36, 0).RotatedBy(projectile.rotation, projectile.Size / 2);
-            Dust.NewDustPerfect(tip, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.4f).noGravity = true;
-            Dust.NewDustPerfect(lerp, mod.DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.4f).noGravity = true;
+            Dust.NewDustPerfect(tip, DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.4f).noGravity = true;
+            Dust.NewDustPerfect(lerp, DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Vector2.Zero, Scale: 1.4f).noGravity = true;
 
             if (Target == -1)
             {

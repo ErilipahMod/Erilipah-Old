@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston.Armor
 {
@@ -50,7 +51,7 @@ namespace Erilipah.Items.Phlogiston.Armor
             if (player.velocity == Microsoft.Xna.Framework.Vector2.Zero)
                 for (int i = 0; i < 8; i++)
                 {
-                    Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2CircularEdge(damageRadius, damageRadius), mod.DustType<NPCs.Drone.DeepFlames>());
+                    Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2CircularEdge(damageRadius, damageRadius), DustType<NPCs.Drone.DeepFlames>());
                     dust.noGravity = true;
                     dust.scale = 0.7f;
                     dust.fadeIn = 0.2f;
@@ -60,11 +61,11 @@ namespace Erilipah.Items.Phlogiston.Armor
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs) =>
-            body.type == mod.ItemType<PhlogistonBracing>() && legs.type == mod.ItemType<PhlogistonGreaves>();
+            body.type == ItemType<PhlogistonBracing>() && legs.type == ItemType<PhlogistonGreaves>();
 
         protected override int CraftingTile => TileID.Anvils;
         protected override int[,] CraftingIngredients => new int[,] {
-            { mod.ItemType<StablePhlogiston>(), 9 },
+            { ItemType<StablePhlogiston>(), 9 },
             { Terraria.ID.ItemID.HellstoneBar, 4 }
         };
     }

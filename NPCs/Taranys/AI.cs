@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Taranys
 {
@@ -70,7 +71,7 @@ namespace Erilipah.NPCs.Taranys
                 {
                     int mother = npc.whoAmI;
                     float rotation = MathHelper.Lerp(0, MathHelper.TwoPi, (float)i / number);
-                    NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType<OrbitMinion>(), 0, mother, rotation, 0, i * -255);
+                    NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<OrbitMinion>(), 0, mother, rotation, 0, i * -255);
                 }
         }
 
@@ -104,7 +105,7 @@ namespace Erilipah.NPCs.Taranys
                 float rotation = MathHelper.Lerp(0, MathHelper.TwoPi, i / (distance * 0.2f));
                 Vector2 position = npc.Center + Vector2.UnitX.RotatedBy(rotation) * (distance - speed);
 
-                Dust dust = Dust.NewDustPerfect(position, mod.DustType<CrystallineDust>(), Vector2.Zero);
+                Dust dust = Dust.NewDustPerfect(position, DustType<CrystallineDust>(), Vector2.Zero);
                 dust.noGravity = true;
                 dust.velocity = Vector2.Zero;
                 dust.scale = 1.3f;
@@ -129,7 +130,7 @@ namespace Erilipah.NPCs.Taranys
                     if (repel)
                         proj.velocity = npc.Center.To(proj.Center, proj.velocity.Length());
 
-                    if (proj.type != mod.ProjectileType<SharpCrystal>())
+                    if (proj.type != ProjectileType<SharpCrystal>())
                         proj.aiStyle = 1;
                     else
                     {
@@ -308,7 +309,7 @@ namespace Erilipah.NPCs.Taranys
                     float rotation = MathHelper.Lerp(0, MathHelper.TwoPi, i / (distance * 0.25f));
                     Vector2 position = npc.Center + Vector2.UnitX.RotatedBy(rotation) * distance;
 
-                    Dust dust = Dust.NewDustPerfect(position, mod.DustType<CrystallineDust>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(position, DustType<CrystallineDust>(), Vector2.Zero);
                     dust.noGravity = true;
                     dust.velocity = Vector2.Zero;
                     dust.scale = 1.6f;
@@ -362,7 +363,7 @@ namespace Erilipah.NPCs.Taranys
                 case 0:
                     Rotate();
                     // If there are no more minions, DIO and switch phases
-                    if (!NPC.AnyNPCs(mod.NPCType<OrbitMinion>()))
+                    if (!NPC.AnyNPCs(NPCType<OrbitMinion>()))
                     {
                         npc.dontTakeDamage = false;
                         npc.velocity *= 0.8f;
@@ -393,7 +394,7 @@ namespace Erilipah.NPCs.Taranys
 
                         if (Main.expertMode && Main.netMode != 1 && Timer % 90 == 0)
                         {
-                            Main.projectile[Projectile.NewProjectile(Eye, Eye.To(Main.player[npc.target].Center, 7f), mod.ProjectileType<Spew>(), npc.damage / 2, 1)]
+                            Main.projectile[Projectile.NewProjectile(Eye, Eye.To(Main.player[npc.target].Center, 7f), ProjectileType<Spew>(), npc.damage / 2, 1)]
                                 .ai[0] = 1;
                         }
                     }
@@ -458,7 +459,7 @@ namespace Erilipah.NPCs.Taranys
                             {
                                 Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2CircularEdge(
                                     (320 * SpeedMult) - Timer * 2, (320 * SpeedMult) - Timer * 2),
-                                    mod.DustType<VoidParticle>(), Vector2.Zero);
+                                    DustType<VoidParticle>(), Vector2.Zero);
                             }
 
                             Rotate(true);
@@ -536,7 +537,7 @@ namespace Erilipah.NPCs.Taranys
                                 {
                                     Vector2 velocity = npc.Center.To(Target.Center, Main.rand.NextFloat(3, 10f))
                                         .RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f));
-                                    Main.projectile[Projectile.NewProjectile(Eye, velocity, mod.ProjectileType<SharpCrystal>(), npc.damage / 3, 1f)]
+                                    Main.projectile[Projectile.NewProjectile(Eye, velocity, ProjectileType<SharpCrystal>(), npc.damage / 3, 1f)]
                                         .ai[0] = 120 - TempTimer;
                                     // Spawn projs with major spread; the deadly homing crystals
                                 }
@@ -601,14 +602,14 @@ namespace Erilipah.NPCs.Taranys
                             float y = Math.Max(GetFloorY(vector), Target.Center.Y);
                             Vector2 dustPos = new Vector2(vector.X, y - height);
 
-                            Dust.NewDustPerfect(dustPos, mod.DustType<CrystallineDust>(), Vector2.Zero).noGravity = true;
-                            Dust.NewDustPerfect(dustPos, mod.DustType<VoidParticle>(), Vector2.Zero).customData = 0f;
+                            Dust.NewDustPerfect(dustPos, DustType<CrystallineDust>(), Vector2.Zero).noGravity = true;
+                            Dust.NewDustPerfect(dustPos, DustType<VoidParticle>(), Vector2.Zero).customData = 0f;
 
-                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width / 2, 0), mod.DustType<CrystallineDust>(), Vector2.Zero).noGravity = true;
-                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width / 2, 0), mod.DustType<VoidParticle>(), Vector2.Zero).customData = 0f;
+                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width / 2, 0), DustType<CrystallineDust>(), Vector2.Zero).noGravity = true;
+                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width / 2, 0), DustType<VoidParticle>(), Vector2.Zero).customData = 0f;
 
-                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width, 0), mod.DustType<CrystallineDust>(), Vector2.Zero).noGravity = true;
-                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width, 0), mod.DustType<VoidParticle>(), Vector2.Zero).customData = 0f;
+                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width, 0), DustType<CrystallineDust>(), Vector2.Zero).noGravity = true;
+                            Dust.NewDustPerfect(dustPos + new Vector2(npc.width, 0), DustType<VoidParticle>(), Vector2.Zero).customData = 0f;
                         }
                         else if (TempTimer == 115) // Zoop right there to ensure we're not too far away
                         {
@@ -641,13 +642,13 @@ namespace Erilipah.NPCs.Taranys
                                 float y = GetFloorY(npc.Center);
 
                                 Vector2 position = new Vector2(npc.Center.X + distance * i, y);
-                                Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f).customData = 0f;
-                                Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
+                                Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f).customData = 0f;
+                                Dust.NewDustPerfect(new Vector2(position.X, GetFloorY(position)), DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.2f).noGravity = true;
 
                                 if (Main.netMode != 1 && Main.rand.Chance(0.275f))
                                 {
                                     float speed = Main.rand.NextFloat(10, 17);
-                                    Projectile p = Main.projectile[Projectile.NewProjectile(position, Vector2.UnitY * -speed, mod.ProjectileType<SharpCrystal>(), npc.damage / 2, 1)];
+                                    Projectile p = Main.projectile[Projectile.NewProjectile(position, Vector2.UnitY * -speed, ProjectileType<SharpCrystal>(), npc.damage / 2, 1)];
                                     p.ai[1] = 1;
                                 }
                             }
@@ -674,7 +675,7 @@ namespace Erilipah.NPCs.Taranys
                     // Summon some bicthes
                     if (Attack == 4)
                     {
-                        if (NPC.CountNPCS(mod.NPCType<Seeker>()) > (Main.expertMode ? 4 : 2))
+                        if (NPC.CountNPCS(NPCType<Seeker>()) > (Main.expertMode ? 4 : 2))
                             SwitchAttacks();
 
                         TempTimer++;
@@ -693,7 +694,7 @@ namespace Erilipah.NPCs.Taranys
                             Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 13, 1f, -0.5f);
                             if (Main.netMode != 1)
                             {
-                                NPC h = Main.npc[NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType<Seeker>(), 0, 0, 1)];
+                                NPC h = Main.npc[NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<Seeker>(), 0, 0, 1)];
                                 h.velocity = Main.rand.NextVector2CircularEdge(5, 5);
                             }
                         }
@@ -786,12 +787,12 @@ namespace Erilipah.NPCs.Taranys
                             float radius = MathHelper.SmoothStep(800f, 0f, TempTimer % 100f / 100f);
                             Dust.NewDustPerfect(npc.position + new Vector2(50, 78)
                                 + new Vector2(0, 1).RotatedBy(i / 30f * TempTimer / 40f) * radius,
-                                mod.DustType<CrystallineDust>(), Vector2.Zero)
+                                DustType<CrystallineDust>(), Vector2.Zero)
                                 .noGravity = true;
                         }
 
                         if (Main.expertMode && TempTimer % 150 == 0 && Main.netMode != 1)
-                            Main.projectile[Projectile.NewProjectile(Eye, Eye.To(Main.player[npc.target].Center, 7f), mod.ProjectileType<Spew>(), npc.damage / 2, 1)]
+                            Main.projectile[Projectile.NewProjectile(Eye, Eye.To(Main.player[npc.target].Center, 7f), ProjectileType<Spew>(), npc.damage / 2, 1)]
                                 .ai[0] = 1;
 
                     }
@@ -807,7 +808,7 @@ namespace Erilipah.NPCs.Taranys
                     Hover();
                     npc.velocity *= 0.90f;
 
-                    if (NPC.CountNPCS(mod.NPCType<OrbitMinion>()) < 16 && Timer % 600 * SpeedMult == 0)
+                    if (NPC.CountNPCS(NPCType<OrbitMinion>()) < 16 && Timer % 600 * SpeedMult == 0)
                     {
                         SpawnMinions(Main.expertMode ? 4 : 2);
                         Roar();
@@ -890,7 +891,7 @@ namespace Erilipah.NPCs.Taranys
                 {
                     float rot = i / 35f * MathHelper.TwoPi;
                     float intensity = i % 2 == 0 ? 10 : 6;
-                    Dust.NewDustPerfect(npc.Center, mod.DustType<CrystallineDust>(), rot.ToRotationVector2() * intensity).customData = -60f;
+                    Dust.NewDustPerfect(npc.Center, DustType<CrystallineDust>(), rot.ToRotationVector2() * intensity).customData = -60f;
                 }
                 return true;
             }
@@ -912,7 +913,7 @@ namespace Erilipah.NPCs.Taranys
         {
             for (int i = 0; i < 3; i++)
             {
-                Dust.NewDust(Eye, 8, 10, mod.DustType<CrystallineDust>(), hitDirection * 4, -3);
+                Dust.NewDust(Eye, 8, 10, DustType<CrystallineDust>(), hitDirection * 4, -3);
             }
         }
 
@@ -976,7 +977,7 @@ namespace Erilipah.NPCs.Taranys
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => IsActive;
         public override void AI()
         {
-            if (!NPC.AnyNPCs(mod.NPCType<Taranys>()))
+            if (!NPC.AnyNPCs(NPCType<Taranys>()))
             {
                 npc.life = 0;
                 npc.HitEffect(0, 10);
@@ -1017,19 +1018,19 @@ namespace Erilipah.NPCs.Taranys
             npc.velocity = Vector2.Zero;
 
             Dust.NewDustPerfect(Vector2.Lerp(npc.Center, mother.Center, Math.Abs(Timer) / (float)time),
-                mod.DustType<VoidParticle>(), Vector2.Zero).customData = 0;
+                DustType<VoidParticle>(), Vector2.Zero).customData = 0;
 
             npc.dontTakeDamage = !Main.player[mother.target].InErilipah();
         }
 
         public override bool CheckActive()
         {
-            return !NPC.AnyNPCs(mod.NPCType<Taranys>());
+            return !NPC.AnyNPCs(NPCType<Taranys>());
         }
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<VoidFlower>());
+            Loot.DropItem(npc, ItemType<VoidFlower>());
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -1081,13 +1082,13 @@ namespace Erilipah.NPCs.Taranys
             {
                 Vector2 offset = DustPos(projectile.velocity.SafeNormalize(Vector2.Zero), projectile.velocity.Length(), projectile.ai[1], 3, 6.5f);
 
-                Dust dust = Dust.NewDustPerfect(projectile.Center + offset, mod.DustType<CrystallineDust>());
+                Dust dust = Dust.NewDustPerfect(projectile.Center + offset, DustType<CrystallineDust>());
                 dust.velocity = Vector2.Zero;
                 dust.noGravity = true;
                 dust.scale = 1.25f;
             }
 
-            Dust centerDust = Dust.NewDustPerfect(projectile.Center, mod.DustType<CrystallineDust>());
+            Dust centerDust = Dust.NewDustPerfect(projectile.Center, DustType<CrystallineDust>());
             centerDust.velocity = Vector2.Zero;
             centerDust.noGravity = true;
             centerDust.scale = 1.4f;

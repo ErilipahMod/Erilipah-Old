@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.LunarBee
 {
@@ -115,7 +116,7 @@ namespace Erilipah.NPCs.LunarBee
             npc.spriteDirection = npc.direction = npc.Center.X < Target.Center.X ? 1 : -1;
             npc.rotation = npc.velocity.X / 20f;
 
-            int dustType = mod.DustType<MoonFire>();
+            int dustType = DustType<MoonFire>();
 
             if (ShouldFlee())
             {
@@ -173,7 +174,7 @@ namespace Erilipah.NPCs.LunarBee
                     Main.PlaySound(SoundID.Item17, position);
 
                     if (Main.netMode != 1) // Multiplayer!
-                        Projectile.NewProjectile(position, new Vector2(0, 11), mod.ProjectileType<CrystalChunk>(), dmgOverhead, 1);
+                        Projectile.NewProjectile(position, new Vector2(0, 11), ProjectileType<CrystalChunk>(), dmgOverhead, 1);
                 }
 
                 // Change phases after 5 firings
@@ -211,7 +212,7 @@ namespace Erilipah.NPCs.LunarBee
                         Main.PlaySound(SoundID.Item17, StingerPos);
 
                         if (Main.netMode != 1)
-                            Projectile.NewProjectile(StingerPos + spreaded * 30, spreaded * 8.5f, mod.ProjectileType<CrystalShard>(), dmgSmallChunks, 1);
+                            Projectile.NewProjectile(StingerPos + spreaded * 30, spreaded * 8.5f, ProjectileType<CrystalShard>(), dmgSmallChunks, 1);
                     }
                 }
 
@@ -226,7 +227,7 @@ namespace Erilipah.NPCs.LunarBee
             else if (Phase == summon)
             {
                 // Max of X bees (X+1 in expert)
-                bool canSpawnWasps = NPC.CountNPCS(mod.NPCType<Lunacrita>()) < numSummon + Main.expertMode.ToInt();
+                bool canSpawnWasps = NPC.CountNPCS(NPCType<Lunacrita>()) < numSummon + Main.expertMode.ToInt();
                 if (PhaseTimer > 360) // If max bees and can't spawn crystals yet (or time has run out), switch
                 {
                     ChangePhases();
@@ -241,7 +242,7 @@ namespace Erilipah.NPCs.LunarBee
                         {
                             Vector2 position = npc.Center + Main.rand.NextVector2CircularEdge(100, 100);
                             Vector2 awayBody = npc.Center.To(position, 6);
-                            Projectile.NewProjectile(position, awayBody, mod.ProjectileType<LunaBubble>(), dmgSummon, 1);
+                            Projectile.NewProjectile(position, awayBody, ProjectileType<LunaBubble>(), dmgSummon, 1);
                         }
                     }
                     else
@@ -249,7 +250,7 @@ namespace Erilipah.NPCs.LunarBee
                         if (PhaseTimer % 90 == 0)
                         {
                             Vector2 butt = npc.position + (npc.spriteDirection == 1 ? new Vector2(npc.width - 14, 70) : new Vector2(14, 70));
-                            NPC wasp = Main.npc[NPC.NewNPC((int)butt.X, (int)butt.Y, mod.NPCType<Lunacrita>(), ai1: npc.whoAmI, Target: npc.target)];
+                            NPC wasp = Main.npc[NPC.NewNPC((int)butt.X, (int)butt.Y, NPCType<Lunacrita>(), ai1: npc.whoAmI, Target: npc.target)];
                             wasp.damage = dmgSummon;
                             wasp.velocity = npc.Center.To(butt, 5);
                             wasp.alpha = 0;
@@ -326,7 +327,7 @@ namespace Erilipah.NPCs.LunarBee
                         {
                             int hitDirection = npc.Center.X > player.Center.X ? -1 : 1;
                             player.Hurt(PlayerDeathReason.ByNPC(npc.whoAmI), dmgDash * (Main.expertMode.ToInt() + 1), hitDirection);
-                            player.AddBuff(mod.BuffType<LunarBreakdown>(), 120);
+                            player.AddBuff(BuffType<LunarBreakdown>(), 120);
                         }
                     }
 
@@ -376,7 +377,7 @@ namespace Erilipah.NPCs.LunarBee
                     npc.netUpdate = true;
                     int numCrystals = Main.rand.Next(12, 17) + Main.expertMode.ToInt() * 3;
 
-                    Helper.FireInCircle(StingerPos, numCrystals, mod.ProjectileType<CrystalShard>(), dmgDIO, 5f, ai0: 1);
+                    Helper.FireInCircle(StingerPos, numCrystals, ProjectileType<CrystalShard>(), dmgDIO, 5f, ai0: 1);
                 }
 
                 // Change phases after X knifethrows
@@ -445,10 +446,10 @@ namespace Erilipah.NPCs.LunarBee
 
             npc.value = Item.buyPrice(0, 3, 0, 0);
 
-            npc.MakeBuffImmune(mod.BuffType<LunarBreakdown>());
+            npc.MakeBuffImmune(BuffType<LunarBreakdown>());
 
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/LunarBee");
-            bossBag = mod.ItemType<LunarBeeBag>();
+            bossBag = ItemType<LunarBeeBag>();
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -505,7 +506,7 @@ namespace Erilipah.NPCs.LunarBee
             Main.npcFrameCount[npc.type] = 4;
         }
 
-        private bool HoverAroundMother => npc.life < npc.lifeMax * 0.65f && NPC.AnyNPCs(mod.NPCType<LunarBee>());
+        private bool HoverAroundMother => npc.life < npc.lifeMax * 0.65f && NPC.AnyNPCs(NPCType<LunarBee>());
         public override void AI()
         {
             #region Rotation
@@ -685,7 +686,7 @@ namespace Erilipah.NPCs.LunarBee
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
             if (Main.expertMode)
-                target.AddBuff(mod.BuffType<LunarBreakdown>(), 140);
+                target.AddBuff(BuffType<LunarBreakdown>(), 140);
         }
     }
     public class CrystalShardSmall : ModProjectile
@@ -755,7 +756,7 @@ namespace Erilipah.NPCs.LunarBee
             int time = Main.expertMode ? 15 : 30;
             if (Main.netMode != 1 && projectile.timeLeft < 200 && projectile.timeLeft % time == 0)
             {
-                Projectile.NewProjectile(projectile.Center, Main.rand.NextVector2Unit() * 8, mod.ProjectileType<CrystalShardSmall>(), projectile.damage / 2, 1);
+                Projectile.NewProjectile(projectile.Center, Main.rand.NextVector2Unit() * 8, ProjectileType<CrystalShardSmall>(), projectile.damage / 2, 1);
             }
         }
         public override void Kill(int timeLeft)
@@ -763,7 +764,7 @@ namespace Erilipah.NPCs.LunarBee
             // Dust explosion!
             for (int i = 0; i < 20; i++)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<MoonFire>(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(2, 4), 50);
+                Dust.NewDustPerfect(projectile.Center, DustType<MoonFire>(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(2, 4), 50);
             }
         }
     }

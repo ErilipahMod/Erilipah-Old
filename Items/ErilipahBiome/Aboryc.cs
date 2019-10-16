@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -92,7 +93,7 @@ namespace Erilipah.Items.ErilipahBiome
             {
                 Player player = Main.player[Follow];
 
-                int taranys = NPC.FindFirstNPC(mod.NPCType<NPCs.Taranys.Taranys>());
+                int taranys = NPC.FindFirstNPC(NPCType<NPCs.Taranys.Taranys>());
                 bool taranysIsDying = taranys != -1 && Main.npc[taranys].ai[0] < 0;
                 bool taranysDespawn = taranys != -1 && Main.npc[taranys].ai[0] < -2000;
 
@@ -210,7 +211,7 @@ namespace Erilipah.Items.ErilipahBiome
         private void Ritual(Player player, int time)
         {
             player.GetModPlayer<InfectionPlr>().darknessCounter--;
-            if (player.dead && NPC.AnyNPCs(mod.NPCType<NPCs.Taranys.Taranys>()))
+            if (player.dead && NPC.AnyNPCs(NPCType<NPCs.Taranys.Taranys>()))
             {
                 Player nextPlayer = Main.player.FirstOrDefault(p => p.active && !p.dead && p.Distance(projectile.Center) < 3000);
                 if (nextPlayer == null)
@@ -228,7 +229,7 @@ namespace Erilipah.Items.ErilipahBiome
             else if (time < 80)
             {
                 Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 103, 0.2f, 0.3f);
-                Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
+                Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
                     .customData = 0f;
             }
             else if (time == 80)
@@ -236,7 +237,7 @@ namespace Erilipah.Items.ErilipahBiome
                 ShockTimer = 3;
                 for (int i = 0; i < 50; i++)
                 {
-                    Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, mod.DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
+                    Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, DustType<CrystallineDust>(), Main.rand.NextVector2CircularEdge(5, 5))
                         .customData = 0f;
                 }
                 projectile.frame = 1;
@@ -261,9 +262,9 @@ namespace Erilipah.Items.ErilipahBiome
             else if (time == 430)
             {
                 if (Main.netMode != 1)
-                    NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType<NPCs.Taranys.Taranys>());
+                    NPC.SpawnOnPlayer(player.whoAmI, NPCType<NPCs.Taranys.Taranys>());
 
-                NPC t = Main.npc[NPC.FindFirstNPC(mod.NPCType<NPCs.Taranys.Taranys>())];
+                NPC t = Main.npc[NPC.FindFirstNPC(NPCType<NPCs.Taranys.Taranys>())];
                 t.frame = new Rectangle(96, 0, 96, 102);
                 t.Center = projectile.Center;
 
@@ -298,12 +299,12 @@ namespace Erilipah.Items.ErilipahBiome
                     {
                         const float speed = 8;
                         Vector2 dir = (i / 50f * MathHelper.TwoPi).ToRotationVector2();
-                        Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, mod.DustType<VoidParticle>(), dir * speed)
+                        Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 10, DustType<VoidParticle>(), dir * speed)
                             .noGravity = true;
                     }
 
                     Rectangle dropArea = new Rectangle((int)AboveAltar.X - 5, (int)AboveAltar.Y - 5, 10, 10);
-                    DropItemInstanced(dropArea, mod.ItemType<LostKey>());
+                    DropItemInstanced(dropArea, ItemType<LostKey>());
 
                     ShockTimer = 1;
                     Main.PlaySound(2, (int)projectile.Center.X, (int)projectile.Center.Y, 29, 1, -0.35f);
@@ -315,7 +316,7 @@ namespace Erilipah.Items.ErilipahBiome
 
                 if (Timer < -60)
                 {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 16 + Main.rand.NextVector2CircularEdge(55, 55), mod.DustType<CrystallineDust>(), Vector2.Zero);
+                    Dust dust = Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 16 + Main.rand.NextVector2CircularEdge(55, 55), DustType<CrystallineDust>(), Vector2.Zero);
                     dust.customData = 100f; // Make it start funneling inward automatically
                 }
 
@@ -325,7 +326,7 @@ namespace Erilipah.Items.ErilipahBiome
                 {
                     float numDust = dist / 65f;
                     Vector2 pos = Vector2.Lerp(Main.LocalPlayer.Center, projectile.Center - Vector2.UnitY * 16, (inc += 0.35f / numDust) % 1);
-                    Dust.NewDustPerfect(pos, mod.DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.35f)
+                    Dust.NewDustPerfect(pos, DustType<CrystallineDust>(), Vector2.Zero, Scale: 1.35f)
                         .noGravity = true;
                 }
             }
@@ -338,7 +339,7 @@ namespace Erilipah.Items.ErilipahBiome
             else if (distanceToAltar < 200)
             {
                 if (projectile.velocity.Length() > 3)
-                projectile.velocity *= 0.8f;
+                    projectile.velocity *= 0.8f;
             }
             else if (projectile.velocity.Length() < 10)
             {

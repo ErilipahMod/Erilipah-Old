@@ -10,13 +10,14 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
     internal class Vine : HazardTile
     {
         public override string MapName => "Cursed Vine";
-        public override int DustType => mod.DustType<CrystallineDust>();
+        public override int DustType => DustType<CrystallineDust>();
         public override TileObjectData Style
         {
             get
@@ -26,9 +27,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.CoordinateHeights = new[] { 16 };
                 TileObjectData.newTile.StyleHorizontal = true;
                 TileObjectData.newTile.LinkedAlternates = true;
-                TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType<Vine>() };
+                TileObjectData.newTile.AnchorAlternateTiles = new int[] { TileType<Vine>() };
                 TileObjectData.newTile.AnchorValidTiles = new int[]
-                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>(), mod.TileType<Vine>() };
+                { TileType<InfectedClump>(), TileType<SpoiledClump>(), TileType<Vine>() };
                 TileObjectData.newTile.AnchorTop = new AnchorData(
                     AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom | AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
                 TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
@@ -47,7 +48,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool CreateDust(int i, int j, ref int type)
         {
-            type = Main.rand.NextBool() ? mod.DustType<CrystallineDust>() : mod.DustType<FlowerDust>();
+            type = Main.rand.NextBool() ? DustType<CrystallineDust>() : DustType<FlowerDust>();
             return true;
         }
 
@@ -89,7 +90,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 //FOR DEBUG
                 //Main.LocalPlayer.position.X = i * 16;
                 //Main.LocalPlayer.position.Y = j * 16;
-                NPC.NewNPC(i * 16 + 8, j * 16 + 26, mod.NPCType<Bulb>(), ai0: i, ai1: j);
+                NPC.NewNPC(i * 16 + 8, j * 16 + 26, NPCType<Bulb>(), ai0: i, ai1: j);
             }
             else if (tile.frameY < 54 && !Main.tile[i, j + 1].active() && !Main.tile[i, j + 2].active())
             {
@@ -122,13 +123,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             bool left = Main.tile[i + 1, j].active();
             int growToI = left ? i - 1 : i + 1;
 
-            ErilipahWorld.PlaceHazard(growToI, j, 2, mod);
-            ErilipahWorld.PlaceHazard(growToI + (left ? -3 : 3), j, 2, mod);
+            ErilipahWorld.PlaceHazard(growToI, j, 2);
+            ErilipahWorld.PlaceHazard(growToI + (left ? -3 : 3), j, 2);
         }
 
         private NPC AnyBulb(int i, int j)
         {
-            return Main.npc.FirstOrDefault(x => x.active && x.type == mod.NPCType<Bulb>() && x.ai[0] == i && x.ai[1] == j);
+            return Main.npc.FirstOrDefault(x => x.active && x.type == NPCType<Bulb>() && x.ai[0] == i && x.ai[1] == j);
         }
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
@@ -173,13 +174,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             for (int a = 0; a < 3; a++)
             {
                 Vector2 rand = Main.rand.NextVector2CircularEdge(6, 6);
-                Projectile.NewProjectile(npc.Center, rand, mod.ProjectileType<FlowerProj>(), 24, 1);
+                Projectile.NewProjectile(npc.Center, rand, ProjectileType<FlowerProj>(), 24, 1);
             }
 
             for (int h = 0; h < 10; h++)
             {
                 float rotation = h / 10f * MathHelper.Pi;
-                Dust.NewDustPerfect(npc.Center, mod.DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;
+                Dust.NewDustPerfect(npc.Center, DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;
             }
 
             Main.PlaySound(SoundID.PlayerKilled, (int)npc.Center.X, (int)npc.Center.X, 0, 1, 0.625f);
@@ -211,7 +212,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (Main.rand.NextBool(10))
             {
-                int dustInd = Dust.NewDust(npc.position + new Vector2(0, 6), 20, 20, mod.DustType<FlowerDust>());
+                int dustInd = Dust.NewDust(npc.position + new Vector2(0, 6), 20, 20, DustType<FlowerDust>());
 
                 Dust dust = Main.dust[dustInd];
                 dust.noGravity = false;

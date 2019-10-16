@@ -4,6 +4,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
@@ -41,7 +42,7 @@ namespace Erilipah.Items.Taranys
             item.value = 1900;
             item.rare = ItemRarityID.LightRed;
 
-            item.shoot = mod.ProjectileType<ScepterProj1>();
+            item.shoot = ProjectileType<ScepterProj1>();
             item.shootSpeed = 13f;
         }
 
@@ -58,7 +59,7 @@ namespace Erilipah.Items.Taranys
             speedY = to.Y;
 
             if (Main.rand.NextBool())
-                type = mod.ProjectileType<ScepterProj2>();
+                type = ProjectileType<ScepterProj2>();
 
             for (int i = 0; i < 35; i++)
             {
@@ -68,7 +69,7 @@ namespace Erilipah.Items.Taranys
 
                 float mult = shouldIncVel ? 5f : 3f;
 
-                Dust.NewDustPerfect(position, mod.DustType<Crystalline.CrystallineDust>(), Vector2.UnitX.RotatedBy(rot) * mult, Scale: 0.75f)
+                Dust.NewDustPerfect(position, DustType<Crystalline.CrystallineDust>(), Vector2.UnitX.RotatedBy(rot) * mult, Scale: 0.75f)
                     .noGravity = true;
             }
 
@@ -100,7 +101,7 @@ namespace Erilipah.Items.Taranys
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.AddBuff(mod.BuffType<Wither>(), 150);
+            target.AddBuff(BuffType<Wither>(), 150);
             projectile.Kill();
         }
 

@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories
 {
@@ -20,10 +21,10 @@ namespace Erilipah.Items.Accessories
         {
             ModRecipe r = new ModRecipe(mod);
 
-            a(r, mod.ItemType<Electromagnet>());
-            a(r, mod.ItemType<Lightbulb>());
-            a(r, mod.ItemType<PowerCellCluster>());
-            a(r, mod.ItemType<DuctTape>());
+            a(r, ItemType<Electromagnet>());
+            a(r, ItemType<Lightbulb>());
+            a(r, ItemType<PowerCellCluster>());
+            a(r, ItemType<DuctTape>());
 
             b(r, TileID.TinkerersWorkbench);
             c(r, "Erilipah:CopperBars", 8);

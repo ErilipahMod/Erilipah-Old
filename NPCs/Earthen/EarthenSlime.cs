@@ -1,9 +1,4 @@
-﻿//using Microsoft.Xna.Framework;
-//using System;
-//using Terraria;
-//using Terraria.ID;
-//using Terraria.ModLoader;
-
+﻿
 //namespace Erilipah.NPCs.Earthen
 //{
 //    public class EarthenSlime : NewModNPC
@@ -51,7 +46,7 @@
 //            for (int i = 0; i < numProj1; i++)
 //            {
 //                Vector2 perturbedSpeed = new Vector2(Speed1).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / Math.Max(numProj1 - 1, 1)));
-//                Projectile.NewProjectileDirect(npc.Center, perturbedSpeed, mod.ProjectileType<EarthenShard>(), Damage / 2, 1);
+//                Projectile.NewProjectileDirect(npc.Center, perturbedSpeed, ProjectileType<EarthenShard>(), Damage / 2, 1);
 //            }
 //        }
 

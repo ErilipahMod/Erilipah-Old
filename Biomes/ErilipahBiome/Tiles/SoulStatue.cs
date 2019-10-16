@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
@@ -19,7 +20,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         public override bool ValidTile(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            bool valid = tile.active() && tile.type == mod.TileType<SoulStatue>() && tile.frameX == 0 && tile.frameY == 0;
+            bool valid = tile.active() && tile.type == TileType<SoulStatue>() && tile.frameX == 0 && tile.frameY == 0;
             return valid;
         }
 
@@ -62,8 +63,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     int target = Helper.FindClosestPlayer(new Vector2(Position.X * 16 + 8, Position.Y * 16 + 8), 1000);
                     if (target == -1)
                         target = 255;
-                    NPC.NewNPC(Position.X * 16 + 8, Position.Y * 16 + 32, mod.NPCType<Abomination>(), Target: target);
-                    Loot.DropItem(new Rectangle(Position.X * 16, Position.Y * 16, 32, 48), mod.ItemType<SoulRubble>(), 1, 1, 50);
+                    NPC.NewNPC(Position.X * 16 + 8, Position.Y * 16 + 32, NPCType<Abomination>(), Target: target);
+                    Loot.DropItem(new Rectangle(Position.X * 16, Position.Y * 16, 32, 48), ItemType<SoulRubble>(), 1, 1, 50);
 
                     Broken = true;
                 }
@@ -122,7 +123,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Statues, 12));
             TileObjectData.newTile.HookPlaceOverride =
                 new PlacementHook(mod.GetTileEntity<TESoulStatue>().Hook_AfterPlacement, -1, 0, true);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<TaintedBrick>() };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<TaintedBrick>() };
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.Width = 2;
             TileObjectData.newTile.Height = 3;

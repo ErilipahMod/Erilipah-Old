@@ -7,6 +7,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Templar
 {
@@ -67,7 +68,7 @@ namespace Erilipah.Items.Templar
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
             if (Erilipah.VitalityAbilityKey.JustReleased && healing > 75 && CurrentVitality > 120 &&
-                player.armor.Take(10).Any(x => x.type == mod.ItemType<SigilOfVitality>()))
+                player.armor.Take(10).Any(x => x.type == ItemType<SigilOfVitality>()))
             {
                 SubVitality(120);
                 healing = 0;
@@ -96,7 +97,7 @@ namespace Erilipah.Items.Templar
         public void AddVitality(int amount)
         {
             degradeTimeDelay = 60;
-            if (player.armor.Take(10).Any(x => x.type == mod.ItemType<SigilOfVitality>()))
+            if (player.armor.Take(10).Any(x => x.type == ItemType<SigilOfVitality>()))
                 amount += 1;
 
             if (amount > maxVitality - CurrentVitality)
@@ -128,11 +129,11 @@ namespace Erilipah.Items.Templar
         //        PlayerHelper.HasEquip(player, mod.ItemType("Monumentis")) ||
         //        PlayerHelper.HasEquip(player, mod.ItemType("Subterrania")) ||
         //        PlayerHelper.HasEquip(player, mod.ItemType("Veritas"));
-        //    bool hasMonumentis = !player.HasBuff(mod.BuffType<Buffs.Debuffs.ReviveCooldown>()) && equippedMonumentis;
-        //    if (vitality == maxVitality && PlayerHelper.HasEquip(player, mod.ItemType<SigilOfVitality>()) && 
+        //    bool hasMonumentis = !player.HasBuff(BuffType<Buffs.Debuffs.ReviveCooldown>()) && equippedMonumentis;
+        //    if (vitality == maxVitality && PlayerHelper.HasEquip(player, ItemType<SigilOfVitality>()) && 
         //        !hasMonumentis)
         //    {
-        //        if (player.HasBuff(mod.BuffType<Buffs.Debuffs.ReviveCooldown1>()))
+        //        if (player.HasBuff(BuffType<Buffs.Debuffs.ReviveCooldown1>()))
         //            return true;
 
         //        playSound = false;
@@ -149,7 +150,7 @@ namespace Erilipah.Items.Templar
         //            player.hurtCooldowns[i] = 180;
         //        }
 
-        //        player.AddBuff(mod.BuffType<Buffs.Debuffs.ReviveCooldown1>(), 3 * 60 * 60, false);
+        //        player.AddBuff(BuffType<Buffs.Debuffs.ReviveCooldown1>(), 3 * 60 * 60, false);
 
         //        Main.PlaySound(SoundID.Item29, player.Center);
         //        player.GetModPlayer<ErilipahPlayer>().SavedText();

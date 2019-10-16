@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -35,7 +36,7 @@ namespace Erilipah.Items.Dracocide
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
 
-            item.shoot = mod.ProjectileType<DracocideOrb>();
+            item.shoot = ProjectileType<DracocideOrb>();
             item.shootSpeed = 2f;
         }
 
@@ -49,7 +50,7 @@ namespace Erilipah.Items.Dracocide
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<Dracocell>(), 8);
+            recipe.AddIngredient(ItemType<Dracocell>(), 8);
             recipe.AddTile(TileID.MythrilAnvil);
 
             recipe.SetResult(this, 1);
@@ -98,9 +99,9 @@ namespace Erilipah.Items.Dracocide
             for (int i = 0; i < 4; i++)
             {
                 if (Main.netMode != 1)
-                    Projectile.NewProjectile(projectile.position, Main.rand.NextVector2Unit() * 5f, mod.ProjectileType<DracocideHomingEnergy>(),
+                    Projectile.NewProjectile(projectile.position, Main.rand.NextVector2Unit() * 5f, ProjectileType<DracocideHomingEnergy>(),
                         projectile.damage / 3, 0f, projectile.owner);
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType<DracocideDust>());
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<DracocideDust>());
             }
         }
     }
@@ -144,7 +145,7 @@ namespace Erilipah.Items.Dracocide
 
             if (projectile.ai[1]++ % 3 == 0)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<DracocideDust>(), Main.rand.NextVector2Unit() * 0.05f);
+                Dust.NewDustPerfect(projectile.Center, DustType<DracocideDust>(), Main.rand.NextVector2Unit() * 0.05f);
                 Lighting.AddLight(projectile.Center, 0.20f, 0.10f, 0f);
                 return;
             }

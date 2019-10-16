@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline.Armor
 {
@@ -15,7 +16,7 @@ namespace Erilipah.Items.Crystalline.Armor
             "\n20% chance to not consume ammo";
 
         public override bool IsArmorSet(Item head, Item body, Item legs) =>
-            body.type == mod.ItemType<CrystallinePlating>() && legs.type == mod.ItemType<CrystallineBoots>();
+            body.type == ItemType<CrystallinePlating>() && legs.type == ItemType<CrystallineBoots>();
 
         public override void UpdateArmorSet(Player player)
         {
@@ -26,10 +27,10 @@ namespace Erilipah.Items.Crystalline.Armor
 
         protected override int[,] CraftingIngredients => new int[,] {
             {
-                mod.ItemType<InfectionModule>(), 8
+                ItemType<InfectionModule>(), 8
             }
         };
-        protected override int CraftingTile => mod.TileType<ShadaineCompressorTile>();
+        protected override int CraftingTile => TileType<ShadaineCompressorTile>();
         public override void UpdateEquip(Player player)
         {
             player.maxRunSpeed += 0.05f;

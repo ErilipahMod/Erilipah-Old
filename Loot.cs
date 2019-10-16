@@ -1,10 +1,10 @@
 ﻿using Erilipah.Items.Sanguine;
 using Microsoft.Xna.Framework;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -30,11 +30,11 @@ namespace Erilipah
 
             if (player.ZoneUndergroundDesert || player.ZoneDesert)
             {
-                DropItem(npc, mod.ItemType<Items.Sacracite.SacraciteTileItem>(), 1, 2, Main.hardMode ? 0.1f : 2.5f, 2);
+                DropItem(npc, ItemType<Items.Sacracite.SacraciteTileItem>(), 1, 2, Main.hardMode ? 0.1f : 2.5f, 2);
             }
             if (Main.bloodMoon && (player.ZoneDirtLayerHeight || player.ZoneOverworldHeight))
             {
-                DropItem(npc, mod.ItemType<SanguineTileItem>(), 1, 2, Main.hardMode ? 2.5f : 0.1f, 2);
+                DropItem(npc, ItemType<SanguineTileItem>(), 1, 2, Main.hardMode ? 2.5f : 0.1f, 2);
             }
         }
 

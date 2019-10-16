@@ -6,6 +6,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Taranys
 {
@@ -47,7 +48,7 @@ namespace Erilipah.NPCs.Taranys
 
             npc.value = npc.AutoValue();
 
-            bossBag = mod.ItemType<TaranysBag>();
+            bossBag = ItemType<TaranysBag>();
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Taranys");
         }
 
@@ -70,15 +71,15 @@ namespace Erilipah.NPCs.Taranys
             }
             else
             {
-                Loot.DropItem(npc, mod.ItemType<ShellChunk>(), 6, 11);
-                Loot.DropItem(npc, mod.ItemType<MadnessFocus>(), 9, 16);
+                Loot.DropItem(npc, ItemType<ShellChunk>(), 6, 11);
+                Loot.DropItem(npc, ItemType<MadnessFocus>(), 9, 16);
 
                 System.Collections.Generic.List<int> types = new System.Collections.Generic.List<int> {
-                mod.ItemType<TyrantEye>(),
-                mod.ItemType<VoidSpike>(),
-                mod.ItemType<TorchOfSoul>(),
-                mod.ItemType<ScepterOfEternalAbyss>(),
-                mod.ItemType<LEECH>()
+                ItemType<TyrantEye>(),
+                ItemType<VoidSpike>(),
+                ItemType<TorchOfSoul>(),
+                ItemType<ScepterOfEternalAbyss>(),
+                ItemType<LEECH>()
                 };
 
                 for (int i = 0; i < 2; i++)

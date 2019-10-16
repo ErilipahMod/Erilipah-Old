@@ -12,6 +12,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -170,7 +171,7 @@ namespace Erilipah
                     // Make the block  an Erilipian block
                     Infect(i, j);
                     if (Main.tile[i, j].type == 21)
-                        Main.tile[i, j].type = (ushort)mod.TileType<ErilipahChest>();
+                        Main.tile[i, j].type = (ushort)TileType<ErilipahChest>();
                 }
 
                 bool atLava = j > Main.maxTilesY * 0.6;
@@ -205,7 +206,7 @@ namespace Erilipah
                 int y = GetHighestY(x, width * dir, T("InfectedClump"), T("SpoiledClump")) + 8;
 
                 int iterations = 0;
-                WorldGen.TileRunner(x + width / 2, y + 14, 6, 5, (ushort)mod.TileType<CrystallineTileTile>());
+                WorldGen.TileRunner(x + width / 2, y + 14, 6, 5, (ushort)TileType<CrystallineTileTile>());
 
                 for (int i = 0; i < width - 1; i++)
                 {
@@ -258,7 +259,7 @@ namespace Erilipah
                     tile.active(false);
 
                     if ((j - top) >= 20 || WorldGen.genRand.NextBool(Math.Max(1, 8 - (j - top))))
-                        WorldGen.PlaceWall(i, j, (ushort)mod.WallType<InfectedClump.InfectedClumpWall>());
+                        WorldGen.PlaceWall(i, j, (ushort)WallType<InfectedClump.InfectedClumpWall>());
                 }
 
                 // If {chance}, increase width of row
@@ -268,7 +269,7 @@ namespace Erilipah
                 if (WorldGen.genRand.NextFloat() < oreChance)
                 {
                     int x = WorldGen.genRand.NextBool() ? spotX - 14 : spotX + halfWidth * 2 + 14;
-                    WorldGen.TileRunner(x, j, 4, 4, (ushort)mod.TileType<CrystallineTileTile>(), false, 0, 0);
+                    WorldGen.TileRunner(x, j, 4, 4, (ushort)TileType<CrystallineTileTile>(), false, 0, 0);
                 }
 
                 // If {chance*0.33}, randomize X pos of row a little
@@ -364,7 +365,7 @@ namespace Erilipah
                     if (tile.type == TileID.LihzahrdBrick)
                         continue;
 
-                    WorldGen.PlaceTile(chasmX, j, (ushort)mod.TileType<TaintedRubble>(), forced: true);
+                    WorldGen.PlaceTile(chasmX, j, (ushort)TileType<TaintedRubble>(), forced: true);
                     tile.wall = 0;
                 }
 
@@ -395,7 +396,7 @@ namespace Erilipah
             // Make the houses and altar
             for (int passTheBeer = Chasm.Left + 5; passTheBeer < Chasm.Right - 25;)
             {
-                int y = GetY(passTheBeer, Chasm.Top, mod.TileType<TaintedRubble>()) + 2;
+                int y = GetY(passTheBeer, Chasm.Top, TileType<TaintedRubble>()) + 2;
                 float amount = Math.Abs(passTheBeer - Chasm.Center.X) / (Chasm.Width / 2f);
 
                 float chasmHeight = 0.1215f * Main.maxTilesY;
@@ -426,7 +427,7 @@ namespace Erilipah
             const float statueChance = 0.35f;
 
             ushort type = T("TaintedBrick");
-            ushort wall = (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>();
+            ushort wall = (ushort)WallType<TaintedBrick.TaintedBrickWall>();
 
             if (rightX - leftX < 14)
                 rightX = leftX + 14;
@@ -491,7 +492,7 @@ namespace Erilipah
                     if (WorldGen.genRand.Chance(statueChance))
                     {
                         int x = WorldGen.genRand.Next(leftX + 1, rightX - 1);
-                        WorldGen.Place2xX(x, floor - 1, (ushort)mod.TileType<SoulStatue>(), WorldGen.genRand.Next(statueStyles));
+                        WorldGen.Place2xX(x, floor - 1, (ushort)TileType<SoulStatue>(), WorldGen.genRand.Next(statueStyles));
                     }
                 }
 
@@ -503,12 +504,12 @@ namespace Erilipah
                         for (int banJ = 0; banJ < 3; banJ++)
                         {
                             Main.tile[leftX + 2 + banI, floor + 1 + banJ].active(true);
-                            Main.tile[leftX + 2 + banI, floor + 1 + banJ].type = (ushort)mod.TileType<CityBanner>();
+                            Main.tile[leftX + 2 + banI, floor + 1 + banJ].type = (ushort)TileType<CityBanner>();
                             Main.tile[leftX + 2 + banI, floor + 1 + banJ].frameX = (short)(banI * 18);
                             Main.tile[leftX + 2 + banI, floor + 1 + banJ].frameY = (short)(banJ * 18);
 
                             Main.tile[rightX - 3 + banI, floor + 1 + banJ].active(true);
-                            Main.tile[rightX - 3 + banI, floor + 1 + banJ].type = (ushort)mod.TileType<CityBanner>();
+                            Main.tile[rightX - 3 + banI, floor + 1 + banJ].type = (ushort)TileType<CityBanner>();
                             Main.tile[rightX - 3 + banI, floor + 1 + banJ].frameX = (short)(banI * 18);
                             Main.tile[rightX - 3 + banI, floor + 1 + banJ].frameY = (short)(banJ * 18);
                         }
@@ -535,8 +536,8 @@ namespace Erilipah
                 // Torches
                 if (floor != baseY)
                 {
-                    WorldGen.PlaceTile(leftX + 2, floor + 2, mod.TileType<ArkenTorchTile>());
-                    WorldGen.PlaceTile(rightX - 2, floor + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(leftX + 2, floor + 2, TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(rightX - 2, floor + 2, TileType<ArkenTorchTile>());
 
                     Main.tile[leftX + 2, floor + 2].frameX += 66;
                     Main.tile[rightX - 2, floor + 2].frameX += 66;
@@ -552,7 +553,7 @@ namespace Erilipah
                     {
                         int x = WorldGen.genRand.Next(leftX + 1, rightX - 1);
                         if (WorldGen.genRand.Chance(pustuleChance))
-                            WorldGen.Place2x2(x, floor - 1, (ushort)mod.TileType<ErilipahPot>(), 0);
+                            WorldGen.Place2x2(x, floor - 1, (ushort)TileType<ErilipahPot>(), 0);
                         else
                             WorldGen.PlacePot(x, floor - 1, 28, WorldGen.genRand.NextBool() ?
                                 (ushort)WorldGen.genRand.Next(13, 16) : (ushort)WorldGen.genRand.Next(31, 34));
@@ -563,7 +564,7 @@ namespace Erilipah
                 if (WorldGen.genRand.Chance(chestChance))
                 {
                     int x = WorldGen.genRand.Next(leftX + 4, rightX - 4);
-                    int index = WorldGen.PlaceChest(x, floor - 1, (ushort)mod.TileType<ErilipahChest>(), false, 1);
+                    int index = WorldGen.PlaceChest(x, floor - 1, (ushort)TileType<ErilipahChest>(), false, 1);
                     if (index <= 0)
                         continue;
 
@@ -579,7 +580,7 @@ namespace Erilipah
                 int floorToExtendY = baseY - floorHeight * WorldGen.genRand.Next(0, floors);
                 int extensionLength = (int)WorldGen.genRand.NextFloat(parentWidth * 0.75f, parentWidth * 1.25f);
 
-                int newBase = GetY(rightX + extensionLength, floorToExtendY, mod.TileType<TaintedRubble>());
+                int newBase = GetY(rightX + extensionLength, floorToExtendY, TileType<TaintedRubble>());
                 if (newBase > Chasm.Bottom + 35)
                     newBase = Chasm.Bottom + 35;
 
@@ -700,7 +701,7 @@ namespace Erilipah
                         if (WorldGen.genRand.Chance(statueChance))
                         {
                             int x = WorldGen.genRand.Next(relLeft + 1, relRight - 1);
-                            WorldGen.Place2xX(x, floorToExtendY - 1, (ushort)mod.TileType<SoulStatue>(), WorldGen.genRand.Next(statueStyles));
+                            WorldGen.Place2xX(x, floorToExtendY - 1, (ushort)TileType<SoulStatue>(), WorldGen.genRand.Next(statueStyles));
                         }
                     }
 
@@ -722,8 +723,8 @@ namespace Erilipah
                     }
 
                     // Torches
-                    WorldGen.PlaceTile(relLeft + 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
-                    WorldGen.PlaceTile(relRight - 2, extensionRoof + 2, mod.TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(relLeft + 2, extensionRoof + 2, TileType<ArkenTorchTile>());
+                    WorldGen.PlaceTile(relRight - 2, extensionRoof + 2, TileType<ArkenTorchTile>());
 
                     Main.tile[relLeft + 2, extensionRoof + 2].frameX += 66;
                     Main.tile[relRight - 2, extensionRoof + 2].frameX += 66;
@@ -735,7 +736,7 @@ namespace Erilipah
                         {
                             int x = WorldGen.genRand.Next(relLeft + 1, relRight - 1);
                             if (WorldGen.genRand.Chance(pustuleChance))
-                                WorldGen.Place2x2(x, floorToExtendY - 1, (ushort)mod.TileType<ErilipahPot>(), 0);
+                                WorldGen.Place2x2(x, floorToExtendY - 1, (ushort)TileType<ErilipahPot>(), 0);
                             else
                                 WorldGen.PlacePot(x, floorToExtendY - 1, 28, WorldGen.genRand.NextBool() ?
                                     (ushort)WorldGen.genRand.Next(13, 16) : (ushort)WorldGen.genRand.Next(31, 34));
@@ -1079,9 +1080,9 @@ namespace Erilipah
             int index = 0;
 
             if (Main.expertMode)
-                AddItem(1, 1, 1, mod.ItemType<DragonPeepee>(), mod.ItemType<Nidorose>(), mod.ItemType<HeadSplitter>(), mod.ItemType<SoulCleanser>());
+                AddItem(1, 1, 1, ItemType<DragonPeepee>(), ItemType<Nidorose>(), ItemType<HeadSplitter>(), ItemType<SoulCleanser>());
             else
-                AddItem(1, 1, 1, mod.ItemType<DragonPeepee>(), mod.ItemType<Nidorose>(), mod.ItemType<HeadSplitter>());
+                AddItem(1, 1, 1, ItemType<DragonPeepee>(), ItemType<Nidorose>(), ItemType<HeadSplitter>());
 
             void AddItem(float chance, int minimum, int maximum, params int[] itemTypes)
             {
@@ -1101,16 +1102,16 @@ namespace Erilipah
             barType = barType == ItemID.MythrilBar ? ItemID.CobaltBar : ItemID.PalladiumBar;
             AddItem(0.5f, 15, 29, barType);
 
-            AddItem(0.5f, 65, 100, ItemID.HellfireArrow, ItemID.SilverBullet, mod.ItemType<Items.Phlogiston.PhlogistonArrow>());
+            AddItem(0.5f, 65, 100, ItemID.HellfireArrow, ItemID.SilverBullet, ItemType<Items.Phlogiston.PhlogistonArrow>());
 
-            AddItem(1.0f, 1, 3, mod.ItemType<EffulgencePot>(), mod.ItemType<SlowingPot>(), mod.ItemType<ReductionPot>(), mod.ItemType<PurityPot>());
+            AddItem(1.0f, 1, 3, ItemType<EffulgencePot>(), ItemType<SlowingPot>(), ItemType<ReductionPot>(), ItemType<PurityPot>());
             AddItem(0.50f, 1, 3, ItemID.ShinePotion, ItemID.WaterWalkingPotion, ItemID.LifeforcePotion, ItemID.HeartreachPotion);
             AddItem(0.50f, 1, 3, ItemID.MagicPowerPotion, ItemID.RegenerationPotion, ItemID.IronskinPotion, ItemID.EndurancePotion);
 
             if (WorldGen.genRand.NextBool())
-                AddItem(0.75f, 1, 4, mod.ItemType<ArkenTorch>());
+                AddItem(0.75f, 1, 4, ItemType<ArkenTorch>());
             else
-                AddItem(0.75f, 12, 20, mod.ItemType<CrystallineTorch>());
+                AddItem(0.75f, 12, 20, ItemType<CrystallineTorch>());
 
             AddItem(1f, 2, 5, ItemID.GoldCoin);
         }
@@ -1129,7 +1130,7 @@ namespace Erilipah
 
                     if (tile.IsErilipahTile() && WorldGen.genRand.Chance(0.1f))
                     {
-                        PlaceHazard(i, j, mod);
+                        PlaceHazard(i, j);
                     }
                     if (tile.IsErilipahTile() && WorldGen.genRand.Chance(0.07f))
                     {
@@ -1138,11 +1139,11 @@ namespace Erilipah
                 }
             }
         }
-        public static void PlaceHazard(int i, int j, Mod mod)
+        public static void PlaceHazard(int i, int j)
         {
-            PlaceHazard(i, j, WorldGen.genRand.Next(7), mod);
+            PlaceHazard(i, j, WorldGen.genRand.Next(7));
         }
-        public static void PlaceHazard(int i, int j, int type, Mod mod)
+        public static void PlaceHazard(int i, int j, int type)
         {
             /* 0= stalk
              * 1= bubble
@@ -1152,8 +1153,8 @@ namespace Erilipah
              * 5= vent
              * 6= hive */
 
-            bool isLostCity = Main.tile[i, j].active() && Main.tile[i, j].type == mod.TileType<TaintedBrick>();
-            isLostCity |= Main.tile[i, j + 1].active() && Main.tile[i, j + 1].type == mod.TileType<TaintedBrick>();
+            bool isLostCity = Main.tile[i, j].active() && Main.tile[i, j].type == TileType<TaintedBrick>();
+            isLostCity |= Main.tile[i, j + 1].active() && Main.tile[i, j + 1].type == TileType<TaintedBrick>();
             if (isLostCity)
                 return;
 
@@ -1166,14 +1167,15 @@ namespace Erilipah
                         for (int n = -1; n <= 1; n++)
                         {
                             Main.tile[i + n, j - 1].active(true);
-                            Main.tile[i + n, j - 1].type = (ushort)mod.TileType<Stalk>();
+                            Main.tile[i + n, j - 1].type = (ushort)TileType<Stalk>();
                             Main.tile[i + n, j - 1].frameX = (short)(72 + n * 18);
                             Main.tile[i + n, j - 1].frameY = frameY;
                         }
-                    } break;
+                    }
+                    break;
 
                 case 1:
-                    WorldGen.Place2x1(i, j - 1, (ushort)mod.TileType<Flower>()); break;
+                    WorldGen.Place2x1(i, j - 1, (ushort)TileType<Flower>()); break;
 
                 case 2:
                     if (WorldGen.SolidOrSlopedTile(Main.tile[i, j]) && Main.tile[i, j].slope() == 0 &&
@@ -1181,31 +1183,31 @@ namespace Erilipah
                     {
                         Tile vine = Main.tile[i, j + 1];
                         vine.active(true);
-                        vine.type = (ushort)mod.TileType<Vine>();
+                        vine.type = (ushort)TileType<Vine>();
                         vine.frameX = Main.rand.Next(new short[] { 0, 18, 36 });
                         vine.frameY = 0;
                     }
                     break;
 
                 case 3:
-                    WorldGen.Place3x1(i, j - 1, (ushort)mod.TileType<GasGeyser>());
+                    WorldGen.Place3x1(i, j - 1, (ushort)TileType<GasGeyser>());
                     break;
 
                 case 4:
                     if (WorldGen.genRand.Chance(0.5f))
                         goto default;
-                    WorldGen.Place3x2(i, j - 1, (ushort)mod.TileType<GiantPF>()); break;
+                    WorldGen.Place3x2(i, j - 1, (ushort)TileType<GiantPF>()); break;
 
                 case 5:
                     for (int n = -10; n < 10; n++)
                     {
                         for (int m = -10; m < 10; m++)
                         {
-                            if (Main.tile[i + n, j + m].type == mod.TileType<Vent>())
+                            if (Main.tile[i + n, j + m].type == TileType<Vent>())
                                 return;
                         }
                     }
-                    WorldGen.Place2xX(i, j - 1, (ushort)mod.TileType<Vent>()); break;
+                    WorldGen.Place2xX(i, j - 1, (ushort)TileType<Vent>()); break;
 
                 case 6:
                     bool hayBase =
@@ -1221,7 +1223,7 @@ namespace Erilipah
                         for (int m = 0; m < 2; m++)
                         {
                             Main.tile[i + n, j + m + 1].active(true);
-                            Main.tile[i + n, j + m + 1].type = (ushort)mod.TileType<Hive>();
+                            Main.tile[i + n, j + m + 1].type = (ushort)TileType<Hive>();
                             Main.tile[i + n, j + m + 1].frameX = (short)(n * 18);
                             Main.tile[i + n, j + m + 1].frameY = (short)(m * 18);
                         }
@@ -1237,7 +1239,7 @@ namespace Erilipah
 
             if (tile.type == 21)
             {
-                tile.type = (ushort)mod.TileType<ErilipahChest>();
+                tile.type = (ushort)TileType<ErilipahChest>();
             }
 
             if (WorldGen.SolidOrSlopedTile(tile) || tile.wall == WallID.EbonstoneUnsafe || tile.wall == WallID.CrimstoneUnsafe)
@@ -1252,7 +1254,7 @@ namespace Erilipah
 
             if (tile.wall > 0)
             {
-                tile.wall = (ushort)mod.WallType<InfectedClump.InfectedClumpWall>();
+                tile.wall = (ushort)WallType<InfectedClump.InfectedClumpWall>();
 
                 WorldGen.SquareWallFrame(i, j);
             }

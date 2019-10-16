@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -19,7 +20,7 @@ namespace Erilipah.Items.Phlogiston
         {
             ModRecipe r = new ModRecipe(mod);
             r.AddIngredient(ItemID.WoodenArrow, 333);
-            r.AddIngredient(mod.ItemType<StablePhlogiston>(), 1);
+            r.AddIngredient(ItemType<StablePhlogiston>(), 1);
             r.AddTile(TileID.Anvils);
             r.SetResult(this, 333);
             r.AddRecipe();
@@ -55,7 +56,7 @@ namespace Erilipah.Items.Phlogiston
 
         public override void Kill(int timeLeft)
         {
-            Helper.FireInCircle(projectile.Center, 8, mod.ProjectileType<PhlogistonArrowProjProj>(),
+            Helper.FireInCircle(projectile.Center, 8, ProjectileType<PhlogistonArrowProjProj>(),
                 projectile.damage - 7, 7, projectile.knockBack, owner: projectile.owner);
         }
     }

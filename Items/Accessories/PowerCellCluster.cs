@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories
 {
@@ -18,8 +19,8 @@ namespace Erilipah.Items.Accessories
         {
             ModRecipe r = new ModRecipe(mod);
 
-            a(r, mod.ItemType<Sacracite.SacraciteIngot>(), 6);
-            a(r, mod.ItemType<Sacracite.SacraciteCore>(), 4);
+            a(r, ItemType<Sacracite.SacraciteIngot>(), 6);
+            a(r, ItemType<Sacracite.SacraciteCore>(), 4);
             a(r, ItemID.FallenStar, 4);
             b(r, TileID.Anvils);
             c(r, "Erilipah:SilverBars", 6);

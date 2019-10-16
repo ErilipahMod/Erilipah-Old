@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sanguine
 {
@@ -24,7 +25,7 @@ namespace Erilipah.Items.Sanguine
             item.UseSound = SoundID.Item1;
 
             item.autoReuse = true;
-            item.shoot = mod.ProjectileType<SanguineBladeBolt>();
+            item.shoot = ProjectileType<SanguineBladeBolt>();
             item.shootSpeed = 7;
         }
 
@@ -73,7 +74,7 @@ namespace Erilipah.Items.Sanguine
         {
             for (int i = 0; i < 6; i++)
             {
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType<SanguineDust>());
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<SanguineDust>());
             }
         }
         public override void SetDefaults()
@@ -89,7 +90,7 @@ namespace Erilipah.Items.Sanguine
         public override void AI()
         {
             if (++projectile.ai[0] % 2 == 0)
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType<SanguineDust>());
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<SanguineDust>());
 
             projectile.rotation = projectile.velocity.ToRotation() + MathHelper.ToRadians(180);
         }

@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sacracite
 {
@@ -39,7 +40,7 @@ namespace Erilipah.Items.Sacracite
             Main.tileLighted[Type] = true;
             Main.tileSpelunker[Type] = true;
 
-            dustType = mod.DustType<GreenGemDust>();
+            dustType = DustType<GreenGemDust>();
             drop = mod.ItemType("SacraciteTileItem");
 
             ModTranslation name = CreateMapEntryName();

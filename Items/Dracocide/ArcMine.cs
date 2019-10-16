@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -38,7 +39,7 @@ namespace Erilipah.Items.Dracocide
             item.value = item.AutoValue();
             item.rare = ItemRarityID.LightRed;
 
-            item.shoot = mod.ProjectileType<ArcMineProj>(); // FINISH
+            item.shoot = ProjectileType<ArcMineProj>(); // FINISH
             item.shootSpeed = 6f;
         }
 
@@ -46,8 +47,8 @@ namespace Erilipah.Items.Dracocide
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<ArcJoint>(), 3);
-            recipe.AddIngredient(mod.ItemType<Dracocell>(), 8);
+            recipe.AddIngredient(ItemType<ArcJoint>(), 3);
+            recipe.AddIngredient(ItemType<Dracocell>(), 8);
 
             recipe.AddTile(TileID.MythrilAnvil);
 
@@ -68,7 +69,7 @@ namespace Erilipah.Items.Dracocide
             if (player.altFunctionUse == 2)
             {
                 item.shoot = 0;
-                var mines = Main.projectile.Where(x => x.active && x.type == mod.ProjectileType<ArcMineProj>());
+                var mines = Main.projectile.Where(x => x.active && x.type == ProjectileType<ArcMineProj>());
 
                 if (player.altFunctionUse == 2)
                     foreach (var mine in mines)
@@ -76,7 +77,7 @@ namespace Erilipah.Items.Dracocide
             }
             else
             {
-                item.shoot = mod.ProjectileType<ArcMineProj>();
+                item.shoot = ProjectileType<ArcMineProj>();
             }
             return base.CanUseItem(player);
         }
@@ -196,7 +197,7 @@ namespace Erilipah.Items.Dracocide
 
                 Dust dust = Dust.NewDustPerfect(
                     Vector2.Lerp(projectile.Center + dir, friend.Center - dir, dustSpawnPos),
-                    mod.DustType<DracocideDust>());
+                    DustType<DracocideDust>());
                 dust.noLight = true;
                 dust.velocity = Vector2.Zero;
                 dust.customData = -20;

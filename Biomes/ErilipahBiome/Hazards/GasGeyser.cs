@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 //using Microsoft.Xna.Framework.Graphics;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
@@ -11,7 +12,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     public class GasGeyser : HazardTile
     {
         public override string MapName => "Gas Geyser";
-        public override int DustType => mod.DustType<FlowerDust>();
+        public override int DustType => DustType<FlowerDust>();
         public override TileObjectData Style
         {
             get
@@ -20,7 +21,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 TileObjectData.newTile.Height = 1;
                 TileObjectData.newTile.CoordinatePadding = 2;
                 TileObjectData.newTile.CoordinateHeights = new int[] { 18 };
-                TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType<Tiles.InfectedClump>() };
+                TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<Tiles.InfectedClump>() };
 
                 return TileObjectData.newTile;
             }
@@ -44,7 +45,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             for (int pIndex = 0; pIndex < Main.maxProjectiles; pIndex++)
             {
-                if (Main.projectile[pIndex].active && Main.projectile[pIndex].type == mod.ProjectileType<GasSpew>() && Main.projectile[pIndex].localAI[0] == left)
+                if (Main.projectile[pIndex].active && Main.projectile[pIndex].type == ProjectileType<GasSpew>() && Main.projectile[pIndex].localAI[0] == left)
                 {
                     return;
                 }
@@ -52,7 +53,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
             if (Main.netMode != 1)
             {
-                Projectile p = Main.projectile[Projectile.NewProjectile(left * 16f + 16 + 6, j * 16f + 6, 0, 0, mod.ProjectileType<GasSpew>(), 25, 1, Main.myPlayer)];
+                Projectile p = Main.projectile[Projectile.NewProjectile(left * 16f + 16 + 6, j * 16f + 6, 0, 0, ProjectileType<GasSpew>(), 25, 1, Main.myPlayer)];
                 p.ai[1] = Main.rand.Next(3);
                 p.localAI[0] = left;
             }
@@ -65,7 +66,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         {
             for (int c = 0; c < Main.maxProjectiles; c++)
             {
-                if (Main.projectile[c].type == mod.ProjectileType<GasSpew>())
+                if (Main.projectile[c].type == ProjectileType<GasSpew>())
                 {
                     Main.projectile[c].Kill();
                 }
@@ -102,22 +103,22 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 Projectile.NewProjectile(
                     projectile.Center.X, projectile.Center.Y,
                     Main.rand.NextFloat(-0.45f, 0.45f), Main.rand.NextFloat(-7f, -5.5f),
-                    mod.ProjectileType<GasSpewProj>(), Main.expertMode ? projectile.damage / 2 : projectile.damage, 1, 255);
+                    ProjectileType<GasSpewProj>(), Main.expertMode ? projectile.damage / 2 : projectile.damage, 1, 255);
             }
 
             if (projectile.ai[0] % 2 == 0)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<FlowerDust>(),
+                Dust.NewDustPerfect(projectile.Center, DustType<FlowerDust>(),
                     new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-8f, -7f))).noGravity = true;
 
-                Dust dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<AshDust>());
+                Dust dust = Dust.NewDustPerfect(projectile.Center, DustType<AshDust>());
                 dust.noGravity = false;
                 dust.velocity = new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-11f, -9f));
                 dust.customData = 0.05f;
             }
 
             else
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<Items.Crystalline.CrystallineDust>(),
+                Dust.NewDustPerfect(projectile.Center, DustType<Items.Crystalline.CrystallineDust>(),
                     new Vector2(Main.rand.NextFloat(-0.32f, 0.32f), Main.rand.NextFloat(-10f, -8f)), Scale: 1.5f).noGravity = false;
 
             if (projectile.ai[0] % 8 == 0)

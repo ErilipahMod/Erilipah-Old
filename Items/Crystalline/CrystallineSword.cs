@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -22,7 +23,7 @@ namespace Erilipah.Items.Crystalline
             item.autoReuse = true;
 
             item.rare = 2;
-            item.shoot = mod.ProjectileType<CrystallineSwordProj>();
+            item.shoot = ProjectileType<CrystallineSwordProj>();
             item.shootSpeed = 5.5f;
         }
 

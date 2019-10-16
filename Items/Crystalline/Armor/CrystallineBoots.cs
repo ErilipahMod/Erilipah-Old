@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline.Armor
 {
@@ -14,10 +15,10 @@ namespace Erilipah.Items.Crystalline.Armor
         protected override string Tooltip => "15% increased maximum run speed";
         protected override int[,] CraftingIngredients => new int[,] {
             {
-                mod.ItemType<InfectionModule>(), 7
+                ItemType<InfectionModule>(), 7
             }
         };
-        protected override int CraftingTile => mod.TileType<ShadaineCompressorTile>();
+        protected override int CraftingTile => TileType<ShadaineCompressorTile>();
         public override void UpdateEquip(Player player)
         {
             player.maxRunSpeed += 0.15f;

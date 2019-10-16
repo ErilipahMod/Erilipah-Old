@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -37,7 +38,7 @@ namespace Erilipah.Items.Dracocide
             item.rare = ItemRarityID.LightRed;
             item.UseSound = SoundID.NPCDeath14;
 
-            item.shoot = mod.ProjectileType<FAssaultBolt>();
+            item.shoot = ProjectileType<FAssaultBolt>();
             item.shootSpeed = 11f;
             item.useAmmo = AmmoID.Bullet;
         }
@@ -57,7 +58,7 @@ namespace Erilipah.Items.Dracocide
                     Projectile.NewProjectile(
                         player.Center + fireTo * 28,
                         fireTo * item.shootSpeed,
-                        mod.ProjectileType<FAssaultBolt>(),
+                        ProjectileType<FAssaultBolt>(),
                         item.damage,
                         item.knockBack,
                         player.whoAmI);
@@ -90,8 +91,8 @@ namespace Erilipah.Items.Dracocide
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<Dracocell>(), 6);
-            recipe.AddIngredient(mod.ItemType<DetachedDroneBlaster>(), 1);
+            recipe.AddIngredient(ItemType<Dracocell>(), 6);
+            recipe.AddIngredient(ItemType<DetachedDroneBlaster>(), 1);
 
             recipe.AddTile(TileID.MythrilAnvil);
 

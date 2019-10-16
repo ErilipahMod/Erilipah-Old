@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Niter
 {
@@ -55,7 +56,7 @@ namespace Erilipah.Items.Niter
             sickTime = 0;
             takeLife = 0;
 
-            item.buffType = mod.BuffType<NiterPotionBuff>();
+            item.buffType = BuffType<NiterPotionBuff>();
 
             SetDefaults(out item.width, out item.height, out item.rare, out item.value, out takeLife, out item.buffTime, out sickTime);
         }
@@ -128,14 +129,14 @@ namespace Erilipah.Items.Niter
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.VileMushroom, 1);
-            recipe.AddIngredient(mod.ItemType<LesserNiterPotion>(), 2);
+            recipe.AddIngredient(ItemType<LesserNiterPotion>(), 2);
             recipe.AddTile(TileID.Bottles);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
 
             recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.ViciousMushroom, 1);
-            recipe.AddIngredient(mod.ItemType<LesserNiterPotion>(), 2);
+            recipe.AddIngredient(ItemType<LesserNiterPotion>(), 2);
             recipe.AddTile(TileID.Bottles);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
@@ -186,8 +187,8 @@ namespace Erilipah.Items.Niter
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.BottledWater, 3);
-            recipe.AddIngredient(mod.ItemType<SoulRubble>());
-            recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 3);
+            recipe.AddIngredient(ItemType<SoulRubble>());
+            recipe.AddIngredient(ItemType<PutridFlesh>(), 3);
             recipe.AddTile(TileID.Bottles);
             recipe.SetResult(this, 3);
             recipe.AddRecipe();
@@ -218,7 +219,7 @@ namespace Erilipah.Items.Niter
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType<GreaterNiterPotion>(), 4);
+            recipe.AddIngredient(ItemType<GreaterNiterPotion>(), 4);
             recipe.AddIngredient(ItemID.FragmentNebula);
             recipe.AddIngredient(ItemID.FragmentSolar);
             recipe.AddIngredient(ItemID.FragmentStardust);

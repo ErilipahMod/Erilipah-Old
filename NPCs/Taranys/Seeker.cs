@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Taranys
 {
@@ -83,7 +84,7 @@ namespace Erilipah.NPCs.Taranys
             if (Main.netMode != 1 && npc.ai[0] % 160 == 0 && Collision.CanHit(npc.Center, 1, 1, Target.Center, 1, 1))
             {
                 Vector2 to = npc.Center.To(Target.Center);
-                Projectile.NewProjectile(npc.Center + to * 30, to * 6, mod.ProjectileType<Zoub>(), npc.damage / 2, 1f, 255);
+                Projectile.NewProjectile(npc.Center + to * 30, to * 6, ProjectileType<Zoub>(), npc.damage / 2, 1f, 255);
             }
 
             npc.rotation = npc.Center.To(Target.Center).ToRotation() + (npc.spriteDirection == -1 ? MathHelper.Pi : 0);
@@ -94,7 +95,7 @@ namespace Erilipah.NPCs.Taranys
             if (npc.ai[1] == 1)
                 Loot.DropItem(npc, ItemID.Heart, 1, 1, 50);
             else
-                Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
+                Loot.DropItem(npc, ItemType<PutridFlesh>(), 1, 1, 18);
         }
     }
 
@@ -119,7 +120,7 @@ namespace Erilipah.NPCs.Taranys
         {
             for (int i = 0; i < 5; i++)
             {
-                Dust dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<CrystallineDust>());
+                Dust dust = Dust.NewDustPerfect(projectile.Center, DustType<CrystallineDust>());
                 dust.velocity = Main.rand.NextVector2Unit() * projectile.velocity.Length();
                 dust.noGravity = true;
                 dust.fadeIn = 0.8f;

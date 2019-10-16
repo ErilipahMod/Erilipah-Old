@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -53,7 +54,7 @@ namespace Erilipah.Items.Dracocide
             NPC shield = Main.npc[NPC.NewNPC(
                 (int)player.Center.X,
                 (int)player.Center.Y,
-                mod.NPCType<ShieldProjectorProj>(),
+                NPCType<ShieldProjectorProj>(),
                 0,
                 player.whoAmI)];
 
@@ -67,8 +68,8 @@ namespace Erilipah.Items.Dracocide
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(mod.ItemType<MalleableShard>(), 3);
-            recipe.AddIngredient(mod.ItemType<Dracocell>(), 10);
+            recipe.AddIngredient(ItemType<MalleableShard>(), 3);
+            recipe.AddIngredient(ItemType<Dracocell>(), 10);
 
             recipe.AddTile(TileID.MythrilAnvil);
 
@@ -170,7 +171,7 @@ namespace Erilipah.Items.Dracocide
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType<DracocideDust>());
+                    Dust.NewDust(npc.position, npc.width, npc.height, DustType<DracocideDust>());
                 }
             }
         }

@@ -6,6 +6,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Phlogiston
 {
@@ -52,7 +53,7 @@ namespace Erilipah.NPCs.Phlogiston
         public override void NPCLoot()
         {
             if (npc.scale >= 0.8f)
-                Loot.DropItem(npc, mod.ItemType<StablePhlogiston>(), 1, 1, 20);
+                Loot.DropItem(npc, ItemType<StablePhlogiston>(), 1, 1, 20);
 
             if (npc.scale > 0.65f && Main.netMode != 1)
                 for (int i = -1; i < 2; i += 2)
@@ -108,7 +109,7 @@ namespace Erilipah.NPCs.Phlogiston
             timer++;
             if (npc.scale > 0.7f && timer > 240 && timer < 300)
             {
-                Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2CircularEdge(30, 30), mod.DustType<PhlogistonDust>(), Vector2.One).customData = npc.Center;
+                Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2CircularEdge(30, 30), DustType<PhlogistonDust>(), Vector2.One).customData = npc.Center;
             }
             if (npc.scale > 0.7f && timer > 300)
             {
@@ -117,7 +118,7 @@ namespace Erilipah.NPCs.Phlogiston
                     int damage = (int)(Main.expertMode ? npc.damage * 0.7 : npc.damage);
                     float radians = MathHelper.SmoothStep(0, MathHelper.Pi, (timer - 300) / 120f);
                     Vector2 velocity = (-3.2f * Vector2.UnitX).RotatedBy(radians);
-                    Projectile.NewProjectile(npc.Center, velocity, mod.ProjectileType<PhlogistonStream>(), damage, 1);
+                    Projectile.NewProjectile(npc.Center, velocity, ProjectileType<PhlogistonStream>(), damage, 1);
                 }
             }
             if (timer > 420)
@@ -152,7 +153,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center, mod.DustType<PhlogistonDust>(), projectile.velocity / 8).customData = 0.01f;
+            Dust.NewDustPerfect(projectile.Center, DustType<PhlogistonDust>(), projectile.velocity / 8).customData = 0.01f;
             projectile.velocity.Y += 0.042f;
         }
 

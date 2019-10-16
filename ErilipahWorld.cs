@@ -1,10 +1,10 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Microsoft.Xna.Framework;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -55,7 +55,7 @@ namespace Erilipah
 
         private void IfNoneSpawnAboryc()
         {
-            int aborycType = mod.ProjectileType<Items.ErilipahBiome.AbProj>();
+            int aborycType = ProjectileType<Items.ErilipahBiome.AbProj>();
             if (!Main.projectile.Any(p => p.active && p.type == aborycType))
             {
                 Projectile.NewProjectile(AltarPosition, Vector2.Zero, aborycType, 0, 0, Main.myPlayer);
@@ -68,9 +68,9 @@ namespace Erilipah
         }
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            lostCityTiles = tileCounts[mod.TileType<TaintedBrick>()] + tileCounts[mod.TileType<TaintedRubble>()];
-            erilipahTiles = tileCounts[mod.TileType<InfectedClump>()] + tileCounts[mod.TileType<SpoiledClump>()] + 
-                tileCounts[mod.TileType<Biomes.ErilipahBiome.Hazards.Stalk>()] + lostCityTiles;
+            lostCityTiles = tileCounts[TileType<TaintedBrick>()] + tileCounts[TileType<TaintedRubble>()];
+            erilipahTiles = tileCounts[TileType<InfectedClump>()] + tileCounts[TileType<SpoiledClump>()] +
+                tileCounts[TileType<Biomes.ErilipahBiome.Hazards.Stalk>()] + lostCityTiles;
         }
     }
 }

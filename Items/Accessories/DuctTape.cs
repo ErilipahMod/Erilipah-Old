@@ -22,7 +22,7 @@ namespace Erilipah.Items.Accessories
             if (i.damage > 0 && i.useTime > 0)
             {
                 consume = true;
-                i.GetGlobalItem<ItemBuff>(mod).NewBuff(ItemBuffID.DuctTape, 3600 * 8);
+                mod.GetGlobalItem<ItemBuff>().NewBuff(ItemBuffID.DuctTape, 3600 * 8);
             }
             else
                 consume = false;

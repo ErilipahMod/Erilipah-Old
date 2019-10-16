@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -62,7 +63,7 @@ namespace Erilipah.Items.Crystalline
 
             disableSmartCursor = true;
             animationFrameHeight = 36;
-            dustType = mod.DustType<CrystallineDust>();
+            dustType = DustType<CrystallineDust>();
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

@@ -4,6 +4,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sanguine
 {
@@ -28,7 +29,7 @@ namespace Erilipah.Items.Sanguine
             item.channel = true;
 
             item.rare = 3;
-            item.shoot = mod.ProjectileType<SanguineStaffProj>();
+            item.shoot = ProjectileType<SanguineStaffProj>();
             item.shootSpeed = 9.5f;
         }
         public override void SetStaticDefaults()
@@ -62,7 +63,7 @@ namespace Erilipah.Items.Sanguine
 
                 knockBack = 10;
 
-                type = mod.ProjectileType<GreaterSanguineStaffProj>();
+                type = ProjectileType<GreaterSanguineStaffProj>();
                 return true;
             }
             return true;

@@ -17,7 +17,7 @@ namespace Erilipah.Items.Templar
         protected override int Mana => 16;
 
         protected override float ShootSpeed => 8;
-        protected override int ShootType => mod.ProjectileType<OrbitCenter>();
+        protected override int ShootType => ProjectileType<OrbitCenter>();
         protected override bool Channel => true;
 
         protected override string DisplayName => "Templar's Grand Pearl Staff";
@@ -28,7 +28,7 @@ namespace Erilipah.Items.Templar
 
         private const int vitality = 16;
 
-        private int Proj2 => mod.ProjectileType<HealingOrbitCenter>();
+        private int Proj2 => ProjectileType<HealingOrbitCenter>();
 
         public override bool AltFunctionUse(Player player) => player.GetModPlayer<Vitality>().CurrentVitality >= vitality;
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -64,7 +64,7 @@ namespace Erilipah.Items.Templar
         {
             if (Charge % (MaxCharge / 4) == 0 && player.whoAmI == projectile.owner)
             {
-                Projectile.NewProjectile(projectile.Center, Vector2.Zero, mod.ProjectileType<Orbit>(),
+                Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileType<Orbit>(),
                     16, 2, player.whoAmI, projectile.whoAmI, Charge / (MaxCharge / 4));
             }
         }
@@ -176,7 +176,7 @@ namespace Erilipah.Items.Templar
         {
             if (Charge % (MaxCharge / 4) == 0 && player.whoAmI == projectile.owner)
             {
-                Projectile.NewProjectile(projectile.Center, Vector2.Zero, mod.ProjectileType<HealingOrbit>(),
+                Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileType<HealingOrbit>(),
                     16, 2, player.whoAmI, projectile.whoAmI, Charge / (MaxCharge / 4));
             }
         }

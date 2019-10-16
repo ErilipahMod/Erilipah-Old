@@ -1,9 +1,4 @@
-﻿//using Microsoft.Xna.Framework;
-//using System;
-//using Terraria;
-//using Terraria.ID;
-//using Terraria.ModLoader;
-
+﻿
 //namespace Erilipah.NPCs.Earthen
 //{
 //    public class EarthenTreant : NewModNPC
@@ -33,7 +28,7 @@
 //            if (++firing % 180 == 0 && Main.netMode != -1)
 //            {
 //                Vector2 velocity = npc.Center.To(TCen - new Vector2(0, 40), 5);
-//                int type = mod.ProjectileType<EarthenShard>();
+//                int type = ProjectileType<EarthenShard>();
 //                Projectile.NewProjectile(npc.Center, velocity, type, 20, 1);
 //            }
 //        }

@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -31,7 +32,7 @@ namespace Erilipah.Items.Phlogiston
         protected override int Bounce => 0;
         protected override int FlightTime => 25;
         protected override float Gravity => 0.15f;
-        protected override Item ItemSource => mod.GetItem<PhlogistonChakram>().item;
+        protected override Item ItemSource => GetInstance<PhlogistonChakram>().item;
 
         protected override TextureTypes TextureType => TextureTypes.ItemClone;
         protected override DamageTypes DamageType => DamageTypes.Thrown;

@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Dracocide
 {
@@ -68,7 +69,7 @@ namespace Erilipah.Items.Dracocide
     {
         public override void ModifyHitNPC(NPC npc, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
-            if (target.type == mod.NPCType<ShieldProjectorProj>() && npc.velocity.Length() >= 4.5f)
+            if (target.type == NPCType<ShieldProjectorProj>() && npc.velocity.Length() >= 4.5f)
             {
                 if (!npc.Reflect(1, !npc.boss, !npc.dontCountMe))
                     Main.player[(int)target.ai[0]].immuneTime = 45;

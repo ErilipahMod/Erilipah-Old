@@ -20,7 +20,7 @@ namespace Erilipah.Items.Templar
 
         private const int vitality = 5;
 
-        private int Proj2 => mod.ProjectileType<ThrowingStarMini>();
+        private int Proj2 => ProjectileType<ThrowingStarMini>();
 
         public override bool AltFunctionUse(Player player) => true;
         public override bool CanUseItem(Player player) =>

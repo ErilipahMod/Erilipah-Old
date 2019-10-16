@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sacracite
 {
@@ -53,7 +54,7 @@ namespace Erilipah.Items.Sacracite
         {
             ModRecipe r = new ModRecipe(mod);
 
-            r.AddIngredient(mod.ItemType<SacraciteCore>(), 1);
+            r.AddIngredient(ItemType<SacraciteCore>(), 1);
             r.AddTile(Terraria.ID.TileID.Anvils);
             r.SetResult(this, 333);
             r.AddRecipe();
@@ -63,7 +64,7 @@ namespace Erilipah.Items.Sacracite
     {
         private int Pierce => 3;
 
-        private int Dust => mod.DustType<GreenGemDust>();
+        private int Dust => DustType<GreenGemDust>();
 
         private int FlightTime => 30;
 

@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -26,7 +27,7 @@ namespace Erilipah.Items.Crystalline
 
             item.rare = 2;
             item.shootSpeed = 9;
-            item.shoot = mod.ProjectileType<CrystallineKunaiProj>();
+            item.shoot = ProjectileType<CrystallineKunaiProj>();
         }
 
         public override void AddRecipes()

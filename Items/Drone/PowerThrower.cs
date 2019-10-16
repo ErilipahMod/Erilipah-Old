@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Drone
 {
@@ -22,7 +23,7 @@ namespace Erilipah.Items.Drone
         protected override bool FiresProjectile => true;
         protected override float ShootSpeed => 9.5f;
 
-        protected override int[,] CraftingIngredients => new int[,] { { mod.ItemType<PowerCoupling>(), 1 } };
+        protected override int[,] CraftingIngredients => new int[,] { { ItemType<PowerCoupling>(), 1 } };
         protected override int CraftingTile => Terraria.ID.TileID.Anvils;
         protected override int CraftingResultAmount => 75;
     }

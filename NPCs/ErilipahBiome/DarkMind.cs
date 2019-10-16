@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Erilipah.Biomes.ErilipahBiome.Hazards;
+using Erilipah.Items.ErilipahBiome;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Erilipah.Items.ErilipahBiome;
-using Erilipah.Biomes.ErilipahBiome.Hazards;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.ErilipahBiome
 {
@@ -135,7 +134,7 @@ namespace Erilipah.NPCs.ErilipahBiome
         {
             Dust.NewDustPerfect(
                 npc.Bottom,
-                mod.DustType<FlowerDust>(),
+                DustType<FlowerDust>(),
                 new Vector2(
                     Main.rand.NextFloat(-0.6f, 0.6f),
                     5
@@ -173,7 +172,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                     float currentDistance = Vector2.Distance(new Vector2(i, j), tilePos.ToVector2());
                     bool light = IsLight(i, j);
                     bool canSee = centerPlayer ?
-                        Collision.CanHitLine(Target.Top, 1, 1, new Vector2(i + 0.5f, j) * 16, 1, 1) : 
+                        Collision.CanHitLine(Target.Top, 1, 1, new Vector2(i + 0.5f, j) * 16, 1, 1) :
                         Collision.CanHitLine(npc.Top, 1, 1, new Vector2(i + 0.5f, j) * 16, 1, 1);
                     if (currentDistance < closestDistance && light && canSee)
                     {
@@ -208,7 +207,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 for (int i = 0; i < 15; i++)
                 {
                     float rot = i / 15f * MathHelper.TwoPi;
-                    Dust.NewDustPerfect(npc.Center, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 5, Scale: 1.5f).noGravity = true;
+                    Dust.NewDustPerfect(npc.Center, DustType<FlowerDust>(), rot.ToRotationVector2() * 5, Scale: 1.5f).noGravity = true;
                 }
 
                 for (int i = 0; i <= 3; i++)
@@ -224,7 +223,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType<FlowerDust>());
+                    Dust.NewDust(npc.position, npc.width, npc.height, DustType<FlowerDust>());
                 }
             }
         }
@@ -236,7 +235,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
+            Loot.DropItem(npc, ItemType<PutridFlesh>(), 1, 1, 18);
         }
     }
 }

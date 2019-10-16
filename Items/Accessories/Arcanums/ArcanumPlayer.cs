@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Accessories.Arcanums
 {
@@ -48,7 +49,7 @@ namespace Erilipah.Items.Accessories.Arcanums
 
         public override void PostUpdate()
         {
-            int reviveBuffType = mod.BuffType<ReviveCooldown>();
+            int reviveBuffType = BuffType<ReviveCooldown>();
             int reviveBuffIndex = player.FindBuffIndex(reviveBuffType);
             if (ModItemEquipped("Monumentis") || ModItemEquipped("Subterrania") || ModItemEquipped("Veritas"))
             {
@@ -74,7 +75,7 @@ namespace Erilipah.Items.Accessories.Arcanums
 
             if (veritas && ModItemEquipped("Veritas"))
             {
-                player.AddBuff(mod.BuffType<VeritasActive>(), 2);
+                player.AddBuff(BuffType<VeritasActive>(), 2);
 
                 player.allDamage += 0.20f;
                 player.statLifeMax2 = (int)(player.statLifeMax * 0.80f);

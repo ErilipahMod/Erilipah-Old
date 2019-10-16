@@ -1,5 +1,6 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Taranys
 {
@@ -16,7 +17,7 @@ namespace Erilipah.Items.Taranys
 
         public override void AddRecipes()
         {
-            void ItemRecipe<T>(int chunks) where T : ModItem => mod.SimpleRecipe<T>(mod.TileType<Altar>(), mod.ItemType<ShellChunk>(), chunks);
+            void ItemRecipe<T>(int chunks) where T : ModItem => SimpleRecipe<T>(TileType<Altar>(), mod.ItemType<ShellChunk>(), chunks);
 
             ItemRecipe<TyrantEye>(6);
             ItemRecipe<VoidSpike>(7);

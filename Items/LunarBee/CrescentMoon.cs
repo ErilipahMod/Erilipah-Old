@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.LunarBee
 {
@@ -59,7 +60,7 @@ namespace Erilipah.Items.LunarBee
     {
         private int Pierce => 1;
 
-        private int Dust => mod.DustType<MoonFire>();
+        private int Dust => DustType<MoonFire>();
 
         private int FlightTime => 15;
 
@@ -118,7 +119,7 @@ namespace Erilipah.Items.LunarBee
         {
             if (crit)
             {
-                Helper.FireInCircle(projectile.Center, 5, mod.ProjectileType<CrescentMoonProjProj>(),
+                Helper.FireInCircle(projectile.Center, 5, ProjectileType<CrescentMoonProjProj>(),
                     projectile.damage, 8, 1.5f, owner: projectile.owner);
                 projectile.Kill();
             }
@@ -145,7 +146,7 @@ namespace Erilipah.Items.LunarBee
     }
     public class CrescentMoonProjProj : ModProjectile
     {
-        private int Dust => mod.DustType<MoonFire>();
+        private int Dust => DustType<MoonFire>();
         public override string Texture => "Terraria/Projectile_" + ProjectileID.ShadowBeamFriendly;
         public override void SetDefaults()
         {

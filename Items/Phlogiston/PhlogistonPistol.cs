@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Phlogiston
 {
@@ -42,7 +43,7 @@ namespace Erilipah.Items.Phlogiston
             position.Y += speedY;
 
             if (type == ProjectileID.WoodenArrowFriendly && Main.rand.Next(3) == 0)
-                type = mod.ProjectileType<PhlogistonArrowProj>();
+                type = ProjectileType<PhlogistonArrowProj>();
 
             int closest = player.FindClosestNPC(1000);
             if (closest != -1 && Collision.CanHitLine(Main.npc[closest].Center, 0, 0, position, 0, 0))

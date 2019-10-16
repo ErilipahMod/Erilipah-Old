@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Erilipah.Biomes.ErilipahBiome.Hazards;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.IO;
-using Erilipah.Biomes.ErilipahBiome.Hazards;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.ErilipahBiome
 {
-    class MindFilleter : ModNPC
+    internal class MindFilleter : ModNPC
     {
         public override void SetStaticDefaults()
         {
@@ -93,7 +92,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
                 if (Main.netMode != 1)
                 {
-                    Projectile.NewProjectile(Eye, Eye.To(Target.Center, 6) - new Vector2(0, 1.5f), mod.ProjectileType<Vomit>(), 1, 0);
+                    Projectile.NewProjectile(Eye, Eye.To(Target.Center, 6) - new Vector2(0, 1.5f), ProjectileType<Vomit>(), 1, 0);
                 }
             }
         }
@@ -115,7 +114,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 for (int i = 0; i < 18; i++)
                 {
                     float rot = i / 18f * MathHelper.TwoPi;
-                    Dust.NewDustPerfect(Eye, mod.DustType<FlowerDust>(), rot.ToRotationVector2() * 10, Scale: 1.5f).noGravity = true;
+                    Dust.NewDustPerfect(Eye, DustType<FlowerDust>(), rot.ToRotationVector2() * 10, Scale: 1.5f).noGravity = true;
                 }
 
                 for (int i = 0; i <= 4; i++)
@@ -129,14 +128,14 @@ namespace Erilipah.NPCs.ErilipahBiome
 
                 for (int i = 0; i < 3; i++)
                 {
-                    Dust.NewDustPerfect(Eye, mod.DustType<FlowerDust>(), new Vector2(hitDirection * 3, -3)).noGravity = true;
+                    Dust.NewDustPerfect(Eye, DustType<FlowerDust>(), new Vector2(hitDirection * 3, -3)).noGravity = true;
                 }
             }
         }
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Items.ErilipahBiome.PutridFlesh>(), 1, 1, 18);
+            Loot.DropItem(npc, ItemType<Items.ErilipahBiome.PutridFlesh>(), 1, 1, 18);
             Loot.DropItem(npc, ItemID.Heart, 1, 1, 50);
         }
 
@@ -175,14 +174,14 @@ namespace Erilipah.NPCs.ErilipahBiome
         public override void AI()
         {
             projectile.velocity.Y += 0.055f;
-            Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(0.1f, 0.1f), Scale: 0.55f);
+            Dust.NewDustPerfect(projectile.Center, DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(0.1f, 0.1f), Scale: 0.55f);
         }
 
         public override void Kill(int timeLeft)
         {
             for (int i = 0; i < 15; i++)
             {
-                Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(1.5f, 1.5f));
+                Dust.NewDustPerfect(projectile.Center, DustType<VoidLiquid>(), Main.rand.NextVector2CircularEdge(1.5f, 1.5f));
             }
         }
 

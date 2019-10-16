@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -18,13 +19,13 @@ namespace Erilipah.Items.ErilipahBiome
         protected override float Knockback => 5.75f;
 
         protected override string DisplayName => "Wither";
-        protected override string Tooltip => 
+        protected override string Tooltip =>
             "Inflicts a curse that tears crowds apart one-by-one" +
             "\nThe curse strengthens the more it is applied" +
             "\n'Locked away where light fades and reality crumbles... for good reason'";
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
-            target.AddBuff(mod.BuffType<Wither>(), 360);
+            target.AddBuff(BuffType<Wither>(), 360);
         }
 
         public override void AddRecipes()
@@ -72,7 +73,7 @@ namespace Erilipah.Items.ErilipahBiome
 
         public override void Update(NPC npc, ref int buffIndex)
         {
-            npc.GetGlobalNPC<ErilipahNPC>().witherStack = npc.buffTime[buffIndex] / 60;
+            GetInstance<ErilipahNPC>().witherStack = npc.buffTime[buffIndex] / 60;
 
             npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
             npc.lifeRegen -= Stack(npc) * 4 + 4;

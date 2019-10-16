@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -59,13 +60,13 @@ namespace Erilipah.Items.ErilipahBiome
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 4);
-            recipe.AddTile(mod.TileType<Altar>());
+            recipe.AddIngredient(ItemType<Crystalline.CrystallineTileItem>(), 4);
+            recipe.AddTile(TileType<Altar>());
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
 
             recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType<SoulRubble>(), 3);
+            recipe.AddIngredient(ItemType<SoulRubble>(), 3);
             recipe.AddIngredient(this, 50);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(ItemID.RodofDiscord, 1);

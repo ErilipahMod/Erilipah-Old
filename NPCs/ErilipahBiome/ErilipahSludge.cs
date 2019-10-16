@@ -6,6 +6,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.ErilipahBiome
 {
@@ -50,8 +51,8 @@ namespace Erilipah.NPCs.ErilipahBiome
 
             if (Main.hardMode)
             {
-                Dust.NewDustPerfect(npc.BottomLeft + new Vector2(4, 0), mod.DustType<VoidParticle>(), Vector2.Zero);
-                Dust.NewDustPerfect(npc.BottomRight + new Vector2(-4, 0), mod.DustType<VoidParticle>(), Vector2.Zero);
+                Dust.NewDustPerfect(npc.BottomLeft + new Vector2(4, 0), DustType<VoidParticle>(), Vector2.Zero);
+                Dust.NewDustPerfect(npc.BottomRight + new Vector2(-4, 0), DustType<VoidParticle>(), Vector2.Zero);
                 return;
             }
 
@@ -74,8 +75,8 @@ namespace Erilipah.NPCs.ErilipahBiome
             if (timer < 380)
             {
                 npc.velocity = npc.Center.To(target.Center - new Vector2(0, 250), 8);
-                Dust.NewDustPerfect(npc.position + new Vector2(4, 20), mod.DustType<VoidParticle>(), Vector2.Zero);
-                Dust.NewDustPerfect(npc.TopRight - new Vector2(4, -20), mod.DustType<VoidParticle>(), Vector2.Zero);
+                Dust.NewDustPerfect(npc.position + new Vector2(4, 20), DustType<VoidParticle>(), Vector2.Zero);
+                Dust.NewDustPerfect(npc.TopRight - new Vector2(4, -20), DustType<VoidParticle>(), Vector2.Zero);
             }
             else
             {
@@ -88,7 +89,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 {
                     float x = npc.position.X + (npc.width * i / 20f);
                     float y = npc.position.Y + npc.height;
-                    Dust.NewDustPerfect(new Vector2(x, y), mod.DustType<VoidParticle>(), new Vector2(0, -6f));
+                    Dust.NewDustPerfect(new Vector2(x, y), DustType<VoidParticle>(), new Vector2(0, -6f));
                 }
                 npc.netUpdate = true;
                 timer = 0;
@@ -149,7 +150,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<PutridFlesh>(), 1, 1, 18);
+            Loot.DropItem(npc, ItemType<PutridFlesh>(), 1, 1, 18);
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)

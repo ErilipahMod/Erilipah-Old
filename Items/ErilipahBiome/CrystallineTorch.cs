@@ -5,6 +5,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.ErilipahBiome
 {
@@ -33,7 +34,7 @@ namespace Erilipah.Items.ErilipahBiome
             item.useTime = 10;
             item.useStyle = 1;
             item.consumable = true;
-            item.createTile = mod.TileType<CrystallineTorchTile>();
+            item.createTile = TileType<CrystallineTorchTile>();
 
             item.value = 120;
         }
@@ -47,9 +48,9 @@ namespace Erilipah.Items.ErilipahBiome
             if (Main.rand.Next(player.itemAnimation > 0 ? 20 : 40) == 0)
             {
                 if (Main.LocalPlayer.InErilipah())
-                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<Crystalline.CrystallineDust>());
+                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, DustType<Crystalline.CrystallineDust>());
                 else
-                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, mod.DustType<NPCs.ErilipahBiome.VoidParticle>());
+                    Dust.NewDust(new Vector2(player.itemLocation.X + 12f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, DustType<NPCs.ErilipahBiome.VoidParticle>());
             }
             Vector2 position = player.RotatedRelativePoint(new Vector2(player.itemLocation.X + 12f * player.direction + player.velocity.X, player.itemLocation.Y - 14f + player.velocity.Y), true);
 
@@ -91,9 +92,9 @@ namespace Erilipah.Items.ErilipahBiome
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Torch, 6);
-            recipe.AddIngredient(mod.ItemType<Crystalline.CrystallineTileItem>(), 5);
-            recipe.AddIngredient(mod.ItemType<PutridFlesh>(), 1);
-            recipe.AddTile(mod.TileType<Biomes.ErilipahBiome.Tiles.Altar>());
+            recipe.AddIngredient(ItemType<Crystalline.CrystallineTileItem>(), 5);
+            recipe.AddIngredient(ItemType<PutridFlesh>(), 1);
+            recipe.AddTile(TileType<Biomes.ErilipahBiome.Tiles.Altar>());
             recipe.SetResult(this, 2);
             recipe.AddRecipe();
         }
@@ -128,8 +129,8 @@ namespace Erilipah.Items.ErilipahBiome
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Torch");
             AddMapEntry(new Color(200, 120, 215), name);
-            dustType = mod.DustType<Crystalline.CrystallineDust>();
-            drop = mod.ItemType<CrystallineTorch>();
+            dustType = DustType<Crystalline.CrystallineDust>();
+            drop = ItemType<CrystallineTorch>();
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Torches };
             torch = true;

@@ -1,4 +1,5 @@
 ﻿using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sacracite
 {
@@ -61,8 +62,8 @@ namespace Erilipah.Items.Sacracite
         {
             ModRecipe r = new ModRecipe(mod);
 
-            r.AddIngredient(mod.ItemType<SacraciteIngot>(), 3);
-            r.AddIngredient(mod.ItemType<SacraciteCore>(), 1);
+            r.AddIngredient(ItemType<SacraciteIngot>(), 3);
+            r.AddIngredient(ItemType<SacraciteCore>(), 1);
             r.AddTile(Terraria.ID.TileID.Anvils);
             r.SetResult(this, 1);
             r.AddRecipe();

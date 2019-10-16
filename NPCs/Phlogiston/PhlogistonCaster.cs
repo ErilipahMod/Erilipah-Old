@@ -4,6 +4,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Phlogiston
 {
@@ -43,7 +44,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void NPCLoot()
         {
-            Loot.DropItem(npc, mod.ItemType<Items.Phlogiston.StablePhlogiston>(), 2, 3, 100, 1.5f);
+            Loot.DropItem(npc, ItemType<Items.Phlogiston.StablePhlogiston>(), 2, 3, 100, 1.5f);
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -95,9 +96,9 @@ namespace Erilipah.NPCs.Phlogiston
             {
                 Vector2 spawnPosition = npc.Center + Main.rand.NextVector2CircularEdge(20, 20);
                 Vector2 direction = (i / 22f * MathHelper.TwoPi).ToRotationVector2();
-                Dust.NewDustPerfect(spawnPosition, mod.DustType<PhlogistonDust>(), direction * 2.5f);
+                Dust.NewDustPerfect(spawnPosition, DustType<PhlogistonDust>(), direction * 2.5f);
 
-                Dust.NewDustPerfect(newPosition + Main.rand.NextVector2CircularEdge(100, 100), mod.DustType<PhlogistonDust>(), new Vector2(2.5f)).customData = newPosition;
+                Dust.NewDustPerfect(newPosition + Main.rand.NextVector2CircularEdge(100, 100), DustType<PhlogistonDust>(), new Vector2(2.5f)).customData = newPosition;
             }
 
             npc.Center = newPosition;
@@ -114,14 +115,14 @@ namespace Erilipah.NPCs.Phlogiston
                 rotation += i / 3f * MathHelper.TwoPi;
                 float distance = MathHelper.SmoothStep(200, 20, Math.Min(1, percent * 3f)); // At 33%, the dusts will circling already
 
-                Dust.NewDustPerfect(DustBallPosition + new Vector2(distance, 0).RotatedBy(rotation), mod.DustType<DeepFlames>(), Vector2.Zero).noGravity = true;
+                Dust.NewDustPerfect(DustBallPosition + new Vector2(distance, 0).RotatedBy(rotation), DustType<DeepFlames>(), Vector2.Zero).noGravity = true;
             }
 
             // Spawns dusts on outer ring that come inward
             if (percent > 0.33f)
             {
                 if (Main.rand.NextFloat(percent) > 0.2f)
-                    Dust.NewDustPerfect(DustBallPosition + Main.rand.NextVector2CircularEdge(15, 15), mod.DustType<PhlogistonDust>(), Vector2.One).customData = DustBallPosition;
+                    Dust.NewDustPerfect(DustBallPosition + Main.rand.NextVector2CircularEdge(15, 15), DustType<PhlogistonDust>(), Vector2.One).customData = DustBallPosition;
             }
 
             // Spawns dust that goes to where the fireball will go
@@ -136,7 +137,7 @@ namespace Erilipah.NPCs.Phlogiston
                 Vector2 direction = (HeldPosition - DustBallPosition).SafeNormalize(Vector2.Zero);
                 for (int i = 0; i < currentSpan; i += spacing)
                 {
-                    Dust.NewDustPerfect(DustBallPosition + direction * 20 + direction * i, mod.DustType<DeepFlames>(), Vector2.Zero, Scale: 0.8f).noGravity = true;
+                    Dust.NewDustPerfect(DustBallPosition + direction * 20 + direction * i, DustType<DeepFlames>(), Vector2.Zero, Scale: 0.8f).noGravity = true;
                 }
             }
         }
@@ -189,7 +190,7 @@ namespace Erilipah.NPCs.Phlogiston
                     if (Main.hardMode)
                         damage = (int)(damage * 1.5);
 
-                    Projectile.NewProjectile(DustBallPosition, to * 6.5f, mod.ProjectileType<Fireball>(), damage, 1, 255, HeldPosition.X, HeldPosition.Y);
+                    Projectile.NewProjectile(DustBallPosition, to * 6.5f, ProjectileType<Fireball>(), damage, 1, 255, HeldPosition.X, HeldPosition.Y);
                 }
                 npc.netUpdate = true;
             }
@@ -256,7 +257,7 @@ namespace Erilipah.NPCs.Phlogiston
 
             for (int i = 0; i < 3; i++)
             {
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(15, 15), mod.DustType<PhlogistonDust>(), Vector2.Zero).noGravity = true;
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2CircularEdge(15, 15), DustType<PhlogistonDust>(), Vector2.Zero).noGravity = true;
             }
         }
 
@@ -267,7 +268,7 @@ namespace Erilipah.NPCs.Phlogiston
             for (int i = 0; i < count; i++)
             {
                 bool alt = i % 2 == 0;
-                int type = alt ? mod.DustType<PhlogistonDust>() : mod.DustType<Drone.DeepFlames>();
+                int type = alt ? DustType<PhlogistonDust>() : DustType<Drone.DeepFlames>();
                 float speed = alt ? 3f : 5f;
                 float angle = i / (float)count * MathHelper.TwoPi;
 

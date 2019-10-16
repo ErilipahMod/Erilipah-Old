@@ -10,6 +10,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.LostCity
 {
@@ -205,7 +206,7 @@ namespace Erilipah.NPCs.LostCity
                     rotateSpeed = npc.life;
                     RotateToTarget();
                     npc.velocity = npc.GoTo(headPos, accApproach + 0.2f, maxApproach * 1.35f);
-                    Dust.NewDustPerfect(Eye, mod.DustType<VoidParticle>(), Vector2.Zero)
+                    Dust.NewDustPerfect(Eye, DustType<VoidParticle>(), Vector2.Zero)
                         .customData = 0.1f;
 
                     if (distHead < 30) // Grabbed him! jump over New Attack
@@ -295,7 +296,7 @@ namespace Erilipah.NPCs.LostCity
                 // spawn dusts
                 for (int i = 0; i < 15; i++)
                 {
-                    Dust dust = Dust.NewDustPerfect(Eye, mod.DustType<CrystallineDust>(), Main.rand.NextVector2Unit() * 13);
+                    Dust dust = Dust.NewDustPerfect(Eye, DustType<CrystallineDust>(), Main.rand.NextVector2Unit() * 13);
                     dust.customData = new Vector3(Eye, size + 10);
                 }
 
@@ -330,7 +331,7 @@ namespace Erilipah.NPCs.LostCity
                         Main.PlaySound(npc.HitSound, npc.Center);
                         Vector2 vel = npc.Center.To(Target.Center, 5f);
                         //float range = Main.rand.NextFloat(-MathHelper.Pi / 8, MathHelper.Pi / 8);
-                        Projectile.NewProjectile(Eye, vel/*.RotatedBy(range)*/, mod.ProjectileType<SpitBall>(), npc.damage / 2, 1);
+                        Projectile.NewProjectile(Eye, vel/*.RotatedBy(range)*/, ProjectileType<SpitBall>(), npc.damage / 2, 1);
                     }
                 }
 
@@ -369,7 +370,7 @@ namespace Erilipah.NPCs.LostCity
                     for (int i = 0; i < 20; i++)
                     {
                         Dust.NewDustPerfect(Eye + Main.rand.NextVector2CircularEdge(240 - AttackTimer * 2, 240 - AttackTimer * 2),
-                            mod.DustType<VoidParticle>(), Vector2.Zero);
+                            DustType<VoidParticle>(), Vector2.Zero);
                     }
                     FrameY = 3;
                 }
@@ -410,7 +411,7 @@ namespace Erilipah.NPCs.LostCity
                     const int perSecond = 6;
                     float amount = AttackTimer % 140 / (140f / perSecond) % 1f;
                     Vector2 dustPos = Vector2.Lerp(Eye, Target.Center - new Vector2(0, 12), amount);
-                    Dust dust = Dust.NewDustPerfect(dustPos, mod.DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f - amount);
+                    Dust dust = Dust.NewDustPerfect(dustPos, DustType<VoidParticle>(), Vector2.Zero, Scale: 1.5f - amount);
                     dust.noGravity = true;
 
                     // Decrease players' life
@@ -454,7 +455,7 @@ namespace Erilipah.NPCs.LostCity
         {
             if (npc.lastInteraction > -1)
             {
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, mod.ProjectileType<WarmedSoul>(), 0, 0, npc.lastInteraction);
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<WarmedSoul>(), 0, 0, npc.lastInteraction);
             }
             return true;
         }
@@ -484,11 +485,11 @@ namespace Erilipah.NPCs.LostCity
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<CrystallineDust>());
+                    Dust dust = Dust.NewDustPerfect(projectile.Center, DustType<CrystallineDust>());
                     dust.velocity = Main.rand.NextVector2Unit() * projectile.velocity.Length();
                     dust.noGravity = true;
 
-                    dust = Dust.NewDustPerfect(projectile.Center, mod.DustType<VoidParticle>(), Scale: 1.15f);
+                    dust = Dust.NewDustPerfect(projectile.Center, DustType<VoidParticle>(), Scale: 1.15f);
                     dust.velocity = Main.rand.NextVector2Unit() * projectile.velocity.Length();
                     dust.customData = new Vector3(projectile.Center, 60);
                 }

@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Sanguine
 {
@@ -26,7 +27,7 @@ namespace Erilipah.Items.Sanguine
             item.channel = true;
             item.noMelee = true;
 
-            item.shoot = mod.ProjectileType<SanguineYoyoProj>();
+            item.shoot = ProjectileType<SanguineYoyoProj>();
             item.useAnimation = 26;
             item.useTime = 26;
             item.shootSpeed = 10;

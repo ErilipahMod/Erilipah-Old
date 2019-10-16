@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Crystalline
 {
@@ -21,7 +22,7 @@ namespace Erilipah.Items.Crystalline
             item.useStyle = 1;
             item.rare = Terraria.ID.ItemRarityID.Green;
             item.consumable = true;
-            item.createTile = mod.TileType<CrystallineTileTileFromItem>();
+            item.createTile = TileType<CrystallineTileTileFromItem>();
         }
 
         public override void SetStaticDefaults()
@@ -40,8 +41,8 @@ namespace Erilipah.Items.Crystalline
             Main.tileLighted[Type] = true;
             Main.tileSpelunker[Type] = true;
 
-            dustType = mod.DustType<CrystallineDust>();
-            drop = mod.ItemType<CrystallineTileItem>();
+            dustType = DustType<CrystallineDust>();
+            drop = ItemType<CrystallineTileItem>();
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Crystalline Shards");
@@ -69,10 +70,10 @@ namespace Erilipah.Items.Crystalline
             Main.tileLighted[Type] = true;
             Main.tileSpelunker[Type] = true;
 
-            Main.tileMerge[Type][mod.TileType<Biomes.ErilipahBiome.Tiles.InfectedClump>()] = true;
+            Main.tileMerge[Type][TileType<Biomes.ErilipahBiome.Tiles.InfectedClump>()] = true;
 
-            dustType = mod.DustType<CrystallineDust>();
-            drop = mod.ItemType<CrystallineTileItem>();
+            dustType = DustType<CrystallineDust>();
+            drop = ItemType<CrystallineTileItem>();
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Crystalline Shards");
@@ -92,7 +93,7 @@ namespace Erilipah.Items.Crystalline
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            Loot.DropItem(new Rectangle(i * 16, j * 16, 16, 16), mod.ItemType<CrystallineTileItem>(), 1, 3);
+            Loot.DropItem(new Rectangle(i * 16, j * 16, 16, 16), ItemType<CrystallineTileItem>(), 1, 3);
         }
     }
 }

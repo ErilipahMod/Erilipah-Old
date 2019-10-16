@@ -1,6 +1,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.LunarBee
 {
@@ -36,7 +37,7 @@ namespace Erilipah.Items.LunarBee
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
             if (crit)
-                target.AddBuff(mod.BuffType<LunarBreakdown>(), 300);
+                target.AddBuff(BuffType<LunarBreakdown>(), 300);
         }
 
         public override void SetStaticDefaults()

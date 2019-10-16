@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
@@ -30,13 +31,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     WorldGen.SolidOrSlopedTile(tile) && !(
                     tile.type == TileID.LihzahrdBrick ||
                     tile.type == TileID.LihzahrdAltar ||
-                    tile.type == mod.TileType<InfectedClump>() ||
-                    tile.type == mod.TileType<SpoiledClump>() ||
-                    tile.type == mod.TileType<TaintedRubble>() ||
-                    tile.type == mod.TileType<TaintedBrick>() ||
-                    tile.type == mod.TileType<Items.Crystalline.CrystallineTileTile>()))
+                    tile.type == TileType<InfectedClump>() ||
+                    tile.type == TileType<SpoiledClump>() ||
+                    tile.type == TileType<TaintedRubble>() ||
+                    tile.type == TileType<TaintedBrick>() ||
+                    tile.type == TileType<Items.Crystalline.CrystallineTileTile>()))
                 {
-                    bool brick = tile.type == TileID.GrayBrick || tile.type == TileID.RedBrick || tile.type == mod.TileType<TaintedBrickSafe>();
+                    bool brick = tile.type == TileID.GrayBrick || tile.type == TileID.RedBrick || tile.type == TileType<TaintedBrickSafe>();
 
                     bool organic = TileID.Sets.Mud[tile.type] || TileID.Sets.Snow[tile.type] || TileID.Sets.Conversion.Sand[tile.type] ||
                         tile.type == TileID.Slush || tile.type == TileID.Silt || tile.type == TileID.JungleGrass;
@@ -57,18 +58,18 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
                 if (tile.wall > 0 && !(
                     tile.wall == WallID.LihzahrdBrickUnsafe ||
-                    tile.wall == (ushort)mod.WallType<InfectedClumpWall>() ||
-                    tile.wall == (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>()))
+                    tile.wall == (ushort)WallType<InfectedClumpWall>() ||
+                    tile.wall == (ushort)WallType<TaintedBrick.TaintedBrickWall>()))
                 {
                     bool woodWall = tile.wall == WallID.Wood || tile.wall == WallID.BorealWood || tile.wall == WallID.RichMaogany ||
                         tile.wall == WallID.PalmWood || tile.wall == WallID.LivingWood ||
                         tile.wall == WallID.SpookyWood || tile.wall == WallID.Shadewood || tile.wall == WallID.Ebonwood ||
                         tile.wall == WallID.LivingLeaf || tile.wall == WallID.LivingWood;
 
-                    if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>())
-                        tile.wall = (ushort)mod.WallType<TaintedBrick.TaintedBrickWall>();
+                    if (tile.wall == WallID.GrayBrick || tile.wall == WallID.RedBrick || tile.wall == WallType<TaintedBrickSafe.TaintedBrickWallSafe>())
+                        tile.wall = (ushort)WallType<TaintedBrick.TaintedBrickWall>();
                     else
-                        tile.wall = (ushort)mod.WallType<InfectedClumpWall>();
+                        tile.wall = (ushort)WallType<InfectedClumpWall>();
 
                     WorldGen.SquareWallFrame((int)tilePos.X, (int)tilePos.Y);
                 }
@@ -112,7 +113,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 item.CloneDefaults(ItemID.StoneBlock);
                 item.width = 26;
                 item.height = 20;
-                item.createTile = mod.TileType<InfectedClump>();
+                item.createTile = TileType<InfectedClump>();
             }
         }
 
@@ -120,16 +121,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         {
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
-            Main.tileMerge[Type][mod.TileType<SpoiledClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedBrick>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedRubble>()] = true;
+            Main.tileMerge[Type][TileType<SpoiledClump>()] = true;
+            Main.tileMerge[Type][TileType<TaintedBrick>()] = true;
+            Main.tileMerge[Type][TileType<TaintedRubble>()] = true;
             Main.tileStone[Type] = true;
 
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
 
             dustType = DustID.PurpleCrystalShard;
-            drop = mod.ItemType<InfectedClumpItem>();
+            drop = ItemType<InfectedClumpItem>();
 
             //ModTranslation name = CreateMapEntryName();
             //name.SetDefault("Crystalline Shards");
@@ -168,7 +169,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 return;
 
             Dust dust = Main.dust[Dust.NewDust(
-                player.position + new Vector2(0, player.height), player.width, 0, mod.DustType<VoidParticle>(),
+                player.position + new Vector2(0, player.height), player.width, 0, DustType<VoidParticle>(),
                 player.direction * -0.5f, -0.8f)];
             dust.noGravity = true;
             dust.velocity /= 2f;
@@ -190,7 +191,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 item.CloneDefaults(ItemID.DirtBlock);
                 item.width = 16;
                 item.height = 16;
-                item.createTile = mod.TileType<SpoiledClump>();
+                item.createTile = TileType<SpoiledClump>();
             }
         }
 
@@ -198,14 +199,14 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
         {
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
-            Main.tileMerge[Type][mod.TileType<InfectedClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedBrick>()] = true;
+            Main.tileMerge[Type][TileType<InfectedClump>()] = true;
+            Main.tileMerge[Type][TileType<TaintedBrick>()] = true;
 
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
 
             dustType = DustID.PurpleCrystalShard;
-            drop = mod.ItemType<SpoiledClumpItem>();
+            drop = ItemType<SpoiledClumpItem>();
 
             //ModTranslation name = CreateMapEntryName();
             //name.SetDefault("Crystalline Shards");
@@ -254,7 +255,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 public override void SetDefaults()
                 {
                     item.CloneDefaults(ItemID.GrayBrickWall);
-                    item.createWall = mod.WallType<TaintedBrickSafe.TaintedBrickWallSafe>();
+                    item.createWall = WallType<TaintedBrickSafe.TaintedBrickWallSafe>();
                     item.rare = 1;
                 }
             }
@@ -263,7 +264,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 drop = mod.ItemType("TaintedBrickWallItem");
                 dustType = DustID.PurpleCrystalShard;
                 AddMapEntry(new Color(15, 20, 45, 175));
-                
+
                 soundType = 0;
                 soundStyle = 0;
             }
@@ -292,7 +293,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 item.CloneDefaults(ItemID.GrayBrick);
                 item.width = 16;
                 item.height = 16;
-                item.createTile = mod.TileType<TaintedBrickSafe>();
+                item.createTile = TileType<TaintedBrickSafe>();
                 item.rare = 1;
             }
         }
@@ -302,16 +303,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
 
-            Main.tileMerge[Type][mod.TileType<InfectedClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<SpoiledClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedRubble>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedBrickSafe>()] = true;
+            Main.tileMerge[Type][TileType<InfectedClump>()] = true;
+            Main.tileMerge[Type][TileType<SpoiledClump>()] = true;
+            Main.tileMerge[Type][TileType<TaintedRubble>()] = true;
+            Main.tileMerge[Type][TileType<TaintedBrickSafe>()] = true;
 
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
 
             dustType = DustID.PurpleCrystalShard;
-            drop = mod.ItemType<TaintedBrickItem>();
+            drop = ItemType<TaintedBrickItem>();
 
             //ModTranslation name = CreateMapEntryName();
             //name.SetDefault("Crystalline Shards");
@@ -379,16 +380,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
 
-            Main.tileMerge[Type][mod.TileType<InfectedClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<SpoiledClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedRubble>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedBrick>()] = true;
+            Main.tileMerge[Type][TileType<InfectedClump>()] = true;
+            Main.tileMerge[Type][TileType<SpoiledClump>()] = true;
+            Main.tileMerge[Type][TileType<TaintedRubble>()] = true;
+            Main.tileMerge[Type][TileType<TaintedBrick>()] = true;
 
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
 
             dustType = DustID.PurpleCrystalShard;
-            drop = mod.ItemType<TaintedBrick.TaintedBrickItem>();
+            drop = ItemType<TaintedBrick.TaintedBrickItem>();
 
             //ModTranslation name = CreateMapEntryName();
             //name.SetDefault("Crystalline Shards");
@@ -417,15 +418,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
 
-            Main.tileMerge[Type][mod.TileType<InfectedClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<SpoiledClump>()] = true;
-            Main.tileMerge[Type][mod.TileType<TaintedBrick>()] = true;
+            Main.tileMerge[Type][TileType<InfectedClump>()] = true;
+            Main.tileMerge[Type][TileType<SpoiledClump>()] = true;
+            Main.tileMerge[Type][TileType<TaintedBrick>()] = true;
 
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
 
             dustType = DustID.PurpleCrystalShard;
-            drop = mod.ItemType<InfectedClump.InfectedClumpItem>();
+            drop = ItemType<InfectedClump.InfectedClumpItem>();
 
             //ModTranslation name = CreateMapEntryName();
             //name.SetDefault("Crystalline Shards");
@@ -462,24 +463,24 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             for (int type = 0; type < TileID.Count; type++)
             {
                 if (Main.tileMergeDirt[type])
-                    Main.tileMerge[type][mod.TileType<SpoiledClump>()] = true;
+                    Main.tileMerge[type][TileType<SpoiledClump>()] = true;
 
                 if (Main.tileMerge[type][TileID.Stone])
                 {
-                    Main.tileMerge[type][mod.TileType<InfectedClump>()] = true;
+                    Main.tileMerge[type][TileType<InfectedClump>()] = true;
                 }
 
                 if (Main.tileMerge[type][TileID.GrayBrick] || Main.tileMerge[type][TileID.Stone])
                 {
-                    Main.tileMerge[type][mod.TileType<TaintedBrick>()] = true;
-                    Main.tileMerge[type][mod.TileType<TaintedRubble>()] = true;
+                    Main.tileMerge[type][TileType<TaintedBrick>()] = true;
+                    Main.tileMerge[type][TileType<TaintedRubble>()] = true;
                 }
             }
         }
 
         public override bool PreHitWire(int i, int j, int type)
         {
-            return Main.tile[i, j].type != mod.TileType<TaintedBrick>();
+            return Main.tile[i, j].type != TileType<TaintedBrick>();
         }
     }
 }

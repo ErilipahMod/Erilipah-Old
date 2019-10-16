@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
@@ -143,7 +144,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             {
                 if (isLocked)
                 {
-                    int key = mod.ItemType<Items.Taranys.LostKey>();
+                    int key = ItemType<Items.Taranys.LostKey>();
                     if (player.HasItem(key))
                     {
                         for (int x = left; x <= left + 1; x++)
@@ -210,7 +211,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             else
             {
                 if (tile.frameX >= 36)
-                    player.showItemIcon2 = mod.ItemType<Items.Taranys.LostKey>();
+                    player.showItemIcon2 = ItemType<Items.Taranys.LostKey>();
                 else
                     player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Lost Chest";
             }
