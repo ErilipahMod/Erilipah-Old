@@ -43,10 +43,11 @@ namespace Erilipah
                 if (Main.netMode == 2 /*Sync to clients when run on the server*/)
                     NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
             }
-
-            if (Main.tile[i, j].IsErilipahTile())// && Main.rand.Chance(0.0155f) && OffScreen(i, j))
+            
+            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.0155f) && OffScreen(i, j))
             {
-                Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j - 1);
+                if (!Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j - 1))
+                    Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j + 1);
             }
         }
 

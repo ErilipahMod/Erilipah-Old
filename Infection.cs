@@ -29,6 +29,21 @@ namespace Erilipah
         private float alpha = 60f;
         private int counter = 0;
         private int frameY = 0;
+        private int frameX = 0;
+
+        // 0 = Erilipah
+        // 1 = Corrupt
+        // 2 = Crimson
+        private int GetBiome(Player player)
+        {
+            if (player.InErilipah())
+                return 0;
+            if (player.ZoneCorrupt)
+                return 1;
+            if (player.ZoneCrimson)
+                return 2;
+            return frameX;
+        }
 
         private bool ActiveOther(Player p) => p.active && !p.dead && p.I().Infection > 0;
         private bool ActiveBar() => Main.LocalPlayer.active && Main.LocalPlayer.I().Infection > 0;
@@ -54,14 +69,17 @@ namespace Erilipah
                         infection > infectionMax ? infection / infectionMax : 1f); //, SpriteEffects.None, 0);
                 }
             }
-            if (ActiveBar())
-            {
-                alpha--;
-            }
-            else
+
+            if (!ActiveBar() || frameX != GetBiome(Main.LocalPlayer))
             {
                 alpha++;
             }
+            else
+            {
+                alpha--;
+                frameX = GetBiome(Main.LocalPlayer);
+            }
+
             alpha = MathHelper.Clamp(alpha, 0, 60);
 
             if (alpha < 60)
@@ -72,10 +90,10 @@ namespace Erilipah
                 Texture2D texture2D = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Infection");
                 float amount = Math.Max(0, infection);
 
+                counter++;
+
                 if (amount > infectionMax)
                 {
-                    counter++;
-
                     float speedMult = infectionMax / infection / 2;
                     int countModulo = (int)(10 * speedMult);
                     if (counter % countModulo == 0)
@@ -89,10 +107,18 @@ namespace Erilipah
                 }
                 else
                 {
-                    frameY = (int)Math.Round(MathHelper.Lerp(0, 20, amount / infectionMax));
-                    counter = 0;
+                    int max = (int)MathHelper.Lerp(0, 20, amount / infectionMax);
+                    if (counter % 8 == 0)
+                    {
+                        frameY++;
+                        if (frameY > max)
+                        {
+                            frameY = max;
+                        }
+                    }
                 }
-                Rectangle frame = texture2D.Frame(1, 23, 0, frameY);
+
+                Rectangle frame = texture2D.Frame(3, 23, frameX, frameY);
                 Vector2 drawCenter = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels + Height.Pixels / 2);
                 Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
 
@@ -219,36 +245,16 @@ namespace Erilipah
 
             if (Infection > infectionMax)
             {
-                player.lifeRegenTime = 0;
-                if (player.lifeRegen > 0)
-                    player.lifeRegen = 0;
-
-                if (counter % (int)Math.Max(30 / (Infection - infectionMax), 1) == 0)
-                {
-                    player.netLife = true;
-                    player.statLife--;
-                }
-
-                if (counter % 30 == 0 && Infection - infectionMax >= 1)
-                    CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, (int)Math.Floor(Infection - infectionMax), true, true);
-                else if (counter % 30 == 0)
-                    CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, 1, true, true);
-
-                if (player.statLife <= 0)
-                {
-                    string biome = player.ZoneCorrupt || player.ZoneCrimson ? "evil" : "darkness";
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was infested with " + biome + "."), 30, 0);
-                }
+                InfectionHurt();
             }
 
+            if (player.InErilipah())
+                Darkness();
+        }
+
+        private void Darkness()
+        {
             float playerBrightness = player.Brightness();
-            if (!player.InErilipah())
-                return;
-
-            for (int i = 0; i < 3000; i++)
-            {
-                Main.dust[i].noLight = true;
-            }
 
             if (!NPC.AnyNPCs(mod.NPCType<Taranys>()) && playerBrightness <= 0.1f)
             {
@@ -273,7 +279,38 @@ namespace Erilipah
             if (darknessCounter < 0)
                 darknessCounter = 0;
         }
+
+        private void InfectionHurt()
+        {
+            player.lifeRegenTime = 0;
+            if (player.lifeRegen > 0)
+                player.lifeRegen = 0;
+
+            if (counter % (int)Math.Max(30 / (Infection - infectionMax), 1) == 0)
+            {
+                player.netLife = true;
+                player.statLife--;
+            }
+
+            if (counter % 30 == 0 && Infection - infectionMax >= 1)
+                CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, (int)Math.Floor(Infection - infectionMax), true, true);
+            else if (counter % 30 == 0)
+                CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, 1, true, true);
+
+            if (player.statLife <= 0)
+            {
+                string biome = player.ZoneCorrupt || player.ZoneCrimson ? "evil" : "darkness";
+                player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was infested with " + biome + "."), 30, 0);
+            }
+        }
+
         public override void PostUpdate()
+        {
+            InfectionDebuffs();
+            InfectionRate();
+        }
+
+        private void InfectionDebuffs()
         {
             if (Infection > infectionMax * 0.9f && !player.buffImmune[BuffID.Weak])
             {
@@ -283,7 +320,10 @@ namespace Erilipah
             {
                 player.AddBuff(BuffID.Slow, 1);
             }
+        }
 
+        private void InfectionRate()
+        {
             const float infectionInErilipah = 8f / 3600f;
             if (player.InErilipah())
             {
@@ -320,6 +360,11 @@ namespace Erilipah
 
         private float added = 0f;
         public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        {
+            ApplyInfection(damage);
+        }
+
+        private void ApplyInfection(double damage)
         {
             if (player.InErilipah() && (damage > 1 || added > 0))
             {

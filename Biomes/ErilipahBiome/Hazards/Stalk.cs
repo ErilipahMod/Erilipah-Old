@@ -39,6 +39,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             soundType = 2;
             soundStyle = 27;
             drop = mod.ItemType<CrystallineTileItem>();
+
+            minPick = 65;
+            mineResist = 2.5f;
         }
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -118,7 +121,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     Tile above = Main.tile[middleX, j - 1];
                     above.type = Type;
                     above.active(true);
-                    GetStalkFrame(out above.frameX, out above.frameY);
+                    above.frameX = (short)(Main.rand.Next(3) * 18);
+                    above.frameY = 8 * 18;
                 }
 
                 GrowMoreStalks(i, j);
@@ -142,7 +146,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
                 // % chance to start the tip of the stalk
                 // Otherwise, continue growing the stalk
-                if (Main.rand.Chance(0.045f) || Main.tile[i, j - 5].active())
+                if (Main.rand.Chance(0.04f) || Main.tile[i, j - 5].active())
                 {
                     above.type = Type;
                     above.active(true);
@@ -206,17 +210,24 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public static bool IsValid(int i, int j)
         {
+            // Check if the stalk area is clear
             for (int e = -1; e <= 1; e++)
                 for (int f = -7; f < 0; f++)
                 {
-                    Tile testing = Main.tile[i + e, j + f];
-                    if (testing.active() || testing.wall > 0)
+                    Tile t = Main.tile[i + e, j + f];
+                    bool isActive = t.active() && t.type != (ushort)Erilipah.Instance.TileType<Mushroom>();
+                    if (isActive || t.wall > 0)
                         return false;
                 }
 
+            // Check if the floor is valid
             for (int e = -1; e <= 1; e++)
-                if (!Main.tile[i + e, j].active())
+            {
+                Tile t = Main.tile[i + e, j];
+                bool validSlope = t.slope() == 0 || t.bottomSlope();
+                if (!t.active() || !validSlope || !Main.tileSolid[t.type])
                     return false;
+            }
 
             return true;
         }

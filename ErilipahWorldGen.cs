@@ -1128,7 +1128,13 @@ namespace Erilipah
                     Tile tile = Main.tile[i, j];
 
                     if (tile.IsErilipahTile() && WorldGen.genRand.Chance(0.1f))
+                    {
                         PlaceHazard(i, j, mod);
+                    }
+                    if (tile.IsErilipahTile() && WorldGen.genRand.Chance(0.07f))
+                    {
+                        Mushroom.TryPlace(i, j);
+                    }
                 }
             }
         }

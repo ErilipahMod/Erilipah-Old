@@ -98,7 +98,7 @@ namespace Erilipah.NPCs.ErilipahBiome
                 if (dist > 3)
                 {
                     float distToSpeed = MathHelper.Lerp(speed, speed / 4, 1 - dist / 300f);
-                    npc.velocity = npc.DirectionTo(Torch.ToWorldCoordinates()) * distToSpeed;
+                    npc.velocity = npc.DirectionTo(Torch.ToWorldCoordinates()) * Math.Min(10, distToSpeed);
                 }
                 else
                 {

@@ -9,55 +9,53 @@ using Terraria.ObjectData;
 
 namespace Erilipah.Biomes.ErilipahBiome.Hazards
 {
-    public class Mushroom : HazardTile
+    public class Mushroom : ModTile
     {
-        public override string MapName => "Mushroom";
-        public override int DustType => mod.DustType<FlowerDust>();
-        public override TileObjectData Style
-        {
-            get
-            {
-                TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-                TileObjectData.newTile.Height = 1;
-                TileObjectData.newTile.CoordinateHeights = new[] { 16 };
-                TileObjectData.newTile.StyleHorizontal = true;
-                TileObjectData.newTile.AnchorValidTiles = new int[]
-                { mod.TileType<InfectedClump>(), mod.TileType<SpoiledClump>() };
-                TileObjectData.newTile.AnchorBottom = new AnchorData(
-                    AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
-                TileObjectData.newTile.AnchorBottom = new AnchorData(
-                    AnchorType.SolidBottom | AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-
-                return TileObjectData.newTile;
-            }
-        }
-
         public override void SetDefaults()
         {
-            base.SetDefaults();
-            Main.tileCut[Type] = true;
             soundType = 3;
             soundStyle = 1;
+            dustType = mod.DustType<FlowerDust>();
             drop = mod.ItemType<MushroomItem>();
+            disableSmartCursor = true;
+
+            Main.tileFrameImportant[Type] = true;
+            Main.tileCut[Type] = true;
+            Main.tileNoFail[Type] = true;
+            Main.tileLavaDeath[Type] = true;
+
+            AddMapEntry(new Color(60, 18, 80));
+
+            TileObjectData.newTile.Width = 1;
+            TileObjectData.newTile.Height = 1;
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinateHeights = new int[]{ 16 };
+            TileObjectData.newTile.CoordinatePadding = 2;
+            TileObjectData.newTile.DrawYOffset = -1;
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.LavaDeath = true;
+            //TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.MushroomPlants, 0));
+            TileObjectData.newTile.AnchorValidTiles = new[]
+            {
+                mod.TileType<InfectedClump>(),
+                mod.TileType<SpoiledClump>()
+            };
+
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorLeft = TileObjectData.newTile.AnchorRight = AnchorData.Empty;
+
+            TileObjectData.addTile(Type);
         }
 
         public static bool TryPlace(int i, int j)
         {
-            int mushType = Erilipah.Instance.TileType<Mushroom>();
-            int clumpType = Erilipah.Instance.TileType<InfectedClump>();
-            int spoilType = Erilipah.Instance.TileType<SpoiledClump>();
-
-            bool rightSlope = Main.tile[i, j + 1].slope() == 0 || Main.tile[i, j + 1].topSlope();
-            rightSlope |= Main.tile[i, j - 1].slope() == 0 || Main.tile[i, j - 1].bottomSlope();
-
-            bool rightType = Main.tile[i, j + 1].active() && (Main.tile[i, j + 1].type == clumpType || Main.tile[i, j + 1].type == spoilType);
-            rightType |= Main.tile[i, j - 1].active() && (Main.tile[i, j - 1].type == clumpType || Main.tile[i, j - 1].type == spoilType);
-
-            if (!Main.tile[i, j].active() && rightType && rightSlope)
+            int typePrevious = Main.tile[i, j].type;
+            int type = Erilipah.Instance.TileType<Mushroom>();
+            WorldGen.Place1x1(i, j, type, 0);
+            if (type != typePrevious)
             {
-                Main.tile[i, j].type = (ushort)mushType;
-                Main.tile[i, j].active(true);
-                Main.tile[i, j].frameX = (short)(Main.rand.Next(5) * 18);
+                Main.tile[i, j].frameX =(short)(Main.rand.Next(5) * 18);
                 Main.tile[i, j].frameY = 0;
                 return true;
             }
@@ -74,6 +72,22 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                 if (TryPlace(i + n, j + m))
                     break;
             }
+        }
+
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+        {
+            if (!Main.tile[i, j - 1].active() && !Main.tile[i, j + 1].active())
+            {
+                WorldGen.KillTile(i, j);
+            }
+            noBreak = true;
+            resetFrame = false;
+            return false;
+        }
+
+        public override bool Drop(int i, int j)
+        {
+            return Main.rand.NextBool(4);
         }
 
         public override void PlaceInWorld(int i, int j, Item item)
@@ -120,34 +134,56 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Infected Fungus");
-            Tooltip.SetDefault("'It smells horrible...'");
+            Tooltip.SetDefault("'It smells horrible...'\nBUFF SPRITE NEEDED @moonburn");
         }
 
         public override void SetDefaults()
         {
-            item.CloneDefaults(ItemID.Mushroom);
-
             item.maxStack = 999;
 
-            item.healLife = 0;
-            item.potion = true;
+            item.useStyle = ItemUseStyleID.EatingUsing;
+            item.UseSound = SoundID.Item2;
+
+            item.useTime = 30;
+            item.useAnimation = 40;
             item.consumable = true;
+            item.potion = true;
 
             item.width = 26;
             item.height = 32;
 
             item.value = 10;
+
+            item.buffType = mod.BuffType<Hallucinating>();
+            item.buffTime = 900;
         }
 
         public override bool ConsumeItem(Player player)
         {
-            item.consumable = true;
-
             player.immune = false;
             player.immuneTime = 0;
             player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " thought eating wild shrooms was a good idea."), 60, 0);
             player.I().Infect(5f);
             return true;
+        }
+    }
+
+    public class Hallucinating : ModBuff
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "Erilipah/Debuff";
+            return base.Autoload(ref name, ref texture);
+        }
+
+        public override void SetDefaults()
+        {
+            Main.debuff[Type] = true;
+        }
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+            player.lifeRegen = System.Math.Min(player.lifeRegen, 0);
         }
     }
 }

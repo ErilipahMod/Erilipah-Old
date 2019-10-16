@@ -91,18 +91,6 @@ namespace Erilipah
             CombatText.NewText(loc, new Color(247, 202, 166), amount);
         }
 
-        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
-        {
-            if (player.statLife == 1 && player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
-            {
-                r -= 0.35f;
-                b -= 0.35f;
-                g = Math.Max(0.80f, g);
-                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, mod.DustType<Items.Niter.NiterDust>(), Scale: 0.75f)];
-                d.velocity = new Vector2(0, -0.25f);
-            }
-        }
-
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             TorchOfSoul(target, damage);
@@ -111,7 +99,6 @@ namespace Erilipah
         {
             TorchOfSoul(target, damage);
         }
-
         public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
             AutoHeal((int)damage);
@@ -152,6 +139,18 @@ namespace Erilipah
                 player.lifeRegenTime = 0;
                 if (player.lifeRegen > 0)
                     player.lifeRegen = 0;
+            }
+        }
+
+        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        {
+            if (player.statLife == 1 && player.HasBuff(mod.BuffType<Items.Niter.NiterPotionBuff>()))
+            {
+                r -= 0.35f;
+                b -= 0.35f;
+                g = Math.Max(0.80f, g);
+                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, mod.DustType<Items.Niter.NiterDust>(), Scale: 0.75f)];
+                d.velocity = new Vector2(0, -0.25f);
             }
         }
 
