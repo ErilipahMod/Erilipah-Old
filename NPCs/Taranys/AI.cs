@@ -1134,7 +1134,7 @@ namespace Erilipah.NPCs.Taranys
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D texture2d = ModContent.GetTexture(Texture);
+            Texture2D texture2d = GetTexture(Texture);
             Rectangle frame = texture2d.Frame(1, 2, 0, projectile.frame);
             Vector2 drawOrigin = frame.Size() / 2;
             Vector2 drawPos = projectile.Center - Main.screenPosition;
@@ -1143,7 +1143,7 @@ namespace Erilipah.NPCs.Taranys
                 texture2d,
                 drawPos,
                 frame,
-                Color.White * 0.6f,
+                Color.White * 0.75f,
                 projectile.rotation,
                 drawOrigin,
                 projectile.scale,
@@ -1176,7 +1176,7 @@ namespace Erilipah.NPCs.Taranys
             }
             else if (projectile.ai[0] > -120)
             {
-                int player = projectile.FindClosestPlayer(500f);
+                int player = projectile.FindClosestPlayer(1200f);
                 if (player == -1)
                     return;
                 Player target = Main.player[player];
