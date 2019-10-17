@@ -15,7 +15,7 @@ namespace Erilipah.Items.Templar
         //"Revival has a three minute cooldown";
         public override void UpdateEquip(Player player)
         {
-            Vitality vital = player.GetModPlayer<Vitality>(mod);
+            Vitality vital = player.GetModPlayer<Vitality>();
             vital.maxVitality += 120;
             vital.degradeDelay += 60;
         }

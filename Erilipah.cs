@@ -18,10 +18,7 @@ namespace Erilipah
     {
         public Erilipah()
         {
-            Instance = this;
         }
-
-        public static Erilipah Instance { get; private set; }
 
         public static ModHotKey VeritasAbilityKey;
         public static ModHotKey VitalityAbilityKey;
@@ -83,8 +80,6 @@ namespace Erilipah
         }
         public override void Unload()
         {
-            Instance = null;
-
             Bandolier = null;
             SoulBank = null;
 
@@ -98,7 +93,7 @@ namespace Erilipah
             infectionBar = null;
             infectUI = null;
 
-            handlers.Clear();
+            handlers?.Clear();
             handlers = null;
         }
 
@@ -233,7 +228,7 @@ namespace Erilipah
         /// <param name="info">Information.</param>
         public void SendPacket(params object[] info)
         {
-            ModPacket packet = Erilipah.Instance.GetPacket();
+            ModPacket packet = ModContent.GetInstance<Erilipah>().GetPacket();
             packet.Write(ID);
 
             WritePacket(packet, info);

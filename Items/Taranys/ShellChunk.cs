@@ -17,7 +17,7 @@ namespace Erilipah.Items.Taranys
 
         public override void AddRecipes()
         {
-            void ItemRecipe<T>(int chunks) where T : ModItem => SimpleRecipe<T>(TileType<Altar>(), mod.ItemType<ShellChunk>(), chunks);
+            void ItemRecipe<T>(int chunks) where T : ModItem => mod.SimpleRecipe<T>(TileType<Altar>(), ItemType<ShellChunk>(), chunks);
 
             ItemRecipe<TyrantEye>(6);
             ItemRecipe<VoidSpike>(7);

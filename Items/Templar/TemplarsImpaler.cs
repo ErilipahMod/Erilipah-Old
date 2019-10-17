@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Terraria;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Templar
 {
@@ -84,7 +85,9 @@ namespace Erilipah.Items.Templar
         protected override DamageTypes DamageType => DamageTypes.Melee;
         protected override DustTrailTypes DustTrailType => DustTrailTypes.NoTrail;
 
+#pragma warning disable IDE1006 // Naming Styles
         private int heal => (Frame + 1) * 10;
+#pragma warning restore IDE1006 // Naming Styles
 
         private Player CheckCollision()
         {
@@ -121,16 +124,16 @@ namespace Erilipah.Items.Templar
         protected override void OnCancelCharge()
         {
             ResumeVelocity(10);
-            player.GetModPlayer<Vitality>().SubVitality(vitality);
+            player.GetModPlayer<Vitality>().SubVitality(Vitality);
         }
         protected override void OnFinishCharge()
         {
             ResumeVelocity(10);
-            player.GetModPlayer<Vitality>().SubVitality(vitality);
+            player.GetModPlayer<Vitality>().SubVitality(Vitality);
         }
 
-        private int vitality => (int)(heal * 0.75f);
-        protected override bool Cancel => !Main.mouseRight || player.GetModPlayer<Vitality>().CurrentVitality <= vitality;
+        private int Vitality => (int)(heal * 0.75f);
+        protected override bool Cancel => !Main.mouseRight || player.GetModPlayer<Vitality>().CurrentVitality <= Vitality;
         protected override float MaxCharge => 180;
         protected override float MoveDistance => 50;
     }

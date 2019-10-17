@@ -22,4 +22,7 @@
   <ItemGroup>
     <None Include="Erilipah.sln" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;C:\Users\erict_000\Desktop\Steam\steamapps\common\Terraria\tModLoaderServer.exe&quot; -build &quot;$(ProjectDir)\&quot; -eac &quot;$(TargetPath)&quot;" />
+  </Target>
 </Project>

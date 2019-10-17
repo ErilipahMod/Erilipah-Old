@@ -64,7 +64,7 @@ namespace Erilipah
             {
                 Tile tile = Main.tile[i, j];
                 int type = tile.type;
-                Mod mod = Erilipah.Instance;
+                Mod mod = GetInstance<Erilipah>();
 
                 bool light = tile.type == TileID.Torches || tile.type == TileID.Campfire || TileLoader.IsTorch(type);
                 if (!ignoreArken)

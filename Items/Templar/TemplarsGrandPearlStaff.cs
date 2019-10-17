@@ -2,6 +2,7 @@
 using System;
 using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Items.Templar
 {
@@ -43,7 +44,9 @@ namespace Erilipah.Items.Templar
 
     public class OrbitCenter : ChargeProjectile
     {
-        private int charge => (int)Math.Floor(Charge / (MaxCharge / 4));
+#pragma warning disable IDE1006 // Naming Styles
+        private int charge => (int)Math.Floor(base.Charge / (MaxCharge / 4));
+#pragma warning restore IDE1006 // Naming Styles
 
         protected override bool Dusts => false;
         protected override bool Cancel => !player.channel;
@@ -62,10 +65,10 @@ namespace Erilipah.Items.Templar
         }
         protected override void WhileCharging()
         {
-            if (Charge % (MaxCharge / 4) == 0 && player.whoAmI == projectile.owner)
+            if (base.Charge % (MaxCharge / 4) == 0 && player.whoAmI == projectile.owner)
             {
                 Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileType<Orbit>(),
-                    16, 2, player.whoAmI, projectile.whoAmI, Charge / (MaxCharge / 4));
+                    16, 2, player.whoAmI, projectile.whoAmI, base.Charge / (MaxCharge / 4));
             }
         }
 
@@ -147,12 +150,14 @@ namespace Erilipah.Items.Templar
 
     public class HealingOrbitCenter : ChargeProjectile
     {
-        private int charge => (int)Math.Floor(Charge / (MaxCharge / 4));
+#pragma warning disable IDE1006 // Naming Styles
+        private int charge => (int)Math.Floor(base.Charge / (MaxCharge / 4));
+#pragma warning restore IDE1006 // Naming Styles
 
-        private int vitality => charge * 4 + 16;
+        private int Vitality => charge * 4 + 16;
 
         protected override bool Dusts => false;
-        protected override bool Cancel => !Main.mouseRight || player.GetModPlayer<Vitality>().CurrentVitality <= vitality;
+        protected override bool Cancel => !Main.mouseRight || player.GetModPlayer<Vitality>().CurrentVitality <= Vitality;
         protected override float MaxCharge => 120;
         protected override float MoveDistance => 100;
         public override void SetDefaults()
@@ -164,24 +169,26 @@ namespace Erilipah.Items.Templar
         protected override void OnCancelCharge()
         {
             ResumeVelocity(10);
-            player.GetModPlayer<Vitality>().SubVitality(vitality);
+            player.GetModPlayer<Vitality>().SubVitality(Vitality);
             player.itemTime = 33;
         }
         protected override void OnFinishCharge()
         {
             ResumeVelocity(10);
-            player.GetModPlayer<Vitality>().SubVitality(vitality);
+            player.GetModPlayer<Vitality>().SubVitality(Vitality);
         }
         protected override void WhileCharging()
         {
-            if (Charge % (MaxCharge / 4) == 0 && player.whoAmI == projectile.owner)
+            if (base.Charge % (MaxCharge / 4) == 0 && player.whoAmI == projectile.owner)
             {
                 Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileType<HealingOrbit>(),
-                    16, 2, player.whoAmI, projectile.whoAmI, Charge / (MaxCharge / 4));
+                    16, 2, player.whoAmI, projectile.whoAmI, base.Charge / (MaxCharge / 4));
             }
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         private int heal => charge > 1 ? 24 : 16;
+#pragma warning restore IDE1006 // Naming Styles
 
         private Player CheckCollision()
         {

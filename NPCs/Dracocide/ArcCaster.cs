@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.NPCs.Dracocide
 {
