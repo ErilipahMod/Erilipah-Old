@@ -49,30 +49,36 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             TileObjectData.addTile(Type);
         }
 
+        private static bool TileIsBase(int i, int j) 
+        {
+            Tile t = Main.tile[i, j];
+            return Main.tileSolid[t.type] && t.active() && t.blockType() == 0;
+        }
+
         public static bool TryPlace(int i, int j)
         {
-            int typePrevious = Main.tile[i, j].type;
-            int type = TileType<Mushroom>();
-            WorldGen.Place1x1(i, j, type, 0);
-            if (type != typePrevious)
-            {
-                Main.tile[i, j].frameX = (short)(Main.rand.Next(5) * 18);
-                Main.tile[i, j].frameY = 0;
-                return true;
-            }
-            return false;
+            bool isTaken = Main.tile[i, j].active();
+
+            if (isTaken || !TileIsBase(i, j - 1) && !TileIsBase(i, j + 1))
+                return false;
+
+            Main.tile[i, j].active(true);
+            Main.tile[i, j].type = (ushort)TileType<Mushroom>();
+            Main.tile[i, j].frameX = (short)(Main.rand.Next(5) * 18);
+            Main.tile[i, j].frameY = 0;
+            return true;
         }
 
         public override void RandomUpdate(int i, int j)
         {
-            for (int m = -1; m <= 1; m++)
-            {
-                bool left = Main.tile[i + 1, j + m].active();
-                int n = left ? -1 : 1;
-
-                if (TryPlace(i + n, j + m))
-                    break;
-            }
+            for (int n = -1; n <= 1; n++)
+                for (int m = -1; m <= 1; m++)
+                {
+                    if (n == 0 && m == 0)
+                        continue;
+                    if (TryPlace(i + n, j + m))
+                        return;
+                }
         }
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -88,7 +94,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override bool Drop(int i, int j)
         {
-            return Main.rand.NextBool(4);
+            return Main.rand.NextBool(5);
         }
 
         public override void PlaceInWorld(int i, int j, Item item)
@@ -109,7 +115,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             if ((i + j) % 2 == 0)
                 spriteEffects |= Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally;
 
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j - 1].active())
+            if (!TileIsBase(i, j + 1) && TileIsBase(i, j - 1))
             {
                 spriteEffects |= Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
             }
@@ -122,9 +128,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            for (int h = 0; h < 7; h++)
+            bool isUpsideDown = !TileIsBase(i, j + 1) && TileIsBase(i, j - 1);
+            for (int h = 0; h <= 7; h++)
             {
-                float rotation = h / 7f * MathHelper.Pi + MathHelper.Pi;
+                float rotation = h / 7f * MathHelper.Pi + (isUpsideDown ? 0 : MathHelper.Pi);
                 Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), DustType<FlowerDust>(), rotation.ToRotationVector2() * 5, Scale: 1.8f).noGravity = true;
             }
         }
@@ -134,7 +141,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Infected Fungus");
+            DisplayName.SetDefault("Tainted Shroom");
             Tooltip.SetDefault("'It smells horrible...'\nBUFF SPRITE NEEDED @moonburn");
         }
 
@@ -145,10 +152,9 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             item.useStyle = ItemUseStyleID.EatingUsing;
             item.UseSound = SoundID.Item2;
 
-            item.useTime = 30;
+            item.useTime = 60;
             item.useAnimation = 40;
             item.consumable = true;
-            item.potion = true;
 
             item.width = 26;
             item.height = 32;
@@ -159,13 +165,10 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             item.buffTime = 900;
         }
 
-        public override bool ConsumeItem(Player player)
+        public override void OnConsumeItem(Player player)
         {
-            player.immune = false;
-            player.immuneTime = 0;
-            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " thought eating wild shrooms was a good idea."), 60, 0);
+            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " thought eating wild shrooms was a good idea."), player.statDefense / 2 + 60, 0);
             player.I().Infect(5f);
-            return true;
         }
     }
 
@@ -179,6 +182,8 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void SetDefaults()
         {
+            DisplayName.SetDefault("Hallucinating");
+            Description.SetDefault("Something is clearly wrong 🎵");
             Main.debuff[Type] = true;
         }
 

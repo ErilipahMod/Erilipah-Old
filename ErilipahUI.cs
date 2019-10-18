@@ -20,14 +20,13 @@ namespace Erilipah
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (vitalityUI != null && VitalityBar.Visible)
-                vitalityUI.Update(gameTime);
+            if (VitalityBar.Visible)
+                vitalityUI?.Update(gameTime);
 
-            if (shieldBrokenUI != null && ShieldBroken.Visible)
-                shieldBrokenUI.Update(gameTime);
+            if (ShieldBroken.Visible)
+                shieldBrokenUI?.Update(gameTime);
 
-            if (infectUI != null)
-                infectUI.Update(gameTime);
+            infectUI?.Update(gameTime);
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -42,7 +41,9 @@ namespace Erilipah
                 {
                     infectUI.Draw(Main.spriteBatch, new GameTime());
                     return true;
-                }));
+                }, 
+                InterfaceScaleType.UI
+                ));
 
             layers.Insert(resourceBars, new LegacyGameInterfaceLayer(
                 "Erilipah: Vitality",
@@ -51,7 +52,9 @@ namespace Erilipah
                     if (VitalityBar.Visible)
                         vitalityUI.Draw(Main.spriteBatch, new GameTime());
                     return true;
-                }));
+                }, 
+                InterfaceScaleType.UI
+                ));
 
             layers.Insert(resourceBars, new LegacyGameInterfaceLayer(
                 "Erilipah: Broken Shield",

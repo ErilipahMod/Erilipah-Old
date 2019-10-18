@@ -92,7 +92,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                         ProjectileType<FlowerProj>(), 21, 1, Main.myPlayer);
                 }
 
-            for (int h = 0; h < 10; h++)
+            for (int h = 0; h <= 10; h++)
             {
                 float rotation = h / 10f * MathHelper.Pi + MathHelper.Pi;
                 Dust.NewDustPerfect(new Vector2(i * 16 + 16, j * 16), DustType<FlowerDust>(), rotation.ToRotationVector2() * 6, Scale: 2).noGravity = true;

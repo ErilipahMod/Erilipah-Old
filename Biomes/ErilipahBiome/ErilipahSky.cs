@@ -65,17 +65,23 @@ namespace Erilipah.Biomes.ErilipahBiome
     }
     public class ErilipahSky : CustomSky
     {
-        public override void Activate(Vector2 position, params object[] args) => _active = true;
+        public override void Activate(Vector2 position, params object[] args)
+        {
+            if (!_active)
+                Opacity = 0.01f;
+            _active = true;
+        }
         public override void Deactivate(params object[] args)
         {
             _active = false;
             ashes.Clear();
         }
-        public override bool IsActive() => _active || Opacity > 0;
+        public override bool IsActive() => _active && Opacity > 0f;
         public override void Reset() => _active = false;
 
-        private bool _active = false;
         private float Intensity => MathHelper.SmoothStep(0, 0.5f, Opacity);
+
+        private bool _active = false;
         private readonly List<FallingAsh> ashes = new List<FallingAsh>();
 
         public override void Update(GameTime gameTime)
@@ -137,6 +143,6 @@ namespace Erilipah.Biomes.ErilipahBiome
             Vector4 end = Vector4.Lerp(start, inColor.ToVector4(), 1 - Intensity);
             return new Color(end);
         }
-        public override float GetCloudAlpha() => 0;
+        public override float GetCloudAlpha() => Intensity;
     }
 }

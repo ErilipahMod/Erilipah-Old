@@ -100,6 +100,27 @@ namespace Erilipah
                 (int)entity.position.Y / 16, (int)(entity.position.Y + entity.height) / 16);
         }
 
+        internal static Vector2 GetSpritePosition(this Entity entity, Vector2 pixel)
+        {
+            float rot = 0;
+            float scl = 1;
+            if (entity is NPC n)
+            {
+                rot = n.rotation;
+                scl = n.scale;
+            }
+            else if (entity is Projectile p)
+            {
+                rot = p.rotation;
+                scl = p.scale;
+            }
+            else if (entity is Item i)
+            {
+                scl = i.scale;
+            }
+            return entity.position + pixel.RotatedBy(rot, entity.Size / 2) * scl;
+        }
+
         internal static void Animate(this Projectile proj, int ticksPerFrame, int numFrames, int startingFrame = 0)
         {
             if (++proj.frameCounter % ticksPerFrame == 0)

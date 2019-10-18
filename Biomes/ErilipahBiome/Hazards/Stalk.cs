@@ -123,7 +123,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
                     above.type = Type;
                     above.active(true);
                     above.frameX = (short)(Main.rand.Next(3) * 18);
-                    above.frameY = 8 * 18;
+                    above.frameY = 7 * 18;
                 }
 
                 GrowMoreStalks(i, j);

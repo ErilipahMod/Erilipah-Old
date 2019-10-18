@@ -37,6 +37,7 @@ namespace Erilipah.Biomes.ErilipahBiome
         }
         public override void SetDefaults()
         {
+            npc.npcSlots = 0f;
             npc.hide = true;
             npc.lifeMax = 1;
             npc.defense = 0;

@@ -45,10 +45,10 @@ namespace Erilipah
                     NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
             }
 
-            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.0155f) && OffScreen(i, j))
+            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.033f))
             {
-                if (!Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j - 1))
-                    Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j + 1);
+                Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j - 1);
+                Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j + 1);
             }
         }
 

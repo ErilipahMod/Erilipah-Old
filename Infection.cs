@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -22,16 +23,20 @@ namespace Erilipah
         public override void OnInitialize()
         {
             SetPadding(0);
-            Left.Set(Main.screenWidth - 450, 0f);
-            Top.Set(32, 0f);
             Width.Set(130, 0);
             Height.Set(28, 0);
+            Left.Set(Main.screenWidth - 450, 0.6614f);
+            Top.Set(32, 0.04539f);
         }
 
         private float alpha = 60f;
         private int counter = 0;
+        private int scaleCounter = 0;
         private int frameY = 0;
         private int frameX = 0;
+
+        private readonly List<InfectionBarDust> infectedDusts = new List<InfectionBarDust>();
+
 
         // 0 = Erilipah
         // 1 = Corrupt
@@ -49,27 +54,12 @@ namespace Erilipah
 
         private bool ActiveOther(Player p) => p.active && !p.dead && p.I().Infection > 0;
         private bool ActiveBar() => Main.LocalPlayer.active && Main.LocalPlayer.I().Infection > 0;
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // Draw others' percentages
-            for (int i = 0; i < Main.maxPlayers; i++)
+            if (Main.netMode != NetmodeID.SinglePlayer)
             {
-                if (i == Main.myPlayer)
-                    continue;
-
-                var player = Main.player[i];
-                if (ActiveOther(player))
-                {
-                    float infection = player.I().Infection;
-                    float infectionMax = player.I().infectionMax;
-                    string peepeepoopoo = Math.Round(infection * 100 / infectionMax, 1).ToString() + "%";
-                    Vector2 origin = Main.fontMouseText.MeasureString(peepeepoopoo) / 2f;
-                    Vector2 center = player.Center - new Vector2(0, 40);
-
-                    Utils.DrawBorderString(spriteBatch, peepeepoopoo,
-                        center - origin - Main.screenPosition, Color.MediumVioletRed,
-                        infection > infectionMax ? infection / infectionMax : 1f); //, SpriteEffects.None, 0);
-                }
+                DrawOthers(spriteBatch);
             }
 
             if (!ActiveBar() || frameX != GetBiome(Main.LocalPlayer))
@@ -79,72 +69,181 @@ namespace Erilipah
             else
             {
                 alpha--;
-                frameX = GetBiome(Main.LocalPlayer);
             }
 
-            alpha = MathHelper.Clamp(alpha, 0, 60);
+            alpha = MathHelper.Clamp(alpha, 0, 90);
 
             if (alpha < 60)
             {
-                float infection = Math.Max(0, Main.LocalPlayer.I().Infection);
-                float infectionMax = Main.LocalPlayer.I().infectionMax;
+                Vector2 drawPos = new Vector2(Left.Percent * Main.screenWidth / Main.UIScale, Top.Percent * Main.screenHeight);
+                DrawBar(spriteBatch, drawPos);
+            }
+            else if (alpha > 70)
+            {
+                frameX = GetBiome(Main.LocalPlayer);
+            }
+        }
 
-                Texture2D texture2D = ModContent.GetTexture("Erilipah/Biomes/ErilipahBiome/Infection");
-                float amount = Math.Max(0, infection);
+        private void DrawBar(SpriteBatch spriteBatch, Vector2 position)
+        {
+            float infection = Math.Max(0, Main.LocalPlayer.I().Infection);
+            float infectionMax = Main.LocalPlayer.I().infectionMax;
+            float amount = Math.Max(0, infection);
 
-                counter++;
+            Texture2D texture2D = GetTexture("Erilipah/Biomes/ErilipahBiome/Infection");
+            Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
 
-                if (amount > infectionMax)
+            counter++;
+
+            if (amount > infectionMax)
+            {
+                // FrameY animation
+                float speedMult = infectionMax / infection / 2;
+                int countModulo = (int)(10 * speedMult);
+                if (counter % countModulo == 0)
                 {
-                    float speedMult = infectionMax / infection / 2;
-                    int countModulo = (int)(10 * speedMult);
-                    if (counter % countModulo == 0)
+                    frameY++;
+                    if (frameY > 22)
                     {
-                        frameY++;
-                        if (frameY > 22)
-                        {
-                            frameY = 20;
-                        }
+                        frameY = 20;
                     }
                 }
-                else
+
+                SpewDust(position + new Vector2(Main.rand.NextFloat(115, 120), Main.rand.NextFloat(8, 16)));
+            }
+            else
+            {
+                // FrameY animation
+                int max = (int)MathHelper.Lerp(0, 20, amount / infectionMax);
+                if (counter % 10 == 0)
                 {
-                    int max = (int)MathHelper.Lerp(0, 20, amount / infectionMax);
-                    if (counter % 8 == 0)
+                    frameY++;
+                    if (frameY > max)
                     {
-                        frameY++;
-                        if (frameY > max)
-                        {
-                            frameY = max;
-                        }
+                        frameY = max;
                     }
                 }
 
-                Rectangle frame = texture2D.Frame(3, 23, frameX, frameY);
-                Vector2 drawCenter = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels + Height.Pixels / 2);
-                Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
+                // Scale
+                if (scaleCounter > 0)
+                    scaleCounter--;
+                if (scaleCounter < 0)
+                    scaleCounter++;
+            }
 
-                spriteBatch.Draw(texture2D, drawCenter, frame, color, 0f, frame.Size() / 2f, 1f, 0, 0);
-                if (IsMouseHovering)
-                {
-                    string peepeepoopoo = Math.Round(infection, 1).ToString() + "/" + infectionMax.ToString();
-                    Vector2 center = Main.MouseScreen + new Vector2(15, 15);
+            Rectangle frame = texture2D.Frame(3, 23, frameX, frameY);
+            spriteBatch.Draw(texture2D, new Rectangle((int)position.X, (int)position.Y, (int)Width.Pixels, (int)Height.Pixels), frame, color);
 
-                    Main.LocalPlayer.showItemIconText = peepeepoopoo;
-                    Utils.DrawBorderString(spriteBatch, peepeepoopoo, center, Main.mouseTextColorReal);
-                    //spriteBatch.DrawString(Main.fontMouseText, peepeepoopoo, center, Main.mouseTextColorReal);
-                }
+            Rectangle bar = new Rectangle((int)position.X, (int)position.Y, 130, 28);
+            bool isHovering = bar.Contains(Main.MouseScreen.ToPoint());
+            if (isHovering)
+            {
+                string peepeepoopoo = Math.Round(infection, 1).ToString() + "/" + infectionMax.ToString();
+                Vector2 center = Main.MouseScreen + new Vector2(15, 15);
+
+                Main.LocalPlayer.showItemIconText = peepeepoopoo;
+                Utils.DrawBorderString(spriteBatch, peepeepoopoo, center, Main.mouseTextColorReal);
+                //spriteBatch.DrawString(Main.fontMouseText, peepeepoopoo, center, Main.mouseTextColorReal);
+            }
+            {
+                string peepeepoopoo = "Infection: " + Math.Floor(infection * 100 / infectionMax).ToString() + "%";
+                Vector2 origin = Main.fontMouseText.MeasureString(peepeepoopoo) / 2f;
+                Vector2 center = new Vector2(position.X + Width.Pixels / 2, position.Y - 12);
+
+                spriteBatch.DrawString(Main.fontMouseText, peepeepoopoo, center, Main.mouseTextColorReal * ((60 - alpha) / 60f), 0f, origin,
+                    1f, SpriteEffects.None, 0);
+            }
+
+            if (Main.rand.NextBool(8))
+                DripDust(position + new Vector2(20, 12) + Main.rand.NextVector2Circular(12, 10));
+            DrawDusts(spriteBatch);
+        }
+
+        private void DripDust(Vector2 position)
+        {
+            float scale = Main.rand.NextFloat(0.75f, 0.9f) * ((60 - alpha) / 60);
+            Vector2 vel = new Vector2(0, 0.5f);
+            Vector2 accel = new Vector2(0, 0.08f * scale);
+
+            infectedDusts.Add(new InfectionBarDust(position, vel, accel, scale, frameX));
+        }
+
+        private void SpewDust(Vector2 position)
+        {
+            float scale = Main.rand.NextFloat(0.9f, 1.1f) * ((60 - alpha) / 60);
+            Vector2 vel = new Vector2(2.5f, 0);
+            Vector2 accel = new Vector2(-0.06f, -0.08f * scale);
+
+            infectedDusts.Add(new InfectionBarDust(position, vel, accel, scale, frameX));
+        }
+
+        private void DrawDusts(SpriteBatch spriteBatch)
+        {
+            infectedDusts.ForEach(d => d.Update());
+            infectedDusts.RemoveAll(d => !d.Active);
+            infectedDusts.ForEach(d => d.Draw(spriteBatch));
+        }
+
+        private void DrawOthers(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < Main.maxPlayers; i++)
+            {
+                if (i == Main.myPlayer)
+                    continue;
+
+                Player player = Main.player[i];
+                if (ActiveOther(player))
                 {
-                    string peepeepoopoo = "Infection: " + Math.Floor(infection * 100 / infectionMax).ToString() + "%";
+                    float infection = player.I().Infection;
+                    float infectionMax = player.I().infectionMax;
+                    string peepeepoopoo = Math.Ceiling(infection / infectionMax * 100).ToString() + "%";
                     Vector2 origin = Main.fontMouseText.MeasureString(peepeepoopoo) / 2f;
-                    Vector2 center = new Vector2(Left.Pixels + Width.Pixels / 2, Top.Pixels - 12);
+                    Vector2 center = player.Center - new Vector2(0, 40);
 
-                    spriteBatch.DrawString(Main.fontMouseText, peepeepoopoo, center, Main.mouseTextColorReal * ((60 - alpha) / 60f), 0f, origin,
-                        1f, SpriteEffects.None, 0);
+                    Utils.DrawBorderString(spriteBatch, peepeepoopoo,
+                        center - origin - Main.screenPosition, Color.MediumVioletRed,
+                        infection > infectionMax ? infection / infectionMax : 1f); //, SpriteEffects.None, 0);
                 }
             }
         }
     }
+
+    internal class InfectionBarDust : OverlayParticle
+    {
+        public InfectionBarDust(Vector2 pos, Vector2 vel, Vector2 accel, float scale, int biomeType) : base(GetTexture("Erilipah/Biomes/ErilipahBiome/Hazards/Gas"))
+        {
+            position = pos;
+            velocity = vel;
+            acceleration = accel;
+            this.scale = scale;
+
+            switch (biomeType)
+            {
+                default:
+                    color = Color.Lerp(Color.White, Color.Pink, Main.rand.NextFloat());
+                    break;
+                case 1:
+                    color = Color.Lerp(Color.White, Color.Lime, Main.rand.NextFloat());
+                    break;
+                case 2:
+                    color = Color.Lerp(Color.White, Color.Crimson, Main.rand.NextFloat());
+                    break;
+            }
+
+            rotation = Main.rand.NextFloat(6.24f);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            scale -= 0.018f;
+            color.A -= 7;
+            if (color.A <= 5)
+                Active = false;
+        }
+    }
+
     public class InfectionPlr : ModPlayer
     {
         private float infection = 0;
@@ -240,10 +339,6 @@ namespace Erilipah
             {
                 Erilipah.erilipahIsBright = false;
             }
-            if (player.InErilipah())
-            {
-                player.AddBuff(BuffType<Watched>(), 2);
-            }
 
             if (Infection > infectionMax)
             {
@@ -251,7 +346,10 @@ namespace Erilipah
             }
 
             if (player.InErilipah())
+            {
+                player.AddBuff(BuffType<Watched>(), 2);
                 Darkness();
+            }
         }
 
         private void Darkness()
@@ -263,7 +361,7 @@ namespace Erilipah
                 darknessCounter++;
                 if (darknessCounter == 360)
                 {
-                    Main.PlaySound(15, (int)player.Center.X + Main.rand.Next(-150, 150), (int)player.Center.Y + Main.rand.Next(-150, 150), 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
+                    Main.PlaySound(15, (int)player.Center.X + Main.rand.Next(-50, 50), (int)player.Center.Y, 0, 1f, Main.rand.NextFloat(-0.815f, -0.7f));
                 }
                 if (darknessCounter >= 500 && darknessCounter % 150 == 0)
                 {
@@ -314,13 +412,13 @@ namespace Erilipah
 
         private void InfectionDebuffs()
         {
-            if (Infection > infectionMax * 0.9f && !player.buffImmune[BuffID.Weak])
+            if (Infection > infectionMax * 1.0f)
             {
-                player.AddBuff(BuffID.Weak, 1);
+                player.AddBuff(BuffType<StageII>(), 2);
             }
-            if (Infection > infectionMax * 1.0f && !player.buffImmune[BuffID.Slow])
+            else if (Infection > infectionMax * 0.85f)
             {
-                player.AddBuff(BuffID.Slow, 1);
+                player.AddBuff(BuffType<StageI>(), 2);
             }
         }
 

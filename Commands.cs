@@ -26,19 +26,14 @@ namespace Erilipah
             {
                 if (args[0] == "item")
                 {
-                    Item item = caller.Player.HeldItem;
-                    if (item.modItem == null)
-                    {
-                        Main.NewText("[c/00ffff:" + item.Name + "] cannot call ModItem.SetDefaults, it is a vanilla item");
-                        return;
-                    }
-
-                    item.modItem.SetDefaults();
-                    Main.NewText("[c/00ffff:" + item.Name + "] has called SetDefaults");
+                    caller.Player.HeldItem.SetDefaults();
+                    Main.NewText("[c/00ffff:" + caller.Player.HeldItem.Name + "] has called SetDefaults");
                     return;
                 }
 
                 float value = float.Parse(args[1]);
+                Color color = Color.Lerp(new Color(255, 0, 0), new Color(0, 255, 0), int.Parse(args[1]) / 500f);
+
                 if (args[0] == "mana")
                 {
                     caller.Player.statManaMax = (int)value;
@@ -50,9 +45,9 @@ namespace Erilipah
                 if (args[0] == "infection")
                 {
                     caller.Player.I().Infection = value;
+                    color = Color.Lerp(new Color(0, 255, 0), Color.MediumVioletRed, value / caller.Player.I().infectionMax);
                 }
 
-                Color color = Color.Lerp(new Color(255, 0, 0), new Color(0, 255, 0), int.Parse(args[1]) / 500f);
                 Main.NewText("[c/00ffff:" + args[0] + "] has been set to [c/" + color.Hex3() + ":" + value + "]");
             }
             catch

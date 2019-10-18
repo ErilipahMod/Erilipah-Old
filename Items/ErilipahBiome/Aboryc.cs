@@ -66,7 +66,7 @@ namespace Erilipah.Items.ErilipahBiome
 
             if (projectile.frame > 0)
             {
-                Lighting.AddLight(projectile.Center, new Vector3(1.2f, 1.0f, 1.2f * projectile.scale) * projectile.scale);
+                Lighting.AddLight(projectile.Center, new Vector3(1.5f, 1.0f, 1.2f * projectile.scale) * projectile.scale);
             }
 
             // Run shockwave. To start a shockwave set ShockTimer = 1
@@ -131,7 +131,7 @@ namespace Erilipah.Items.ErilipahBiome
                     // Follow player during fight
                     projectile.velocity = Vector2.Zero;
                     Effects(Vector2.Zero, true);
-                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.1f);
+                    projectile.Center = Vector2.Lerp(projectile.Center, new Vector2(player.Center.X + player.direction * 17.5f, player.Center.Y), 0.12f);
                 }
                 else if (Timer >= 0)
                 {

@@ -1118,6 +1118,7 @@ namespace Erilipah.NPCs.Taranys
                 projectile.scale = Main.rand.NextFloat(0.9f, 1.1f);
                 projectile.rotation = Main.rand.NextFloat(6.28f);
             }
+
             projectile.width = 8;
             projectile.height = 8;
             projectile.SetInfecting(2.8f);
@@ -1159,7 +1160,7 @@ namespace Erilipah.NPCs.Taranys
             if (projectile.ai[1] != 0)
             {
                 projectile.tileCollide = false;
-                projectile.rotation += projectile.velocity.X / 16f;
+                projectile.rotation += projectile.velocity.X / 13f;
                 projectile.frame = 1;
                 projectile.width = 10;
                 projectile.height = 16;
@@ -1172,16 +1173,27 @@ namespace Erilipah.NPCs.Taranys
             {
                 projectile.tileCollide = false;
                 projectile.velocity *= 0.95f;
-                projectile.rotation += projectile.spriteDirection * 0.12f;
+                projectile.rotation += projectile.spriteDirection * 0.15f;
             }
-            else if (projectile.ai[0] > -120)
+            else if (projectile.ai[0] > -180)
             {
                 int player = projectile.FindClosestPlayer(1200f);
                 if (player == -1)
                     return;
+
                 Player target = Main.player[player];
-                projectile.velocity = projectile.GoTo(target.Center, 0.22f);
+                projectile.velocity = projectile.GoTo(target.Center, 0.25f);
                 projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+                if (projectile.velocity.Length() > 1)
+                {
+                    Vector2 leftEdge = projectile.GetSpritePosition(new Vector2(2, 20));
+                    Vector2 rightEdge = projectile.GetSpritePosition(new Vector2(18, 18));
+                    Vector2 dir = projectile.velocity.SafeNormalize(Vector2.Zero);
+
+                    Dust.NewDustPerfect(leftEdge, DustType<CrystallineDust>(), dir.RotatedBy(2.25) * 2, Scale: 0.8f).noGravity = true;
+                    Dust.NewDustPerfect(rightEdge, DustType<CrystallineDust>(), dir.RotatedBy(-2.3) * 2, Scale: 0.8f).noGravity = true;
+                }
             }
             else
             {
