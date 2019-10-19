@@ -154,7 +154,7 @@ namespace Erilipah
                     1f, SpriteEffects.None, 0);
             }
 
-            if (Main.rand.NextBool(8))
+            if (Main.rand.Chance(amount / infectionMax / 3f))
                 DripDust(position + new Vector2(20, 12) + Main.rand.NextVector2Circular(12, 10));
             DrawDusts(spriteBatch);
         }

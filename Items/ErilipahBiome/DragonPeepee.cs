@@ -66,14 +66,14 @@ namespace Erilipah.Items.ErilipahBiome
         public override bool ReApply(NPC npc, int time, int buffIndex)
         {
             // The increase in time, decreases over time
-            float inc = time / (npc.buffTime[buffIndex] / 120f);
+            float inc = time / (npc.buffTime[buffIndex] / 200f);
             npc.buffTime[buffIndex] += (int)inc;
             return true;
         }
 
         public override void Update(NPC npc, ref int buffIndex)
         {
-            GetInstance<ErilipahNPC>().witherStack = npc.buffTime[buffIndex] / 60;
+            npc.GetGlobalNPC<ErilipahNPC>().witherStack = npc.buffTime[buffIndex] / 60;
 
             npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
             npc.lifeRegen -= Stack(npc) * 4 + 4;

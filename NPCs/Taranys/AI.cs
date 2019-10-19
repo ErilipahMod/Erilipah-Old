@@ -48,6 +48,7 @@ namespace Erilipah.NPCs.Taranys
             float pitch = MathHelper.Lerp(0.1f, 0.25f, 1 - npc.life / (float)npc.lifeMax);
             Main.PlaySound(4, (int)npc.Center.X, (int)npc.Center.Y, 10, 0.80f, pitch + Main.rand.NextFloat(-0.05f, 0.05f));
         }
+
         private void Hover()
         {
             npc.velocity = npc.GoTo(Target.Center - Vector2.UnitY * 200, new Vector2(0.2f, 0.08f), 5.5f);
@@ -57,6 +58,7 @@ namespace Erilipah.NPCs.Taranys
             }
             Rotate();
         }
+
         private void Rotate(bool spin = false)
         {
             if (spin)
@@ -64,6 +66,27 @@ namespace Erilipah.NPCs.Taranys
             else
                 npc.rotation = npc.velocity.X / 15f;
         }
+
+        private void Teleport(Vector2 newPosition)
+        {
+            int dustT = DustType<CrystallineDust>();
+            for (int i = 0; i < 30; i++)
+            {
+                float rot = i / 30f * MathHelper.TwoPi;
+                Dust.NewDustPerfect(npc.Center, dustT, rot.ToRotationVector2() * Main.rand.NextFloat(8, 11) * 2.5f, newColor: Color.Black, Scale: 1.6f).noGravity = true;
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                float rot = i / 30f * MathHelper.TwoPi;
+                Vector2 vel = rot.ToRotationVector2() * Main.rand.NextFloat(7.5f, 10);
+                Dust.NewDustPerfect(newPosition + vel * 20, dustT, vel * -2, newColor: Color.Black, Scale: 1.6f).noGravity = true;
+            }
+
+            npc.Center = newPosition;
+            npc.netUpdate = true;
+        }
+
         private void SpawnMinions(int number)
         {
             if (Main.netMode != 1)
@@ -131,15 +154,21 @@ namespace Erilipah.NPCs.Taranys
                         proj.velocity = npc.Center.To(proj.Center, proj.velocity.Length());
 
                     if (proj.type != ProjectileType<SharpCrystal>())
+                    {
                         proj.aiStyle = 1;
+                        proj.netUpdate = true;
+                    }
                     else
                     {
                         proj.ai[1] = 0;
-                        proj.ai[0] = -120;
+                        proj.ai[0] = -180;
+                        proj.velocity = Vector2.Zero;
+                        proj.netUpdate = true;
                     }
 
                     if (Main.expertMode && repel)
                     {
+                        proj.netUpdate = true;
                         if (proj.friendly || proj.hostile)
                         {
                             proj.friendly = false;
@@ -413,7 +442,7 @@ namespace Erilipah.NPCs.Taranys
                         else if (TempTimer == 60) // Teleport
                         {
                             //npc.netUpdate = true;
-                            npc.Teleport(Target.Center + new Vector2(0, 370).RotatedByRandom(MathHelper.TwoPi), 1);
+                            Teleport(Target.Center + new Vector2(0, 370).RotatedByRandom(MathHelper.TwoPi));
                             npc.velocity = Vector2.Zero;
                             npc.rotation = 0;
                         }
@@ -451,7 +480,7 @@ namespace Erilipah.NPCs.Taranys
                         {
                             Vector2 to = Target.Center + new Vector2(325, 0).RotatedBy(Timer / 26f);
                             if (Vector2.Distance(npc.Center, to) > 200)
-                                npc.Teleport(to, 1);
+                                Teleport(to);
                             else
                                 npc.Center = to;
 
@@ -614,7 +643,7 @@ namespace Erilipah.NPCs.Taranys
                         else if (TempTimer == 115) // Zoop right there to ensure we're not too far away
                         {
                             if (npc.Distance(vector) > 100)
-                                npc.Teleport(vector, 1);
+                                Teleport(vector);
                             Roar();
                         }
                         else if (TempTimer < 120) // Falling, falling, falling,
@@ -1159,19 +1188,17 @@ namespace Erilipah.NPCs.Taranys
 
             if (projectile.ai[1] != 0)
             {
-                projectile.tileCollide = false;
-                projectile.rotation += projectile.velocity.X / 13f;
+                projectile.rotation += projectile.spriteDirection * 0.010f;
                 projectile.frame = 1;
                 projectile.width = 10;
                 projectile.height = 16;
 
-                projectile.velocity.Y *= 0.98f;
+                projectile.velocity.Y *= 0.985f;
                 return;
             }
 
             if (projectile.ai[0] > 0)
             {
-                projectile.tileCollide = false;
                 projectile.velocity *= 0.95f;
                 projectile.rotation += projectile.spriteDirection * 0.15f;
             }
@@ -1184,20 +1211,10 @@ namespace Erilipah.NPCs.Taranys
                 Player target = Main.player[player];
                 projectile.velocity = projectile.GoTo(target.Center, 0.25f);
                 projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver2;
-
-                if (projectile.velocity.Length() > 1)
-                {
-                    Vector2 leftEdge = projectile.GetSpritePosition(new Vector2(2, 20));
-                    Vector2 rightEdge = projectile.GetSpritePosition(new Vector2(18, 18));
-                    Vector2 dir = projectile.velocity.SafeNormalize(Vector2.Zero);
-
-                    Dust.NewDustPerfect(leftEdge, DustType<CrystallineDust>(), dir.RotatedBy(2.25) * 2, Scale: 0.8f).noGravity = true;
-                    Dust.NewDustPerfect(rightEdge, DustType<CrystallineDust>(), dir.RotatedBy(-2.3) * 2, Scale: 0.8f).noGravity = true;
-                }
             }
             else
             {
-                projectile.velocity.Y += 0.175f;
+                projectile.velocity.Y += 0.165f;
                 projectile.rotation += projectile.spriteDirection * 0.010f;
             }
         }
