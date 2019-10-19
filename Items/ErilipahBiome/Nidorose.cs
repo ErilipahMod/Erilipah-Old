@@ -20,6 +20,7 @@ namespace Erilipah.Items.ErilipahBiome
             item.damage = 45;
             item.knockBack = 0;
             item.crit = 6;
+            item.mana = 3;
             item.magic = true;
 
             item.maxStack = 1;
@@ -100,9 +101,6 @@ namespace Erilipah.Items.ErilipahBiome
 
             Pulse++;
 
-            if (Pulse % 15 == 0)
-                player.statMana -= 1;
-
             // Using Pulse to sync it up
             projectile.ai[0] = -1;
             if (Main.myPlayer == player.whoAmI)
@@ -112,16 +110,24 @@ namespace Erilipah.Items.ErilipahBiome
                 projectile.ai[0] = projectile.FindClosestNPC(110, true, true);
             }
 
-            if (projectile.ai[0] > -1)
+            if (projectile.ai[0] > -1 && player.statMana >= 3)
             {
                 NPC target = Main.npc[(int)projectile.ai[0]];
+                int dmgTime = (int)(25 * (1 - Pulse / (300 + Pulse)));
                 if (target.immune[player.whoAmI] <= 0)
                 {
                     target.netUpdate = true;
-                    target.immune[player.whoAmI] = (int)(25 * (1 - Pulse / (300 + Pulse)));
+                    target.immune[player.whoAmI] = dmgTime;
                     player.ApplyDamageToNPC(target, projectile.damage + (int)Pulse / 30, 0, 0, false);
                     player.addDPS((int)((projectile.damage + Pulse / 30) / (60 / (25 * (1 - Pulse / (300 + Pulse))))));
                 }
+
+                if (Pulse % dmgTime == 0)
+                {
+                    player.statMana -= 3;
+                    player.netMana = true;
+                }
+                player.manaRegenDelay = 150;
             }
             else
             {

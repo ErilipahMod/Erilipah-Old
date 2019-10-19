@@ -33,8 +33,8 @@ namespace Erilipah.Items.ErilipahBiome
 
         protected override TextureTypes TextureType => TextureTypes.ItemClone;
         protected override DamageTypes DamageType => DamageTypes.ItemCopy;
-        protected override DustTrailTypes DustTrailType => IsDead ? DustTrailTypes.None : DustTrailTypes.PerfectNoGravity;
-        protected override int TrailThickness => 8;
+        protected override DustTrailTypes DustTrailType => IsDead || IsStickingToTarget ? DustTrailTypes.None : DustTrailTypes.PerfectNoGravity;
+        protected override int TrailThickness => 7;
 
         public override void SetDefaults()
         {
@@ -57,12 +57,15 @@ namespace Erilipah.Items.ErilipahBiome
             IsDead = true;
 
             projectile.extraUpdates = 0;
-            projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero);
 
             if (projectile.velocity.X != oldVelocity.X)
                 projectile.velocity.X = -oldVelocity.X;
             if (projectile.velocity.Y != oldVelocity.Y)
                 projectile.velocity.Y = -oldVelocity.Y;
+
+            projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * 4;
+
+            projectile.netUpdate = true;
 
             return false;
         }
@@ -72,16 +75,21 @@ namespace Erilipah.Items.ErilipahBiome
             get
             {
                 if (!IsStickingToTarget)
-                    return projectile.rotation + Helper.RadiansPerTick(2.5f) * RotateDirection;
+                    return projectile.rotation + Helper.RadiansPerTick(2.2f) * RotateDirection + Main.rand.NextFloat(-0.09f, 0.09f);
                 return null;
             }
         }
 
         public override void Kill(int timeLeft)
         {
-            base.Kill(timeLeft);
             if (projectile.alpha < 250)
+            {
                 Main.PlaySound(SoundID.NPCDeath14, projectile.Center);
+                for (int i = 0; i < 30; i++)
+                {
+                    Dust.NewDustPerfect(projectile.Center, DustType, Main.rand.NextVector2Circular(16, 16)).noGravity = true;
+                }
+            }
         }
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
         {
@@ -123,11 +131,10 @@ namespace Erilipah.Items.ErilipahBiome
             ref int hitDirection)
         {
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
-            projectile.velocity =
-                (target.Center - projectile.Center);
+            projectile.velocity = target.Center - projectile.Center;
             IsStickingToTarget = true;
             TargetWhoAmI = target.whoAmI;
-            projectile.netUpdate = true; // netUpdate this javelin
+            projectile.netUpdate = true;
         }
         public override bool? CanHitNPC(NPC target)
         {
@@ -145,14 +152,17 @@ namespace Erilipah.Items.ErilipahBiome
                 projectile.damage = 0;
                 projectile.friendly = projectile.hostile = false;
                 projectile.velocity.Y += 0.04f;
-                projectile.alpha += 3;
+
+                if (projectile.alpha < 120)
+                    projectile.alpha = 120;
+                projectile.alpha += 4;
 
                 if (projectile.alpha >= 255)
                     projectile.Kill();
             }
-
             else if (IsStickingToTarget)
             {
+                MotionBlurActive = false;
                 projectile.ignoreWater = true;
                 projectile.tileCollide = false;
                 projectile.localAI[0]++;

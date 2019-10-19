@@ -53,11 +53,9 @@ namespace Erilipah.Items.Taranys
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             Vector2 vel = new Vector2(speedX, speedY);
-            Vector2 offset = vel.SafeNormalize(Vector2.Zero) * 40 - (Vector2)HoldoutOffset();
-            if (!Collision.CanHitLine(position, 0, 0, position + offset, 0, 0))
-                return false;
-
-            position += offset;
+            Vector2 offset = vel.SafeNormalize(Vector2.Zero) * 32;
+            if (Collision.CanHitLine(position, 0, 0, position + offset, 0, 0))
+                position += offset;
 
             // Standard gun
             if (type != ProjectileID.Bullet)
@@ -97,7 +95,7 @@ namespace Erilipah.Items.Taranys
 
         public override Vector2? HoldoutOffset()
         {
-            return new Vector2(8, 0);
+            return new Vector2(-4, 0);
         }
     }
 

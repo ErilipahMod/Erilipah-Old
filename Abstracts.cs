@@ -649,11 +649,11 @@ namespace Erilipah
                 for (int i = 0; i < Math.Min(projectile.oldPos.Length, MotionBlurLength); i++)
                 {
                     Vector2 drawPos = projectile.oldPos[i] - Main.screenPosition + drawOrigin + new Vector2(0, projectile.gfxOffY);
-                    Color color = projectile.GetAlpha(drawColor) * ((MotionBlurLength - i) / (float)MotionBlurLength);
+                    Color color = projectile.GetAlpha(drawColor) * ((MotionBlurLength - i) / (float)MotionBlurLength) * 0.5f;
                     SpriteEffects effects = projectile.oldSpriteDirection[i] == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                     spriteBatch.Draw(
-                        texture: texture, position: drawPos, sourceRectangle: rect, color: color * ((255 - projectile.alpha) / 255f), rotation: projectile.oldRot[i],
+                        texture: texture, position: drawPos, sourceRectangle: rect, color: color * ((255 - projectile.alpha) / 255f), rotation: projectile.rotation,
                         origin: drawOrigin, scale: projectile.scale, effects: effects, layerDepth: 0
                         );
                 }
