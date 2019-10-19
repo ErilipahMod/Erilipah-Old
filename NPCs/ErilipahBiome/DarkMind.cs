@@ -197,6 +197,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
             Tile candidate = Main.tile[i, j];
             bool light = candidate.type == TileID.Torches || candidate.type == TileID.Campfire || TileLoader.IsTorch(candidate.type);
+            light &= !(candidate.type == TileType<ArkenTorchTile>() && candidate.frameX >= 66);
             return candidate.active() && light;
         }
 

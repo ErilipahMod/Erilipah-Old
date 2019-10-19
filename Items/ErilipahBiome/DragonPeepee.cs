@@ -66,7 +66,7 @@ namespace Erilipah.Items.ErilipahBiome
         public override bool ReApply(NPC npc, int time, int buffIndex)
         {
             // The increase in time, decreases over time
-            float inc = time / (npc.buffTime[buffIndex] / 200f);
+            float inc = time / (npc.buffTime[buffIndex] / 120f);
             npc.buffTime[buffIndex] += (int)inc;
             return true;
         }

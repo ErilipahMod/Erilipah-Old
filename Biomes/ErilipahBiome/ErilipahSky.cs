@@ -133,14 +133,14 @@ namespace Erilipah.Biomes.ErilipahBiome
             if (maxDepth >= 0f && minDepth < 0f)
             {
                 ashes.ForEach(ash => ash.Draw(spriteBatch));
-                spriteBatch.Draw(Main.blackTileTexture, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black * (1f - Intensity));
+                spriteBatch.Draw(Main.blackTileTexture, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black * Intensity);
             }
         }
 
         public override Color OnTileColor(Color inColor)
         {
-            Vector4 start = new Vector4(0.4f, 0.1f, 0.4f, 1f);
-            Vector4 end = Vector4.Lerp(start, inColor.ToVector4(), 1 - Intensity);
+            Vector4 result = new Vector4(0.4f, 0.15f, 0.4f, 1f);
+            Vector4 end = Vector4.Lerp(inColor.ToVector4(), result, Intensity);
             return new Color(end);
         }
         public override float GetCloudAlpha() => Intensity;
