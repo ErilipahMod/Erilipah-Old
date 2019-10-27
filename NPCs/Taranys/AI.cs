@@ -231,7 +231,11 @@ namespace Erilipah.NPCs.Taranys
             {
                 //npc.netUpdate = true;
                 TempTimer = 0;
-                Attack = Main.rand.Next(5);
+
+                int newAttack = Main.rand.Next(5);
+                if (newAttack == Attack)
+                    newAttack = Main.rand.Next(5);
+                Attack = newAttack;
 
                 if (npc.life < npc.lifeMax * goIntoEatingPhase)
                 {
@@ -805,7 +809,7 @@ namespace Erilipah.NPCs.Taranys
                         {
                             Player p = Main.player[i];
                             float distance = p.Distance(npc.position + new Vector2(50, 78));
-                            float speed = MathHelper.SmoothStep(7f, 0, distance / 1200f);
+                            float speed = MathHelper.SmoothStep(7f, 0, distance / 2000f);
                             Vector2 vel = new Vector2(p.Center.X < npc.Center.X ? speed : -speed, 0);
 
                             p.position += Collision.TileCollision(p.position, vel, p.width, p.height);

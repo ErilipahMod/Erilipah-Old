@@ -38,14 +38,13 @@ namespace Erilipah
                 rand.Add(5, 0.85);
                 rand.Add(6, 1.25);
 
-                int selectedType = rand.Get();
-                ErilipahWorld.PlaceHazard(i, j, selectedType);
+                ErilipahWorld.PlaceHazard(i, j, rand.Get());
 
                 if (Main.netMode == 2 /*Sync to clients when run on the server*/)
                     NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
             }
 
-            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.02f))
+            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.01f))
             {
                 Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j - 1);
                 Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j + 1);

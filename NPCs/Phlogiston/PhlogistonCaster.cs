@@ -14,6 +14,7 @@ namespace Erilipah.NPCs.Phlogiston
         {
             Main.npcFrameCount[npc.type] = 1;
         }
+
         public override void SetDefaults()
         {
             npc.lifeMax = Main.hardMode ? 120 : 60;
@@ -71,8 +72,8 @@ namespace Erilipah.NPCs.Phlogiston
             for (int attempt = 0; attempt < 100; attempt++)
             {
                 Vector2 worldPos = new Vector2(
-                    Main.rand.NextFloat(player.Center.X - 500, player.Center.X + 500),
-                    Main.rand.NextFloat(player.Center.Y - 500, player.Center.Y + 500));
+                    Main.rand.NextFloat(player.Center.X - 650, player.Center.X + 650),
+                    Main.rand.NextFloat(player.Center.Y - 250, player.Center.Y + 250));
                 Point tilePos = worldPos.ToTileCoordinates();
 
                 if (Main.tile[tilePos.X, tilePos.Y].liquid < 10 &&
@@ -153,7 +154,7 @@ namespace Erilipah.NPCs.Phlogiston
             npc.ai[0]++;
             npc.FaceTarget();
 
-            if (npc.wet)
+            if (npc.wet && !npc.lavaWet)
             {
                 npc.life = 0;
                 HitEffect(0, 1);

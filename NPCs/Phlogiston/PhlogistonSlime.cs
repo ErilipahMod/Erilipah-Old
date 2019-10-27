@@ -93,7 +93,7 @@ namespace Erilipah.NPCs.Phlogiston
 
         public override void AI()
         {
-            if (npc.wet)
+            if (npc.wet && !npc.lavaWet)
             {
                 npc.life = 0;
                 HitEffect(0, 1);

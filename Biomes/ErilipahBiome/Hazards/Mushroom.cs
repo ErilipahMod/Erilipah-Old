@@ -71,14 +71,16 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
 
         public override void RandomUpdate(int i, int j)
         {
-            for (int n = -1; n <= 1; n++)
-                for (int m = -1; m <= 1; m++)
-                {
-                    if (n == 0 && m == 0)
-                        continue;
-                    if (TryPlace(i + n, j + m))
-                        return;
-                }
+            // Once in a while, spread a 'shroom
+            if (Main.rand.Chance(0.50f))
+                for (int n = -1; n <= 1; n++)
+                    for (int m = -1; m <= 1; m++)
+                    {
+                        if (n == 0 && m == 0)
+                            continue;
+                        if (TryPlace(i + n, j + m))
+                            return;
+                    }
         }
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
