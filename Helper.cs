@@ -100,7 +100,7 @@ namespace Erilipah
                 (int)entity.position.Y / 16, (int)(entity.position.Y + entity.height) / 16);
         }
 
-        internal static Vector2 GetSpritePosition(this Entity entity, Vector2 pixel)
+        internal static Vector2 GetSpritePosition(this Entity entity, float x, float y)
         {
             float rot = 0;
             float scl = 1;
@@ -118,7 +118,17 @@ namespace Erilipah
             {
                 scl = i.scale;
             }
-            return entity.position + pixel.RotatedBy(rot, entity.Size / 2) * scl;
+
+            Vector2 spritePos =
+                entity.direction == -1 ?
+                entity.position + new Vector2(x, y) :
+                new Vector2(entity.TopRight.X - x, y);
+
+            return spritePos.RotatedBy(rot, entity.Size / 2) * scl;
+        }
+        internal static Vector2 GetSpritePosition(this Entity entity, Vector2 pixel)
+        {
+            return GetSpritePosition(entity, pixel.X, pixel.Y);
         }
 
         internal static void Animate(this Projectile proj, int ticksPerFrame, int numFrames, int startingFrame = 0)
