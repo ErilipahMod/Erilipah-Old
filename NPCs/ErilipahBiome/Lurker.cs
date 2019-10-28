@@ -187,9 +187,13 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            npc.DrawNPC(spriteBatch, Color.White * 0.75f);
             npc.DrawTrail(spriteBatch, 4 - BodyPartsAlive, Color.White * 0.5f);
-            return false;
+            return true;
+        }
+
+        public override void DrawEffects(ref Color drawColor)
+        {
+            drawColor = Color.White * 0.75f;
         }
     }
 
@@ -245,9 +249,13 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            npc.DrawNPC(spriteBatch, Color.White * 0.75f);
-            npc.DrawTrail(spriteBatch, 4 - (int)Head.ai[0], Color.White * 0.5f);
-            return false;
+            npc.DrawTrail(spriteBatch, 4 - (int)Head.ai[0], Color.White * 0.35f);
+            return true;
+        }
+
+        public override void DrawEffects(ref Color drawColor)
+        {
+            drawColor = Color.White * 0.6f;
         }
 
         public override sealed bool CanHitPlayer(Player target, ref int cooldownSlot) => npc.alpha < 200;

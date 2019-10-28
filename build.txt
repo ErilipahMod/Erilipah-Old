@@ -1,5 +1,5 @@
 author = Dual
-version = 0.7.9
+version = 0.7.11
 displayName = Erilipah
 hideCode = true
 hideResources = false
