@@ -233,7 +233,7 @@ namespace Erilipah.Items.Taranys
 
                     if (validType && proj.active && distanceToNPC > Pulse - effectiveDist && distanceToNPC < Pulse + effectiveDist && proj.hostile)
                     {
-                        proj.velocity += projectile.Center.To(proj.Center, proj.velocity.Length()) / 2;
+                        proj.velocity += projectile.DirectionTo(proj.Center) * proj.velocity.Length() / 2;
                     }
                 }
 
@@ -251,9 +251,9 @@ namespace Erilipah.Items.Taranys
 
                         float knockbackReduction = 1f - n.life / (n.life + 15000);
                         if (n.boss && n.type != NPCID.CultistBoss && n.type != NPCID.WallofFlesh && n.type != NPCID.WallofFleshEye)
-                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist + 2f * projectile.knockBack) * knockbackReduction;
+                            n.velocity += projectile.DirectionTo(n.Center) * (4 * projectile.knockBack * n.knockBackResist + 2f * projectile.knockBack * knockbackReduction);
                         else
-                            n.velocity += projectile.Center.To(n.Center, 4 * projectile.knockBack * n.knockBackResist) * knockbackReduction;
+                            n.velocity += projectile.DirectionTo(n.Center) * (4 * projectile.knockBack * n.knockBackResist * knockbackReduction);
                         n.netUpdate = true;
                     }
                 }

@@ -232,7 +232,7 @@ namespace Erilipah.NPCs.Dracocide
 
                 if (AttackTime > 600 && Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    Vector2 toTarget = npc.Center.To(target.Center);
+                    Vector2 toTarget = npc.DirectionTo(target.Center);
                     for (int i = -4; i < 5; i++)
                     {
                         Vector2 direction = toTarget.RotatedByRandom(MathHelper.ToRadians(i * 5));

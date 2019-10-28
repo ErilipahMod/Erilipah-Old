@@ -15,7 +15,7 @@ namespace Erilipah.NPCs.Dracocide
             if (!Base())
                 return;
 
-            npc.velocity = npc.Center.To(Target.Center - new Vector2(0, 125), 4f);
+            npc.velocity = npc.DirectionTo(Target.Center - new Vector2(0) * 125) * 4;
 
             if (Target.Distance(npc.Center) < 300)
                 ++npc.ai[0];

@@ -181,7 +181,7 @@
 //                if (Target is Player)
 //                    npc.velocity += toPlayerUp * mSpeed;
 //                else
-//                    npc.velocity += npc.Center.To(ToPlayer + new Vector2(50, 50), mSpeed);
+//                    npc.velocity += npc.DirectionTo(ToPlayer + new Vector2(50) * 50, mSpeed);
 //            }
 //            else
 //            {

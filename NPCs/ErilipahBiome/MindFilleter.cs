@@ -57,7 +57,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override void AI()
         {
-            npc.rotation = npc.Center.To(Target.Center).ToRotation() - MathHelper.PiOver2;
+            npc.rotation = npc.DirectionTo(Target.Center).ToRotation() - MathHelper.PiOver2;
 
             if (Target.immuneTime == 3)
             {

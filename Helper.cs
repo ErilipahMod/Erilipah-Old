@@ -184,17 +184,16 @@ namespace Erilipah
             Texture2D texture = Main.npcTexture[npc.type];
             Vector2 drawOrigin = npc.frame.Size() / 2;
 
-            if (length > npc.oldPos.Length) length = npc.oldPos.Length;
+            if (length > npc.oldPos.Length) 
+                length = npc.oldPos.Length;
+
             for (int i = 0; i < length; i++)
             {
                 Vector2 drawPos = npc.oldPos[i] - Main.screenPosition + drawOrigin + new Vector2(0, npc.gfxOffY);
                 Color color = npc.GetAlpha(drawColor) * ((length - i) / (float)length);
                 SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                spriteBatch.Draw(
-                    texture: texture, position: drawPos, sourceRectangle: npc.frame, color: color, rotation: npc.rotation,
-                    origin: drawOrigin, scale: npc.scale, effects: effects, layerDepth: 0
-                    );
+                spriteBatch.Draw(texture, drawPos, npc.frame, color, npc.rotation, drawOrigin, npc.scale, effects, 0);
             }
         }
         internal static void DrawNPC(this NPC npc, SpriteBatch spriteBatch, Color drawColor)
@@ -235,6 +234,7 @@ namespace Erilipah
                     npc.HealEffect(npc.lifeMax - npc.life);
                     npc.life += npc.lifeMax - npc.life;
                 }
+                npc.netUpdate = true;
             }
         }
         internal static void Heal(this Player player, int healAmount)
@@ -251,6 +251,7 @@ namespace Erilipah
                     player.HealEffect(player.statLifeMax2 - player.statLife);
                     player.statLife += player.statLifeMax2 - player.statLife;
                 }
+                player.netLife = true;
             }
         }
 
@@ -260,7 +261,6 @@ namespace Erilipah
             bool notSloped = (t.slope() == 0 || t.bottomSlope()) && !t.halfBrick();
             return t.active() && isSolid && notSloped;
         }
-
         public static bool ValidTop(int i, int j)
         {
             Tile t = Main.tile[i, j];
@@ -478,6 +478,16 @@ namespace Erilipah
                 }
             }
             return closest;
+        }
+
+        internal static float AngleDifference(float angleFacing, float angleTarget)
+        {
+            return (angleFacing - angleTarget + MathHelper.TwoPi + MathHelper.Pi) % MathHelper.TwoPi - MathHelper.Pi;
+        }
+        
+        internal static bool AngleWithinRange(float angleFacing, float angleTarget, float range)
+        {
+            return Math.Abs(AngleDifference(angleFacing, angleTarget)) < range;
         }
 
         /// <summary>

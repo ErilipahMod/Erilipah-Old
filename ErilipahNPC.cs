@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Erilipah.NPCs.ErilipahBiome;
 using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
@@ -114,12 +116,22 @@ namespace Erilipah
             }
         }
 
+        // TODO make bulbs not take up spawn slots
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
+            int[] erilipahNPCs = { NPCType<ErilipahSludge>(), NPCType<DarkMind>(), NPCType<LurkerHead>(), NPCType<MindFilleter>() };
             if (spawnInfo.player.InErilipah())
             {
-                if (pool.ContainsKey(NPCID.BlueSlime))
-                    pool[NPCID.BlueSlime] *= 0.25f;
+                for (int i = 0; i < erilipahNPCs.Length; i++)
+                {
+                    try
+                    {
+                        pool[erilipahNPCs[i]] *= 2;
+                    } catch
+                    {
+
+                    }
+                }
             }
         }
 

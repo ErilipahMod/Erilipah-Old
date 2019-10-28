@@ -120,7 +120,7 @@ namespace Erilipah.NPCs.Dracocide
                     npc.noTileCollide = true;
                     npc.rotation = npc.velocity.ToRotation();
 
-                    npc.velocity = npc.Center.To(atMother, 3);
+                    npc.velocity = npc.DirectionTo(atMother) * 3;
                     npc.velocity = Vector2.Clamp(npc.velocity, Vector2.One * -5, Vector2.One * 5);
                 }
                 else

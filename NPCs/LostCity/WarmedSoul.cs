@@ -46,14 +46,14 @@ namespace Erilipah.NPCs.ErilipahBiome
                     distSpeed = Vector2.Distance(projectile.Center, Main.player[projectile.owner].Center);
                 distSpeed /= 100f;
 
-                projectile.velocity = projectile.Center.To(Main.player[projectile.owner].Center, distSpeed);
+                projectile.velocity = projectile.DirectionTo(Main.player[projectile.owner].Center) * distSpeed;
             }
             else
             {
                 if (projectile.velocity.Length() < 5)
-                    projectile.velocity += projectile.Center.To(Torch.ToWorldCoordinates()) / 22f;
+                    projectile.velocity += projectile.DirectionTo(Torch.ToWorldCoordinates()) / 22f;
                 else
-                    projectile.velocity = projectile.Center.To(Torch.ToWorldCoordinates()) * 5;
+                    projectile.velocity = projectile.DirectionTo(Torch.ToWorldCoordinates()) * 5;
 
                 if (Vector2.Distance(projectile.Center, Torch.ToWorldCoordinates()) < 5)
                 {

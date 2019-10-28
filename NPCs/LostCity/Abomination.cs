@@ -195,7 +195,7 @@ namespace Erilipah.NPCs.LostCity
                 //if (AttackTimer % 6 == 0)
                 {
                     Main.PlaySound(npc.HitSound, npc.Center);
-                    Vector2 vel = npc.Center.To(Target.Center, 5f);
+                    Vector2 vel = npc.DirectionTo(Target.Center) * 5f;
                     //float range = Main.rand.NextFloat(-MathHelper.Pi / 8, MathHelper.Pi / 8);
                     Projectile.NewProjectile(Eye, vel/*.RotatedBy(range)*/, ProjectileType<SpitBall>(), npc.damage / 2, 1);
                 }
@@ -275,7 +275,7 @@ namespace Erilipah.NPCs.LostCity
             {
                 RotateToTarget();
                 npc.velocity *= 0.97f;
-                oldPos = npc.Center.To(Target.Center, dashSpeed);
+                oldPos = npc.DirectionTo(Target.Center) * dashSpeed;
             }
             // Dash
             else if (AttackTimer <= 90 + blinkLength)
@@ -324,7 +324,7 @@ namespace Erilipah.NPCs.LostCity
         private void RotateToTarget()
         {
             int __rotDir = (npc.Center.X > Target.Center.X).ToInt();
-            float _rotTo = npc.Center.To(Target.Center).ToRotation() + MathHelper.Pi * __rotDir;
+            float _rotTo = npc.DirectionTo(Target.Center).ToRotation() + MathHelper.Pi * __rotDir;
             npc.rotation = _rotTo;
         }
 

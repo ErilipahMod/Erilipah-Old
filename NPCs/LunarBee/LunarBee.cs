@@ -208,7 +208,7 @@ namespace Erilipah.NPCs.LunarBee
                     if (cycleTime % 5 == 0)
                     {
                         npc.netUpdate = true;
-                        Vector2 spreaded = npc.Center.To(Target.Center).RotatedByRandom(0.3f);
+                        Vector2 spreaded = npc.DirectionTo(Target.Center).RotatedByRandom(0.3f);
                         Main.PlaySound(SoundID.Item17, StingerPos);
 
                         if (Main.netMode != 1)
@@ -241,7 +241,7 @@ namespace Erilipah.NPCs.LunarBee
                         if (PhaseTimer % 30 == 0)
                         {
                             Vector2 position = npc.Center + Main.rand.NextVector2CircularEdge(100, 100);
-                            Vector2 awayBody = npc.Center.To(position, 6);
+                            Vector2 awayBody = npc.DirectionTo(position) * 6;
                             Projectile.NewProjectile(position, awayBody, ProjectileType<LunaBubble>(), dmgSummon, 1);
                         }
                     }
@@ -252,7 +252,7 @@ namespace Erilipah.NPCs.LunarBee
                             Vector2 butt = npc.position + (npc.spriteDirection == 1 ? new Vector2(npc.width - 14, 70) : new Vector2(14, 70));
                             NPC wasp = Main.npc[NPC.NewNPC((int)butt.X, (int)butt.Y, NPCType<Lunacrita>(), ai1: npc.whoAmI, Target: npc.target)];
                             wasp.damage = dmgSummon;
-                            wasp.velocity = npc.Center.To(butt, 5);
+                            wasp.velocity = npc.DirectionTo(butt) * 5;
                             wasp.alpha = 0;
                             wasp.dontTakeDamage = false;
                         }
@@ -269,18 +269,18 @@ namespace Erilipah.NPCs.LunarBee
                 int cycleLength = (int)MathHelper.Lerp(120, 200, npc.life / expertMult);
                 int cycleTime = PhaseTimer % cycleLength;
 
-                Vector2 dirToPlayer = npc.Center.To(DashEndPos);
+                Vector2 dirToPlayer = npc.DirectionTo(DashEndPos);
                 Vector2 endPosition = DashEndPos + dirToPlayer * 350;
 
                 if (cycleTime > 0 && cycleTime < 80)
                 {
                     Vector2 aroundPlayer = new Vector2(0, 350).RotatedBy(PhaseTimer / 120f);
-                    npc.velocity = npc.Center.To(Target.Center + aroundPlayer, 6f);
+                    npc.velocity = npc.DirectionTo(Target.Center + aroundPlayer) * 6f;
                 }
                 else if (cycleTime < 0.8f * cycleLength)
                 {
                     Vector2 aroundPlayer = new Vector2(0, 350).RotatedBy(PhaseTimer / 120f);
-                    npc.velocity = npc.Center.To(Target.Center + aroundPlayer, 2f);
+                    npc.velocity = npc.DirectionTo(Target.Center + aroundPlayer) * 2f;
                 }
                 else
                 {
@@ -335,7 +335,7 @@ namespace Erilipah.NPCs.LunarBee
                     TrailPos[0] = Vector2.Lerp(npc.Center, endPosition, 0.25f);
                     TrailPos[1] = Vector2.Lerp(npc.Center, endPosition, 0.50f);
                     TrailPos[2] = Vector2.Lerp(npc.Center, endPosition, 0.75f);
-                    TrailRot = npc.Center.To(endPosition).ToRotation();
+                    TrailRot = npc.DirectionTo(endPosition).ToRotation();
                     TrailAlpha = 100;
 
                     // Teleport

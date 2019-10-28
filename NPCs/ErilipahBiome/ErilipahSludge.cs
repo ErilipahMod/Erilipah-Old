@@ -74,7 +74,7 @@ namespace Erilipah.NPCs.ErilipahBiome
 
             if (timer < 380)
             {
-                npc.velocity = npc.Center.To(target.Center - new Vector2(0, 250), 8);
+                npc.velocity = npc.DirectionTo(target.Center - new Vector2(0) * 250) * 8;
                 Dust.NewDustPerfect(npc.position + new Vector2(4, 20), DustType<VoidParticle>(), Vector2.Zero);
                 Dust.NewDustPerfect(npc.TopRight - new Vector2(4, -20), DustType<VoidParticle>(), Vector2.Zero);
             }

@@ -176,7 +176,7 @@ namespace Erilipah.Items.Taranys
                 if (projectile.ai[1] > 20)
                 {
                     float speed = MathHelper.Lerp(6f, 12f, Vector2.Distance(Owner.Center, projectile.Center) / 500f);
-                    projectile.velocity = projectile.Center.To(Owner.Center, speed);
+                    projectile.velocity = projectile.DirectionTo(Owner.Center) * speed;
                     projectile.localAI[0] = 3;
                 }
                 else
@@ -203,7 +203,7 @@ namespace Erilipah.Items.Taranys
                         projectile.ai[1] = 0;
                     }
 
-                    projectile.velocity = projectile.Center.To(Main.npc[Target].Center, 17);
+                    projectile.velocity = projectile.DirectionTo(Main.npc[Target].Center) * 17;
                     projectile.localAI[0] = 3;
                 }
             }

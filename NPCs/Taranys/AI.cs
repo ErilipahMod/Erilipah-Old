@@ -151,7 +151,7 @@ namespace Erilipah.NPCs.Taranys
                         continue;
 
                     if (repel)
-                        proj.velocity = npc.Center.To(proj.Center, proj.velocity.Length());
+                        proj.velocity = npc.DirectionTo(proj.Center) * proj.velocity.Length();
 
                     if (proj.type != ProjectileType<SharpCrystal>())
                     {
@@ -207,7 +207,7 @@ namespace Erilipah.NPCs.Taranys
                     Main.player[i].immune = true;
                     Main.player[i].immuneTime = 30;
 
-                    Main.player[i].velocity = npc.Center.To(Main.player[i].Center, 8.5f);
+                    Main.player[i].velocity = npc.DirectionTo(Main.player[i].Center) * 8.5f;
                     Main.player[i].wingTime = 0;
                     Main.player[i].rocketTime = 0;
                 }
@@ -355,7 +355,7 @@ namespace Erilipah.NPCs.Taranys
 
                     if (!Main.projHook[proj.type] && proj.active && distanceToNPC > distance - speed && distanceToNPC < distance + speed)
                     {
-                        proj.velocity = npc.Center.To(proj.Center, proj.velocity.Length());
+                        proj.velocity = npc.DirectionTo(proj.Center) * proj.velocity.Length();
                     }
                 }
 
@@ -376,7 +376,7 @@ namespace Erilipah.NPCs.Taranys
                         Main.player[i].immune = true;
                         Main.player[i].immuneTime = 30;
 
-                        Main.player[i].velocity = npc.Center.To(Main.player[i].Center, 12.5f);
+                        Main.player[i].velocity = npc.DirectionTo(Main.player[i].Center) * 12.5f;
                         Main.player[i].wingTime = 0;
                         Main.player[i].rocketTime = 0;
                     }
@@ -450,11 +450,11 @@ namespace Erilipah.NPCs.Taranys
                             npc.velocity = Vector2.Zero;
                             npc.rotation = 0;
                         }
-                        else if (TempTimer == 61) npc.velocity = -npc.Center.To(Target.Center, 3); // Wind back...
+                        else if (TempTimer == 61) npc.velocity = -npc.DirectionTo(Target.Center) * 3; // Wind back...
                         else if (TempTimer < 75) npc.velocity *= 0.95f; // Slow down...
                         else if (TempTimer == 75) // Set velocity and roar
                         {
-                            vector = npc.Center.To(Target.Center, dashSpeed);
+                            vector = npc.DirectionTo(Target.Center) * dashSpeed;
                             Roar();
                         }
                         else if (TempTimer < 125) // Z O O M
@@ -499,7 +499,7 @@ namespace Erilipah.NPCs.Taranys
                         }
                         else if (TempTimer == (int)(160 * SpeedMult))
                         {
-                            vector = npc.Center.To(Target.Center, dashSpeed);
+                            vector = npc.DirectionTo(Target.Center) * dashSpeed;
                             Roar();
                         }
                         else if (TempTimer < 220 * SpeedMult)
@@ -552,7 +552,7 @@ namespace Erilipah.NPCs.Taranys
                         {
                             TempTimer = 26;
                             npc.alpha = 125;
-                            npc.velocity = npc.Center.To(vector, dashSpeed * 1.75f); // and go to that kiddo
+                            npc.velocity = npc.DirectionTo(vector) * dashSpeed * 1.75f; // and go to that kiddo
                             Rotate();
 
                             if (Vector2.Distance(npc.Center, vector) < dashSpeed * 2)
@@ -568,7 +568,7 @@ namespace Erilipah.NPCs.Taranys
                                 Main.PlaySound(SoundID.Item17, npc.Center);
                                 if (Main.netMode != 1)
                                 {
-                                    Vector2 velocity = npc.Center.To(Target.Center, Main.rand.NextFloat(3, 10f))
+                                    Vector2 velocity = (npc.DirectionTo(Target.Center) * Main.rand.NextFloat(3, 10f))
                                         .RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f));
                                     Main.projectile[Projectile.NewProjectile(Eye, velocity, ProjectileType<SharpCrystal>(), npc.damage / 3, 1f)]
                                         .ai[0] = 120 - TempTimer;
@@ -715,9 +715,9 @@ namespace Erilipah.NPCs.Taranys
                         if (TempTimer < 120)
                         {
                             if (npc.Distance(Target.Center) > 320)
-                                npc.velocity = npc.Center.To(Target.Center, 2.5f);
+                                npc.velocity = npc.DirectionTo(Target.Center) * 2.5f;
                             if (npc.Distance(Target.Center) < 250)
-                                npc.velocity = -npc.Center.To(Target.Center, 2.5f);
+                                npc.velocity = -npc.DirectionTo(Target.Center) * 2.5f;
                             Rotate();
                             return;
                         }
@@ -1046,7 +1046,7 @@ namespace Erilipah.NPCs.Taranys
 
             npc.direction = npc.spriteDirection = tCen.X < npc.Center.X ? 1 : -1;
             npc.Center = mother.Center + Vector2.UnitX.RotatedBy(rotation) * distance;
-            npc.rotation = npc.Center.To(tCen).ToRotation() +
+            npc.rotation = npc.DirectionTo(tCen).ToRotation() +
                 (npc.spriteDirection == -1 ? MathHelper.Pi : 0);
             npc.velocity = Vector2.Zero;
 

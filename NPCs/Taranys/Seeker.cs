@@ -83,11 +83,11 @@ namespace Erilipah.NPCs.Taranys
 
             if (Main.netMode != 1 && npc.ai[0] % 160 == 0 && Collision.CanHit(npc.Center, 1, 1, Target.Center, 1, 1))
             {
-                Vector2 to = npc.Center.To(Target.Center);
+                Vector2 to = npc.DirectionTo(Target.Center);
                 Projectile.NewProjectile(npc.Center + to * 30, to * 6, ProjectileType<Zoub>(), npc.damage / 2, 1f, 255);
             }
 
-            npc.rotation = npc.Center.To(Target.Center).ToRotation() + (npc.spriteDirection == -1 ? MathHelper.Pi : 0);
+            npc.rotation = npc.DirectionTo(Target.Center).ToRotation() + (npc.spriteDirection == -1 ? MathHelper.Pi : 0);
         }
 
         public override void NPCLoot()

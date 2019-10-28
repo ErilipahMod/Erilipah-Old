@@ -27,7 +27,7 @@
 //                npc.direction = npc.spriteDirection = -1;
 //            if (++firing % 180 == 0 && Main.netMode != -1)
 //            {
-//                Vector2 velocity = npc.Center.To(TCen - new Vector2(0, 40), 5);
+//                Vector2 velocity = npc.DirectionTo(TCen - new Vector2(0) * 40, 5);
 //                int type = ProjectileType<EarthenShard>();
 //                Projectile.NewProjectile(npc.Center, velocity, type, 20, 1);
 //            }

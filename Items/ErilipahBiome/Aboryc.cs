@@ -285,7 +285,7 @@ namespace Erilipah.Items.ErilipahBiome
         private void AlAltar()
         {
             float distanceToAltar = Vector2.Distance(projectile.Center, AboveAltar);
-            Vector2 dirToAltar = projectile.Center.To(AboveAltar);
+            Vector2 dirToAltar = projectile.DirectionTo(AboveAltar);
 
             if (Timer < 0)
             {

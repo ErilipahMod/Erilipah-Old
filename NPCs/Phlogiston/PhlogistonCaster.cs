@@ -244,7 +244,7 @@ namespace Erilipah.NPCs.Phlogiston
                 float reduction = Math.Max(200 - target.statDefense, 0) / 200f;
                 reduction *= target.noKnockback ? 0.7f : 1;
 
-                target.velocity -= target.Center.To(projectile.Center, reduction * 8f);
+                target.velocity -= target.DirectionTo(projectile.Center) * reduction * 8f;
                 if (!target.noKnockback)
                     target.velocity.Y -= 1.5f;
             }

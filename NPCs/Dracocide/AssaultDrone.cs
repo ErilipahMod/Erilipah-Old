@@ -26,7 +26,7 @@ namespace Erilipah.NPCs.Dracocide
                 return;
             }
 
-            Vector2 dir = npc.Center.To(Target.Center);
+            Vector2 dir = npc.DirectionTo(Target.Center);
             AttackTime++; // Increase this sucka
 
             #region Movement
