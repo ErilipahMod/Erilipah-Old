@@ -116,7 +116,6 @@ namespace Erilipah
             }
         }
 
-        // TODO make bulbs not take up spawn slots
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
             int[] erilipahNPCs = { NPCType<ErilipahSludge>(), NPCType<DarkMind>(), NPCType<LurkerHead>(), NPCType<MindFilleter>() };

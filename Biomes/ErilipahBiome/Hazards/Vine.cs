@@ -152,6 +152,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
             npc.defense = 500;
             npc.knockBackResist = 0;
             npc.noGravity = true;
+            npc.npcSlots = 0;
 
             npc.aiStyle = 0;
 
