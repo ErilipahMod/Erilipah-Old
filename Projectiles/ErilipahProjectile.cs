@@ -1,8 +1,9 @@
-﻿using Terraria;
+﻿using Erilipah.Items;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Erilipah
+namespace Erilipah.Projectiles
 {
     public class ErilipahProjectile : GlobalProjectile
     {

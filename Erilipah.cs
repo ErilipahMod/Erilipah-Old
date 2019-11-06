@@ -1,6 +1,5 @@
 using Erilipah.Biomes.ErilipahBiome;
-using Erilipah.Items.Dracocide;
-using Erilipah.Items.Templar;
+using Erilipah.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -41,7 +40,7 @@ namespace Erilipah
                 vitalityUI = new UserInterface();
                 vitalityUI.SetState(vitalityBar);
 
-                shieldBroken = new ShieldBroken();
+                shieldBroken = new ShieldBrokenUI();
                 shieldBroken.Activate();
                 shieldBrokenUI = new UserInterface();
                 shieldBrokenUI.SetState(shieldBroken);

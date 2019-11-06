@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Erilipah.NPCs;
+using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ModLoader;

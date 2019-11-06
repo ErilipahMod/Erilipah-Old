@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace Erilipah
+namespace Erilipah.Items
 {
     public class ErilipahItem : GlobalItem
     {

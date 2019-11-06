@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Erilipah.Projectiles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 using Erilipah.NPCs.ErilipahBiome;
 using static Terraria.ModLoader.ModContent;
 
-namespace Erilipah
+namespace Erilipah.NPCs
 {
     public class ErilipahNPC : GlobalNPC
     {
@@ -23,7 +23,7 @@ namespace Erilipah
             // Spread Wither to nearby NPCs
             if (witherStack > 0)
             {
-                int dustT = DustType<NPCs.ErilipahBiome.VoidParticle>();
+                int dustT = DustType<VoidParticle>();
                 for (int i = 0; i < 30; i++)
                 {
                     float rot = i / 30f * MathHelper.TwoPi;
@@ -134,7 +134,8 @@ namespace Erilipah
                     try
                     {
                         pool[erilipahNPCs[i]] *= 2;
-                    } catch
+                    }
+                    catch
                     {
 
                     }

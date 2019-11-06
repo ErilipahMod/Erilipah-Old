@@ -14,6 +14,7 @@ namespace Erilipah.Items.Dracocide
                 "It has a maximum of 250 life before breaking for a while\n" +
                 "It recovers 4 life per second and has your defense");
         }
+
         public override void SetDefaults()
         {
             item.damage = 0;
@@ -54,7 +55,7 @@ namespace Erilipah.Items.Dracocide
             NPC shield = Main.npc[NPC.NewNPC(
                 (int)player.Center.X,
                 (int)player.Center.Y,
-                NPCType<ShieldProjectorProj>(),
+                NPCType<ShieldProjection>(),
                 0,
                 player.whoAmI)];
 
@@ -78,7 +79,7 @@ namespace Erilipah.Items.Dracocide
         }
     }
 
-    public class ShieldProjectorProj : ModNPC
+    public class ShieldProjection : ModNPC
     {
         public override string Texture => "Erilipah/NPCs/Dracocide/HDracocideShield";
 

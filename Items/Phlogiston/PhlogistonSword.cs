@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Erilipah.Projectiles;
+using Terraria;
 
 namespace Erilipah.Items.Phlogiston
 {

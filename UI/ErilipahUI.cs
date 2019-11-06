@@ -1,5 +1,4 @@
-﻿using Erilipah.Items.Dracocide;
-using Erilipah.Items.Templar;
+﻿using Erilipah.UI;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -15,7 +14,7 @@ namespace Erilipah
         private UserInterface infectUI;
 
         public static VitalityBar vitalityBar;
-        public static ShieldBroken shieldBroken;
+        public static ShieldBrokenUI shieldBroken;
         public static InfectionUI infectionBar;
 
         public override void UpdateUI(GameTime gameTime)

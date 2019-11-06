@@ -12,8 +12,9 @@ namespace Erilipah
 {
     internal static class Helper
     {
-        internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => chance >= 1f || random.NextFloat() < chance;
         internal const string Invisible = "Terraria/Projectile_294";
+
+        internal static bool Chance(this Terraria.Utilities.UnifiedRandom random, float chance) => chance >= 1f || random.NextFloat() < chance;
 
         internal static void SimpleRecipe<Result>(this Mod mod, int tile, int ingredient, int ingredientCount) where Result : ModItem
         {

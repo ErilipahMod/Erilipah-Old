@@ -1,4 +1,5 @@
 ﻿using Erilipah.Biomes.ErilipahBiome.Tiles;
+using Erilipah.Items;
 using Erilipah.Items.ErilipahBiome;
 using Microsoft.Xna.Framework;
 using Terraria;
