@@ -44,7 +44,7 @@ namespace Erilipah
                     NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
             }
 
-            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.01f))
+            if (Main.tile[i, j].IsErilipahTile() && Main.rand.Chance(0.002f))
             {
                 Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j - 1);
                 Biomes.ErilipahBiome.Hazards.Mushroom.TryPlace(i, j + 1);

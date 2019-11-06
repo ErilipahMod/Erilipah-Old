@@ -52,7 +52,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         private static bool TileIsBase(int i, int j) 
         {
             Tile t = Main.tile[i, j];
-            return Main.tileSolid[t.type] && t.active() && t.blockType() == 0;
+            return Main.tileSolid[t.type] && t.type != TileType<TaintedBrick>() && t.active() && t.blockType() == 0;
         }
 
         public static bool TryPlace(int i, int j)
@@ -72,7 +72,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Hazards
         public override void RandomUpdate(int i, int j)
         {
             // Once in a while, spread a 'shroom
-            if (Main.rand.Chance(0.50f))
+            if (Main.rand.Chance(0.10f))
                 for (int n = -1; n <= 1; n++)
                     for (int m = -1; m <= 1; m++)
                     {

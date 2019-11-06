@@ -13,11 +13,11 @@ namespace Erilipah.Items.Templar
 {
     public class VitalityBar : UIState
     {
-        public static bool Visible => alpha > 0;
-        public static float alpha;
-        public static int charge;
-        public static int vitality;
-        public static int maxVital;
+        public bool Visible => alpha > 0;
+        public float alpha;
+        public int charge;
+        public int vitality;
+        public int maxVital;
 
         private const int frameCount = 24;
         private int Frame => Math.Max(0, vitality / (maxVital / frameCount));
@@ -88,10 +88,10 @@ namespace Erilipah.Items.Templar
                 alpha = 0.2f;
             if (alpha < 1f && charge > 0)
                 alpha = 1f;
-            VitalityBar.alpha = MathHelper.Clamp(alpha, 0f, 1f);
-            VitalityBar.charge = charge;
-            VitalityBar.vitality = CurrentVitality;
-            VitalityBar.maxVital = maxVitality;
+            Erilipah.vitalityBar.alpha = MathHelper.Clamp(alpha, 0f, 1f);
+            Erilipah.vitalityBar.charge = charge;
+            Erilipah.vitalityBar.vitality = CurrentVitality;
+            Erilipah.vitalityBar.maxVital = maxVitality;
         }
 
         public void AddVitality(int amount)

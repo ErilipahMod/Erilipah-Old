@@ -20,10 +20,10 @@ namespace Erilipah
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (VitalityBar.Visible)
+            if (vitalityBar?.Visible ?? false)
                 vitalityUI?.Update(gameTime);
 
-            if (ShieldBroken.Visible)
+            if (shieldBroken?.Visible ?? false)
                 shieldBrokenUI?.Update(gameTime);
 
             infectUI?.Update(gameTime);
@@ -49,7 +49,7 @@ namespace Erilipah
                 "Erilipah: Vitality",
                 delegate
                 {
-                    if (VitalityBar.Visible)
+                    if (vitalityBar?.Visible ?? false)
                         vitalityUI.Draw(Main.spriteBatch, new GameTime());
                     return true;
                 }, 
@@ -60,7 +60,7 @@ namespace Erilipah
                 "Erilipah: Broken Shield",
                 delegate
                 {
-                    if (ShieldBroken.Visible)
+                    if (shieldBroken?.Visible ?? false)
                         shieldBrokenUI.Draw(Main.spriteBatch, new GameTime());
                     return true;
                 }));

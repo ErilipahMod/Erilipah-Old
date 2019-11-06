@@ -90,7 +90,7 @@ namespace Erilipah
             float infectionMax = Main.LocalPlayer.I().infectionMax;
             float amount = Math.Max(0, infection);
 
-            Texture2D texture2D = GetTexture("Erilipah/Biomes/ErilipahBiome/Infection");
+            Texture2D texture2D = GetTexture("Erilipah/Infection");
             Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
 
             counter++;
@@ -217,7 +217,9 @@ namespace Erilipah
             acceleration = accel;
             this.scale = scale;
 
+#pragma warning disable IDE0066 // Convert switch statement to expression
             switch (biomeType)
+#pragma warning restore IDE0066 // Convert switch statement to expression
             {
                 default:
                     color = Color.Lerp(Color.White, Color.Pink, Main.rand.NextFloat());
@@ -252,10 +254,7 @@ namespace Erilipah
         public float Infection
         {
             get => infection;
-            set
-            {
-                infection = MathHelper.Clamp(value, -5, infectionMax * 1.255f);
-            }
+            set => infection = MathHelper.Clamp(value, -5, infectionMax * 1.25f);
         }
 
         public float reductionRate = 1f;

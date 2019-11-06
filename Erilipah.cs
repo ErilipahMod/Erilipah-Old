@@ -88,6 +88,7 @@ namespace Erilipah
             shieldBroken = null;
             infectionBar = null;
 
+            handlers?.ForEach(h => h = null);
             handlers?.Clear();
             handlers = null;
 
@@ -98,7 +99,7 @@ namespace Erilipah
         }
         #endregion
 
-        private static List<StageIIDust> StageIIDusts = new List<StageIIDust>();
+        private List<StageIIDust> StageIIDusts = new List<StageIIDust>();
         private int DrawBuffIconDust(On.Terraria.Main.orig_DrawBuffIcon orig, int drawBuffText, int i, int b, int x, int y)
         {
             drawBuffText = orig(drawBuffText, i, b, x, y);

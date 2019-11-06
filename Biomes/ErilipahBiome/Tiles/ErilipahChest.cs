@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -12,12 +11,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
-    public class ErilipahChest : ModTile
+    public class LostChest : ModTile
     {
         public override void SetDefaults()
         {
             Main.tileSpelunker[Type] = true;
             Main.tileContainer[Type] = true;
+            Main.tileShine2[Type] = true;
+            Main.tileShine[Type] = 1200;
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileValue[Type] = 500;
@@ -34,15 +35,15 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             TileObjectData.addTile(Type);
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Lost Chest");
-            AddMapEntry(new Color(200, 84, 180), name, MapChestName);
+            AddMapEntry(new Color(200, 200, 200), name, MapChestName);
             name = CreateMapEntryName(Name + "_Locked"); // With multiple map entries, you need unique translation keys.
-            name.SetDefault("Spellbound Chest");
-            AddMapEntry(new Color(190, 130, 180), name, MapChestName);
-
-            dustType = mod.DustType("CrystallineDust");
+            name.SetDefault("Locked Lost Chest");
+            AddMapEntry(new Color(0, 141, 63), name, MapChestName);
+            dustType = DustType<Hazards.FlowerDust>();
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Containers };
             chest = "Lost Chest";
+            //chestDrop = ItemType<Items.Placeable.ExampleChest>();
         }
 
         public override ushort GetMapOption(int i, int j) => (ushort)(Main.tile[i, j].frameX / 36);
@@ -53,9 +54,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override bool UnlockChest(int i, int j, ref short frameXAdjustment, ref int dustType, ref bool manual)
         {
-            if (Main.dayTime)
-                return false;
-            dustType = this.dustType;
             return true;
         }
 
@@ -73,7 +71,13 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 top--;
             }
             int chest = Chest.FindChest(left, top);
-            if (chest == -1 || Main.chest[chest].name == "")
+            if (chest < 0)
+            {
+#pragma warning disable CS0618 // Type or member is obsolete
+                return Lang.chestType[0].Value;
+#pragma warning restore CS0618 // Type or member is obsolete
+            }
+            else if (Main.chest[chest].name == "")
             {
                 return name;
             }
@@ -85,11 +89,12 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
 
         public override void NumDust(int i, int j, bool fail, ref int num)
         {
-            num = 3;
+            num = 1;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
+            Item.NewItem(i * 16, j * 16, 32, 32, chestDrop);
             Chest.DestroyChest(i, j);
         }
 
@@ -137,7 +142,7 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 }
                 else
                 {
-                    NetMessage.SendData(31, -1, -1, null, left, top, 0f, 0f, 0, 0, 0);
+                    NetMessage.SendData(31, -1, -1, null, left, (float)top, 0f, 0f, 0, 0, 0);
                     Main.stackSplit = 600;
                 }
             }
@@ -146,20 +151,11 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                 if (isLocked)
                 {
                     int key = ItemType<Items.Taranys.LostKey>();
-                    if (player.HasItem(key))
+                    if (player.HasItem(key) && Chest.Unlock(left, top))
                     {
-                        for (int x = left; x <= left + 1; x++)
-                            for (int y = top; y <= top + 1; y++)
-                            {
-                                Main.tile[x, y].frameX -= 36;
-                                Dust.NewDust(new Vector2(x * 16, y * 16), 16, 16, dustType);
-                            }
-
-                        Main.PlaySound(22, left * 16, top * 16);
-
                         if (Main.netMode == 1)
                         {
-                            NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
+                            NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, (float)left, (float)top);
                         }
                     }
                 }
@@ -187,7 +183,6 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
                     }
                 }
             }
-
             return true;
         }
 
@@ -213,10 +208,14 @@ namespace Erilipah.Biomes.ErilipahBiome.Tiles
             }
             else
             {
-                if (tile.frameX >= 36)
-                    player.showItemIcon2 = ItemType<Items.Taranys.LostKey>();
-                else
-                    player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Lost Chest";
+                player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Lost Chest";
+                if (player.showItemIconText == "Lost Chest")
+                {
+                    //player.showItemIcon2 = ItemType<Items.Placeable.ExampleChest>();
+                    if (Main.tile[left, top].frameX / 36 == 1)
+                        player.showItemIcon2 = ItemType<Items.Taranys.LostKey>();
+                    player.showItemIconText = "";
+                }
             }
             player.noThrow = 2;
             player.showItemIcon = true;

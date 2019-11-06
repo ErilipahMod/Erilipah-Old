@@ -233,7 +233,7 @@ namespace Erilipah.Items.Taranys
 
                     if (validType && proj.active && distanceToNPC > Pulse - effectiveDist && distanceToNPC < Pulse + effectiveDist && proj.hostile)
                     {
-                        proj.velocity += projectile.DirectionTo(proj.Center) * proj.velocity.Length() / 2;
+                        proj.velocity += projectile.DirectionTo(proj.Center) * proj.velocity.Length() / 4;
                     }
                 }
 

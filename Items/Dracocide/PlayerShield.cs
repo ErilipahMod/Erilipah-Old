@@ -11,9 +11,9 @@ namespace Erilipah.Items.Dracocide
 {
     public class ShieldBroken : UIState
     {
-        public static bool Visible => alpha > 0;
-        public static float alpha = 0;
-        public static string time;
+        public bool Visible => alpha > 0;
+        public float alpha = 0;
+        public string time;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -26,7 +26,7 @@ namespace Erilipah.Items.Dracocide
             Vector2 position = new Vector2(Main.screenWidth * 0.5f, Main.screenHeight * 0.5f - 56);
 
             // If the vitality bar is already here, then move upwards
-            if (Templar.VitalityBar.Visible)
+            if (Erilipah.vitalityBar.Visible)
                 position -= new Vector2(0, 24);
 
             spriteBatch.Draw(texture, position, texture.Bounds, color, 0, texture.Bounds.Center(), 1, SpriteEffects.None, 0);
@@ -54,14 +54,14 @@ namespace Erilipah.Items.Dracocide
             brokenTimer--;
 
             if (brokenTimer < 300) // If approaching the end of the broken timer, gradually fade out.
-                ShieldBroken.alpha = brokenTimer / 450f;
+                Erilipah.shieldBroken.alpha = brokenTimer / 450f;
             else // Otherwise if the timer is active, half opacity
-                ShieldBroken.alpha = 2 / 3f;
+                Erilipah.shieldBroken.alpha = 2 / 3f;
 
             if (brokenTimer < 60) // Add a decimal place if below 1 second
-                ShieldBroken.time = Math.Round(brokenTimer / 60f, 1).ToString();
+                Erilipah.shieldBroken.time = Math.Round(brokenTimer / 60f, 1).ToString();
             else // Else just do normally
-                ShieldBroken.time = (brokenTimer / 60).ToString();
+                Erilipah.shieldBroken.time = (brokenTimer / 60).ToString();
         }
     }
 

@@ -100,6 +100,20 @@ namespace Erilipah
                 (int)entity.position.Y / 16, (int)(entity.position.Y + entity.height) / 16);
         }
 
+        private static Player fakePlayer = new Player(false); // TODO remove
+        internal static void HitTile(int x, int y, int power)
+        {
+            // TODO fix yikes
+            if (Main.netMode != 1)
+                Main.player[255].PickTile(x, y, power);
+        }
+        internal static void HitTile(int x, int y, int power, bool quiet)
+        {
+            // TODO fix yikes
+            if (quiet || Main.netMode != 1)
+                Main.LocalPlayer?.PickTile(x, y, power);
+        }
+
         internal static Vector2 GetSpritePosition(this Entity entity, float x, float y)
         {
             float rot = 0;
@@ -119,12 +133,10 @@ namespace Erilipah
                 scl = i.scale;
             }
 
-            Vector2 spritePos =
-                entity.direction == -1 ?
-                entity.position + new Vector2(x, y) :
-                new Vector2(entity.TopRight.X - x, y);
+            if (entity.direction == 1)
+                x = entity.width - x;
 
-            return spritePos.RotatedBy(rot, entity.Size / 2) * scl;
+            return new Vector2(x, y).RotatedBy(rot, entity.Size / 2) * scl;
         }
         internal static Vector2 GetSpritePosition(this Entity entity, Vector2 pixel)
         {
@@ -190,7 +202,7 @@ namespace Erilipah
             for (int i = 0; i < length; i++)
             {
                 Vector2 drawPos = npc.oldPos[i] - Main.screenPosition + drawOrigin + new Vector2(0, npc.gfxOffY);
-                Color color = npc.GetAlpha(drawColor) * ((length - i) / (float)length);
+                Color color = drawColor * ((length - i) / (float)length);
                 SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                 spriteBatch.Draw(texture, drawPos, npc.frame, color, npc.rotation, drawOrigin, npc.scale, effects, 0);

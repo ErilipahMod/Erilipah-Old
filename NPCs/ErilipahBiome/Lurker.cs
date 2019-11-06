@@ -40,7 +40,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             npc.width = 36;
             npc.height = 30;
 
-            npc.value = 500;
+            npc.value = 752;
 
             BodyPartsAlive = -1;
             LookingAtMe = 255;
@@ -61,14 +61,30 @@ namespace Erilipah.NPCs.ErilipahBiome
                 SpawnBody();
                 LookingAtMe = 255;
                 BodyPartsAlive = 4;
+                npc.netUpdate = true;
             }
 
             if (npc.target == 255)
+            {
+                npc.netUpdate = true;
                 npc.target = npc.FindClosestPlayer();
+            }
 
-            UpdateDefense();
-            UpdateLookingState();
+            // Record Lurker, finish rest of NPCS
+            if (Main.rand.NextFloat(npc.velocity.Length()) > 1)
+            {
+                Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, 
+                    DustType<Biomes.ErilipahBiome.Hazards.FlowerDust>(), Scale: 1.2f);
+                d.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * -2;
+                d.noGravity = true;
+            }
+
+            if (BodyPartsAlive > 1)
+                UpdateLookingState();
+            else
+                LookingAtMe = 255; // Rush to the player if we're just a head
             UpdateLookingEffects();
+            UpdateDefense();
             UpdateMovement();
         }
 
@@ -77,10 +93,15 @@ namespace Erilipah.NPCs.ErilipahBiome
             switch (BodyPartsAlive)
             {
                 default: break;
-                case 3: npc.defense = 75; break;
-                case 2: npc.defense = 50; break;
-                case 1: npc.defense = 25; break;
+                case 4: npc.defense = 40; break;
+                case 3: npc.defense = 30; break;
+                case 2: npc.defense = 20; break;
+                case 1: npc.defense = 08; break;
             }
+            if (Main.expertMode)
+                npc.defense = (int)(npc.defense * 1.5f);
+            if (Main.hardMode)
+                npc.defense *= 2;
         }
 
         private void UpdateLookingState()
@@ -112,7 +133,7 @@ namespace Erilipah.NPCs.ErilipahBiome
         {
             if (AnyoneLooking)
             {
-                npc.alpha += 4 * (4 - BodyPartsAlive);
+                npc.alpha += 2 * (5 - BodyPartsAlive);
 
                 if (npc.alpha < 50)
                     npc.alpha = 50;
@@ -122,6 +143,9 @@ namespace Erilipah.NPCs.ErilipahBiome
             else
             {
                 npc.alpha -= 5;
+
+                if (npc.alpha < 0)
+                    npc.alpha = 0;
             }
 
             if (npc.alpha >= 165)
@@ -136,12 +160,12 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         private void UpdateMovement()
         {
-            float speed = 1.3f * (5 - BodyPartsAlive);
+            float speed = 1.25f * Math.Min(3.25f, 5 - BodyPartsAlive);
+            speed *= (255 - npc.alpha) / 255f;
             float distance = Vector2.Distance(npc.Center, Target.Center);
+
             if (distance > 600)
                 speed = distance / 300 + 1.5f;
-            if (AnyoneLooking)
-                speed *= (255 - npc.alpha) / 255f;
             if (!Main.expertMode)
                 speed *= 0.75f;
 
@@ -157,11 +181,11 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         private void SpawnBody()
         {
-            int[] parts = { NPCType<LurkerLArm>(), NPCType<LurkerRArm>(), NPCType<LurkerSpine>() };
+            int[] parts = { NPCType<LurkerBackArm>(), NPCType<LurkerForeArm>(), NPCType<LurkerSpine>() };
 
             for (int i = 0; i < 3; i++)
             {
-                NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, parts[i], npc.whoAmI, npc.whoAmI);
+                NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, parts[i], 0, npc.whoAmI);
             }
         }
 
@@ -182,18 +206,14 @@ namespace Erilipah.NPCs.ErilipahBiome
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return Main.hardMode && spawnInfo.player.InErilipah() ? 0.07f : 0;
+            return Main.hardMode && spawnInfo.player.InErilipah() ? 0.045f : 0;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             npc.DrawTrail(spriteBatch, 4 - BodyPartsAlive, Color.White * 0.5f);
-            return true;
-        }
-
-        public override void DrawEffects(ref Color drawColor)
-        {
-            drawColor = Color.White * 0.75f;
+            npc.DrawNPC(spriteBatch, Color.White * 0.75f);
+            return false;
         }
     }
 
@@ -247,15 +267,16 @@ namespace Erilipah.NPCs.ErilipahBiome
             return true;
         }
 
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            return false;
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             npc.DrawTrail(spriteBatch, 4 - (int)Head.ai[0], Color.White * 0.35f);
-            return true;
-        }
-
-        public override void DrawEffects(ref Color drawColor)
-        {
-            drawColor = Color.White * 0.6f;
+            npc.DrawNPC(spriteBatch, Color.White * 0.5f);
+            return false;
         }
 
         public override sealed bool CanHitPlayer(Player target, ref int cooldownSlot) => npc.alpha < 200;
@@ -268,7 +289,7 @@ namespace Erilipah.NPCs.ErilipahBiome
             base.SetDefaults();
 
             npc.lifeMax = Main.hardMode ? 200 : 150;
-            npc.defense = Main.hardMode ? 30 : 15;
+            npc.defense = Main.hardMode ? 20 : 12;
             npc.damage = Main.hardMode ? 25 : 15;
             npc.knockBackResist = 0.1f;
             npc.SetInfecting(5);
@@ -296,14 +317,14 @@ namespace Erilipah.NPCs.ErilipahBiome
         }
     }
 
-    public class LurkerLArm : LurkerPart
+    public class LurkerBackArm : LurkerPart
     {
         public override void SetDefaults()
         {
             base.SetDefaults();
 
             npc.lifeMax = Main.hardMode ? 120 : 80;
-            npc.defense = Main.hardMode ? 10 : 5;
+            npc.defense = Main.hardMode ? 6 : 0;
             npc.damage = Main.hardMode ? 35 : 22;
             npc.knockBackResist = 0.3f;
             npc.SetInfecting(7);
@@ -332,14 +353,14 @@ namespace Erilipah.NPCs.ErilipahBiome
         }
     }
 
-    public class LurkerRArm : LurkerPart
+    public class LurkerForeArm : LurkerPart
     {
         public override void SetDefaults()
         {
             base.SetDefaults();
 
             npc.lifeMax = Main.hardMode ? 120 : 80;
-            npc.defense = Main.hardMode ? 10 : 5;
+            npc.defense = Main.hardMode ? 6 : 0;
             npc.damage = Main.hardMode ? 35 : 22;
             npc.knockBackResist = 0.3f;
             npc.SetInfecting(7);
@@ -348,7 +369,9 @@ namespace Erilipah.NPCs.ErilipahBiome
             npc.height = 20;
         }
 
-        private Vector2 BodyPos => Head.Center + new Vector2(18 * npc.direction, 30);
+        private float ReachFactor => 20 * MathHelper.Clamp(1 - npc.Distance(Target.Center) / 300f, 0, 1);
+        private Vector2 ReachPos  => ReachFactor * npc.DirectionTo(Target.Center);
+        private Vector2 BodyPos   => Head.Center + new Vector2(18 * npc.direction, 30) + ReachPos;
 
         public override void AI()
         {

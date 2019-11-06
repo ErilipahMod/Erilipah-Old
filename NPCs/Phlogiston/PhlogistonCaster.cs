@@ -69,17 +69,17 @@ namespace Erilipah.NPCs.Phlogiston
             Player player = Main.player[npc.target];
 
             Vector2 newPosition = Vector2.Zero;
-            for (int attempt = 0; attempt < 100; attempt++)
+            for (int attempt = 0; attempt < 150; attempt++)
             {
                 Vector2 worldPos = new Vector2(
                     Main.rand.NextFloat(player.Center.X - 650, player.Center.X + 650),
                     Main.rand.NextFloat(player.Center.Y - 250, player.Center.Y + 250));
                 Point tilePos = worldPos.ToTileCoordinates();
 
-                if (Main.tile[tilePos.X, tilePos.Y].liquid < 10 &&
-                    Vector2.Distance(worldPos, player.Center) > 80 &&
-                    !Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y - 1, tilePos.Y + 2) &&
-                    Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y + 3, tilePos.Y + 3))
+                bool canSeePlayer = Collision.CanHitLine(worldPos, 1, 1, player.Center, 1, 1);
+                bool empty = !Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y - 1, tilePos.Y + 2);
+                bool floor = Collision.SolidTiles(tilePos.X - 1, tilePos.X + 1, tilePos.Y + 3, tilePos.Y + 3);
+                if (canSeePlayer && empty && floor && Main.tile[tilePos.X, tilePos.Y].liquid < 10 && Vector2.Distance(worldPos, player.Center) > 80)
                 {
                     newPosition = tilePos.ToWorldCoordinates() + new Vector2(0, 16);
                     break;

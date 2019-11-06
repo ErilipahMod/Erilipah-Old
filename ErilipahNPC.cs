@@ -94,6 +94,14 @@ namespace Erilipah
 
                 drawColor = Color.Lerp(drawColor, Color.MediumVioletRed, intensity);
             }
+            if (npc.HasBuff(BuffType<Items.ErilipahBiome.Wither>()))
+            {
+                int type = BuffType<Items.ErilipahBiome.Wither>();
+                int time = npc.buffTime[npc.FindBuffIndex(type)];
+                float intensity = Math.Min(time / 300f, 0.4f);
+
+                drawColor = Color.Lerp(drawColor, Color.Black, intensity);
+            }
         }
 
         public override void SetupShop(int type, Chest shop, ref int nextSlot)
