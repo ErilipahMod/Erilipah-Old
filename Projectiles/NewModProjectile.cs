@@ -74,7 +74,7 @@ namespace Erilipah.Projectiles
         protected float Degrees180 = MathHelper.ToRadians(180);
         protected float Degrees90 = MathHelper.ToRadians(90);
         protected static readonly int[] AutoDimensions = new int[] { -1, -1 };
-        protected Player player
+        protected Player Player
         {
             get
             {

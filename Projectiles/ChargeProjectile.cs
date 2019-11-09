@@ -36,7 +36,7 @@ namespace Erilipah.Projectiles
             projectile.hostile = DamageTeam[1];
             projectile.alpha = 0;
 
-            Vector2 velocity = Main.MouseWorld - player.Center;
+            Vector2 velocity = Main.MouseWorld - Player.Center;
             velocity.Normalize();
             velocity *= speed;
 
@@ -54,22 +54,22 @@ namespace Erilipah.Projectiles
             // Multiplayer support here, only run this code if the client running it is the owner of the projectile
             if (projectile.owner == Main.myPlayer && !AtMaxCharge && !done)
             {
-                Vector2 diff = Main.MouseWorld - player.Center;
+                Vector2 diff = Main.MouseWorld - Player.Center;
                 diff.Normalize();
                 projectile.velocity = diff;
-                projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+                projectile.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1;
                 projectile.netUpdate = true;
             }
             if (!AtMaxCharge && !done)
             {
-                projectile.position = player.Center + projectile.velocity * MoveDistance;
+                projectile.position = Player.Center + projectile.velocity * MoveDistance;
                 projectile.timeLeft = 300;
                 int dir = projectile.direction;
-                player.ChangeDir(dir);
-                player.heldProj = projectile.whoAmI;
-                player.itemTime = 2;
-                player.itemAnimation = 2;
-                player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
+                Player.ChangeDir(dir);
+                Player.heldProj = projectile.whoAmI;
+                Player.itemTime = 2;
+                Player.itemAnimation = 2;
+                Player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
             }
             #endregion
             #region Charging process
@@ -92,7 +92,7 @@ namespace Erilipah.Projectiles
 
                 Vector2 offset = projectile.velocity;
                 offset *= MoveDistance - 20;
-                Vector2 pos = player.Center + offset - new Vector2(10, 10);
+                Vector2 pos = Player.Center + offset - new Vector2(10, 10);
                 int chargeFact = (int)(Charge / 30f);
                 Vector2 dustVelocity = Vector2.UnitX * 18f;
                 dustVelocity = dustVelocity.RotatedBy(projectile.rotation - 1.57f, default);

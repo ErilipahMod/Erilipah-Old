@@ -54,7 +54,7 @@ namespace Erilipah.Items.Templar
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            if (!target.immortal && !target.dontTakeDamage) player.GetModPlayer<Vitality>().AddVitality(damage / 6);
+            if (!target.immortal && !target.dontTakeDamage) Player.GetModPlayer<Vitality>().AddVitality(damage / 6);
         }
     }
     public class ThrowingStarMini : NewModProjectile

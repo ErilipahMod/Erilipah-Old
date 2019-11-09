@@ -1,4 +1,5 @@
 ﻿using Erilipah.UI;
+using Erilipah.UI.Notes;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -9,36 +10,77 @@ namespace Erilipah
 {
     public partial class Erilipah : Mod
     {
-        private UserInterface vitalityUI;
-        private UserInterface shieldBrokenUI;
-        private UserInterface infectUI;
+        private UserInterface _interfaceVitality;
+        private UserInterface _interfaceShieldBroken;
+        private UserInterface _interfaceInfectionBar;
+        private UserInterface _interfaceNoteUI;
 
         public static VitalityBar vitalityBar;
-        public static ShieldBrokenUI shieldBroken;
-        public static InfectionUI infectionBar;
+        public static ShieldBrokenUI shieldBrokenUI;
+        public static InfectionBar infectionBar;
+        public static NoteUI noteUI;
+
+        private void LoadUI()
+        {
+            vitalityBar = new VitalityBar();
+            vitalityBar.Activate();
+            _interfaceVitality = new UserInterface();
+            _interfaceVitality.SetState(vitalityBar);
+
+            shieldBrokenUI = new ShieldBrokenUI();
+            shieldBrokenUI.Activate();
+            _interfaceShieldBroken = new UserInterface();
+            _interfaceShieldBroken.SetState(shieldBrokenUI);
+
+            infectionBar = new InfectionBar();
+            infectionBar.Activate();
+            _interfaceInfectionBar = new UserInterface();
+            _interfaceInfectionBar.SetState(infectionBar);
+
+            noteUI = new NoteUI();
+            noteUI.Activate();
+            _interfaceNoteUI = new UserInterface();
+            _interfaceNoteUI.SetState(noteUI);
+        }
+
+        private void UnloadUI()
+        {
+            VeritasAbilityKey = null;
+            Bandolier = null;
+            SoulBank = null;
+
+            VitalityAbilityKey = null;
+            _interfaceVitality = null;
+            vitalityBar = null;
+
+            _interfaceShieldBroken = null;
+            shieldBrokenUI = null;
+
+            _interfaceInfectionBar = null;
+            infectionBar = null;
+
+            _interfaceNoteUI = null;
+            noteUI = null;
+        }
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (vitalityBar?.Visible ?? false)
-                vitalityUI?.Update(gameTime);
-
-            if (shieldBroken?.Visible ?? false)
-                shieldBrokenUI?.Update(gameTime);
-
-            infectUI?.Update(gameTime);
+            if (NoteUI.Visible)
+                _interfaceNoteUI.Update(gameTime);
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
+            #region already functional UI
             int resourceBars = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Resource Bars"));
             if (resourceBars == -1)
-                return;
+                goto skip1;
 
             layers.Insert(resourceBars + 2, new LegacyGameInterfaceLayer(
                 "Erilipah: Infection",
                 delegate
                 {
-                    infectUI.Draw(Main.spriteBatch, new GameTime());
+                    _interfaceInfectionBar.Draw(Main.spriteBatch, new GameTime());
                     return true;
                 }, 
                 InterfaceScaleType.UI
@@ -49,7 +91,7 @@ namespace Erilipah
                 delegate
                 {
                     if (vitalityBar?.Visible ?? false)
-                        vitalityUI.Draw(Main.spriteBatch, new GameTime());
+                        _interfaceVitality.Draw(Main.spriteBatch, new GameTime());
                     return true;
                 }, 
                 InterfaceScaleType.UI
@@ -59,10 +101,25 @@ namespace Erilipah
                 "Erilipah: Broken Shield",
                 delegate
                 {
-                    if (shieldBroken?.Visible ?? false)
-                        shieldBrokenUI.Draw(Main.spriteBatch, new GameTime());
+                    if (shieldBrokenUI?.Visible ?? false)
+                        _interfaceShieldBroken.Draw(Main.spriteBatch, new GameTime());
                     return true;
                 }));
+        #endregion
+        skip1:
+            int mouseIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+            if (mouseIndex != -1)
+            {
+                layers.Insert(mouseIndex, new LegacyGameInterfaceLayer(
+                    "Erilipah: Note UI",
+                    delegate {
+                        if (NoteUI.Visible)
+                            _interfaceNoteUI.Draw(Main.spriteBatch, new GameTime());
+                        return true;
+                    },
+                    InterfaceScaleType.UI)
+                );
+            }
         }
     }
 }

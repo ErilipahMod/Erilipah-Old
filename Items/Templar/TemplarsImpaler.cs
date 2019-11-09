@@ -47,7 +47,7 @@ namespace Erilipah.Items.Templar
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            if (!target.immortal && !target.dontTakeDamage) player.GetModPlayer<Vitality>().AddVitality(damage / 7);
+            if (!target.immortal && !target.dontTakeDamage) Player.GetModPlayer<Vitality>().AddVitality(damage / 7);
         }
     }
     public class TemplarsImpalerProjProj : ChargeProjectile
@@ -114,7 +114,7 @@ namespace Erilipah.Items.Templar
         public override void AI()
         {
             base.AI();
-            player.GetModPlayer<Vitality>().charge = (int)(Charge / (MaxCharge / 4));
+            Player.GetModPlayer<Vitality>().charge = (int)(Charge / (MaxCharge / 4));
             projectile.frame = Frame;
             projectile.width = Dimensions[0];
             projectile.height = Dimensions[1];
@@ -125,16 +125,16 @@ namespace Erilipah.Items.Templar
         protected override void OnCancelCharge()
         {
             ResumeVelocity(10);
-            player.GetModPlayer<Vitality>().SubVitality(Vitality);
+            Player.GetModPlayer<Vitality>().SubVitality(Vitality);
         }
         protected override void OnFinishCharge()
         {
             ResumeVelocity(10);
-            player.GetModPlayer<Vitality>().SubVitality(Vitality);
+            Player.GetModPlayer<Vitality>().SubVitality(Vitality);
         }
 
         private int Vitality => (int)(heal * 0.75f);
-        protected override bool Cancel => !Main.mouseRight || player.GetModPlayer<Vitality>().CurrentVitality <= Vitality;
+        protected override bool Cancel => !Main.mouseRight || Player.GetModPlayer<Vitality>().CurrentVitality <= Vitality;
         protected override float MaxCharge => 180;
         protected override float MoveDistance => 50;
     }

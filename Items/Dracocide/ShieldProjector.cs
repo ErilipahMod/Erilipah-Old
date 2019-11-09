@@ -114,26 +114,26 @@ namespace Erilipah.Items.Dracocide
             npc.MakeDebuffImmune();
         }
 
-        private Player player => Main.player[(int)npc.ai[0]];
+        private Player Player => Main.player[(int)npc.ai[0]];
 
         public override void AI()
         {
             npc.velocity = Vector2.Zero;
 
-            if (Main.myPlayer != player.whoAmI) // only if the player that owns this NPC do we run this code
+            if (Main.myPlayer != Player.whoAmI) // only if the player that owns this NPC do we run this code
                 return;
 
-            if (!player.channel)
+            if (!Player.channel)
                 npc.active = false;
 
-            var modPlayer = player.GetModPlayer<PlayerShield>();
+            var modPlayer = Player.GetModPlayer<PlayerShield>();
 
             npc.life = modPlayer.life;
-            npc.defense = player.statDefense;
+            npc.defense = Player.statDefense;
 
-            Vector2 toMouse = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
+            Vector2 toMouse = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.Zero);
             npc.rotation = toMouse.ToRotation() + MathHelper.PiOver2;
-            npc.Center = player.Center + toMouse * 50 - new Vector2(0, 6);
+            npc.Center = Player.Center + toMouse * 50 - new Vector2(0, 6);
         }
 
         public override void FindFrame(int frameHeight)
@@ -157,7 +157,7 @@ namespace Erilipah.Items.Dracocide
 
             if (!projectile.Reflect(1))
             {
-                player.immuneTime = 45;
+                Player.immuneTime = 45;
             }
             else
             {
@@ -167,7 +167,7 @@ namespace Erilipah.Items.Dracocide
 
         public override void HitEffect(int hitDirection, double damage)
         {
-            player.GetModPlayer<PlayerShield>().life -= (int)damage;
+            Player.GetModPlayer<PlayerShield>().life -= (int)damage;
             if (npc.life <= 0)
             {
                 for (int i = 0; i < 6; i++)

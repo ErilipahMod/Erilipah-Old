@@ -35,20 +35,7 @@ namespace Erilipah
 
             if (!Main.dedServ)
             {
-                vitalityBar = new VitalityBar();
-                vitalityBar.Activate();
-                vitalityUI = new UserInterface();
-                vitalityUI.SetState(vitalityBar);
-
-                shieldBroken = new ShieldBrokenUI();
-                shieldBroken.Activate();
-                shieldBrokenUI = new UserInterface();
-                shieldBrokenUI.SetState(shieldBroken);
-
-                infectionBar = new InfectionUI();
-                infectionBar.Activate();
-                infectUI = new UserInterface();
-                infectUI.SetState(infectionBar);
+                LoadUI();
 
                 // Color params: x=number, y=inverse size, z=speed
                 Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/ShockwaveEffect"));
@@ -74,18 +61,10 @@ namespace Erilipah
 
         public override void Unload()
         {
-            VeritasAbilityKey = null;
-            VitalityAbilityKey = null;
-            Bandolier = null;
-            SoulBank = null;
-
-            vitalityUI = null;
-            shieldBrokenUI = null;
-            infectUI = null;
-
-            vitalityBar = null;
-            shieldBroken = null;
-            infectionBar = null;
+            if (!Main.dedServ)
+            {
+                UnloadUI();
+            }
 
             handlers?.ForEach(h => h = null);
             handlers?.Clear();

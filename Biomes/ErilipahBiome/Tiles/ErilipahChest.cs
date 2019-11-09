@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah.Biomes.ErilipahBiome.Tiles
 {
-    public class LostChest : ModTile
+    public class ErilipahChest : ModTile
     {
         public override void SetDefaults()
         {

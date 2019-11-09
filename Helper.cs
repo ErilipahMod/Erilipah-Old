@@ -101,14 +101,7 @@ namespace Erilipah
                 (int)entity.position.Y / 16, (int)(entity.position.Y + entity.height) / 16);
         }
 
-        private static Player fakePlayer = new Player(false); // TODO remove
-        internal static void HitTile(int x, int y, int power)
-        {
-            // TODO fix yikes
-            if (Main.netMode != 1)
-                Main.player[255].PickTile(x, y, power);
-        }
-        internal static void HitTile(int x, int y, int power, bool quiet)
+        internal static void HitTile(int x, int y, int power, bool quiet = false)
         {
             // TODO fix yikes
             if (quiet || Main.netMode != 1)

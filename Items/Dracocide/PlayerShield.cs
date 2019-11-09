@@ -25,14 +25,14 @@ namespace Erilipah.Items.Dracocide
             brokenTimer--;
 
             if (brokenTimer < 300) // If approaching the end of the broken timer, gradually fade out.
-                Erilipah.shieldBroken.alpha = brokenTimer / 450f;
+                Erilipah.shieldBrokenUI.alpha = brokenTimer / 450f;
             else // Otherwise if the timer is active, half opacity
-                Erilipah.shieldBroken.alpha = 2 / 3f;
+                Erilipah.shieldBrokenUI.alpha = 2 / 3f;
 
             if (brokenTimer < 60) // Add a decimal place if below 1 second
-                Erilipah.shieldBroken.time = Math.Round(brokenTimer / 60f, 1).ToString();
+                Erilipah.shieldBrokenUI.time = Math.Round(brokenTimer / 60f, 1).ToString();
             else // Else just do normally
-                Erilipah.shieldBroken.time = (brokenTimer / 60).ToString();
+                Erilipah.shieldBrokenUI.time = (brokenTimer / 60).ToString();
         }
     }
 
