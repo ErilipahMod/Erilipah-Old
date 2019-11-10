@@ -148,6 +148,10 @@ namespace Erilipah
     {
         public override string Command => "unlocknote";
 
+        public override string Usage => "unlocknote noteID";
+
+        public override string Description => "Unlock your notes";
+
         public override CommandType Type => CommandType.Chat;
 
         public override void Action(CommandCaller caller, string input, string[] args)
