@@ -2,7 +2,7 @@
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-namespace Erilipah.UI
+namespace Erilipah.UI.Infection
 {
     internal class InfectionBarDust : OverlayParticle
     {

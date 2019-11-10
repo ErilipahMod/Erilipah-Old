@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-namespace Erilipah.UI
+namespace Erilipah.UI.ShieldBroken
 {
     public class ShieldBrokenUI : UIState
     {
@@ -18,7 +18,7 @@ namespace Erilipah.UI
             if (alpha <= 0)
                 return;
 
-            Texture2D texture = GetTexture("Erilipah/UI/ShieldBrokenUI");
+            Texture2D texture = GetTexture("Erilipah/UI/ShieldBroken/ShieldBrokenUI");
 
             Color color = new Color(alpha, alpha, alpha, alpha);
             Vector2 position = new Vector2(Main.screenWidth * 0.5f, Main.screenHeight * 0.5f - 56);

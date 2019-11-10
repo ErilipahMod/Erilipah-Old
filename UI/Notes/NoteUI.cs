@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -18,14 +17,24 @@ namespace Erilipah.UI.Notes
     {
         private UIHoverImageButton showButton;
         private NoteUIPages pages;
+        private bool flashing = false;
+        private float flash_c = 0.4f;
 
         public static bool Visible => !Main.gameMenu && Main.playerInventory;
 
+        public void Refresh(bool notif = true)
+        {
+            pages.Refresh();
+            if (notif && !pages.IsVisible)
+                flashing = true;
+        }
+
         public override void OnInitialize()
         {
+            bool autotrash = Terraria.ModLoader.ModLoader.GetMod("AutoTrash") != null;
             Texture2D showTex = GetTexture("Erilipah/UI/Notes/ShowNotes");
             showButton = new UIHoverImageButton(showTex, "Show notes");
-            showButton.Left.Set(410, 0);
+            showButton.Left.Set(autotrash ? 350 : 410, 0);
             showButton.Top.Set(260, 0);
             showButton.Width.Set(26, 0);
             showButton.Height.Set(28, 0);
@@ -33,128 +42,45 @@ namespace Erilipah.UI.Notes
             Append(showButton);
 
             pages = new NoteUIPages { HAlign = 0.5f, VAlign = 0.5f };
+            pages.SetPadding(0);
             pages.Left.Set(0, 0);
             pages.Top.Set(0, 0);
-            pages.Width.Set(124, 0);
-            pages.Height.Set(162, 0);
+            pages.Width.Set(140 + 20, 0); // Page size + index width + turn/back page
+            pages.Height.Set(162 + 58, 0); // Page size + index height + turn/back page
             Append(pages);
         }
 
         private void ShowButtonClicked(UIMouseEvent evt, UIElement listeningElement)
         {
             pages.ToggleVisible();
-        }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-    }
-
-    public class NoteUIPages : DragableUIPanel
-    {
-        private UIHoverImageButton backPage;
-        private UIHoverImageButton turnPage;
-
-        private readonly Texture2D pagesTexture; // Cache texture
-
-        private int page;
-        private float fade = 0;
-        private bool visible = false;
-
-        private const int pageCount = 7;
-        private const int framesX = 3;
-        private const int framesY = 3;
-
-        public NoteUIPages()
-        {
-            pagesTexture = GetTexture("Erilipah/UI/Notes/Pages");
-        }
-
-        private static void PlayNoteSfx(string filename)
-        {
-            Main.PlaySound(GetInstance<Erilipah>().GetLegacySoundSlot(SoundType.Custom, $"Sounds/Notes/{filename}")
-                .WithPitchVariance(0.4f));
-        }
-
-        public override void OnInitialize()
-        {
-            Texture2D bpTex = GetTexture("Erilipah/UI/Notes/BackPage");
-            backPage = new UIHoverImageButton(bpTex, "Back a page")
+            if (pages.IsVisible)
             {
-                HAlign = 0.0f,
-                VAlign = 1.0f
-            };
-            backPage.Left.Set(-10, 0);
-            backPage.Top.Set(10, 0);
-            backPage.Width.Set(32, 0);
-            backPage.Height.Set(24, 0);
-            backPage.OnClick += BackPage;
-            Append(backPage);
-
-            Texture2D tpTex = GetTexture("Erilipah/UI/Notes/TurnPage");
-            turnPage = new UIHoverImageButton(bpTex, "Turn page")
-            {
-                HAlign = 1.0f,
-                VAlign = 1.0f
-            };
-            turnPage.Left.Set(10, 0);
-            turnPage.Top.Set(10, 0);
-            turnPage.Width.Set(32, 0);
-            turnPage.Height.Set(24, 0);
-            turnPage.OnClick += TurnPage;
-            Append(turnPage);
-        }
-
-        public void ToggleVisible()
-        {
-            visible = !visible;
-            PlayNoteSfx("turn_page");
-        }
-
-        private void TurnPage(UIMouseEvent evt, UIElement listeningElement)
-        {
-            if (page < pageCount - 1)
-            {
-                page++;
-                PlayNoteSfx("turn_page");
+                showButton.HoverText = "Hide notes";
             }
-        }
-
-        private void BackPage(UIMouseEvent evt, UIElement listeningElement)
-        {
-            if (page > 0)
+            else
             {
-                page--;
-                PlayNoteSfx("back_page");
+                showButton.HoverText = "Show notes";
             }
+
+            flashing = false;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            if (fade < 1 && visible)
+            if (flashing)
             {
-                fade += 0.06f;
+                flash_c += 0.1f;
+                double amp = (Math.Sin(flash_c) + 1.3) / 2.0;
+                showButton.SetVisibility(1f, (float)amp);
             }
-            if (fade > 0 && !visible)
+            else
             {
-                fade -= 0.06f;
+                flash_c = 0.4f;
+                showButton.SetVisibility(1f, 0.4f);
             }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (visible && fade > 0)
-                base.Draw(spriteBatch);
-        }
-
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            Vector2 dims = GetDimensions().Center();
-            Rectangle page = pagesTexture.Frame(framesX, framesY, this.page % framesX, this.page / framesX);
-            spriteBatch.Draw(pagesTexture, dims, page, Color.White, 0, page.Size() / 2, 1f, 0, 0);
         }
     }
 }

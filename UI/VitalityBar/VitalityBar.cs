@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace Erilipah.UI
+namespace Erilipah.UI.VitalityBar
 {
     public class VitalityBar : UIState
     {
@@ -24,7 +24,7 @@ namespace Erilipah.UI
 
             if (charge > 4) charge = 4;
             alpha = MathHelper.Clamp(alpha, 0f, 1f);
-            Texture2D texture = ModContent.GetTexture("Erilipah/UI/VitalityBar" + charge);
+            Texture2D texture = ModContent.GetTexture("Erilipah/UI/VitalityBar/VitalityBar" + charge);
 
             Color color = new Color(alpha, alpha, alpha, alpha);
             Rectangle rect = texture.Frame(1, frameCount, 0, Frame);

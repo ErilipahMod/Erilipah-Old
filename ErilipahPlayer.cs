@@ -1,12 +1,15 @@
 ﻿using Erilipah.Items.ErilipahBiome;
 using Erilipah.Items.Taranys;
+using Erilipah.UI.Notes;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
@@ -16,13 +19,13 @@ namespace Erilipah
         public bool ZoneErilipah { get; private set; } = false;
         public bool ZoneLostCity { get; private set; } = false;
 
-        public int bankedDamage = 0;
-        public int extraItemReach = 0;
+        public int bankedDamage;
+        public int extraItemReach;
         public bool canMove = true;
         public bool canJump = true;
-        public bool soulBankHealing = false;
+        public bool soulBankHealing;
 
-        private bool pressedSoulBank = false;
+        private bool pressedSoulBank;
 
         public override void ResetEffects()
         {

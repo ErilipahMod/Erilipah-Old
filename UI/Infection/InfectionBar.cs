@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-namespace Erilipah.UI
+namespace Erilipah.UI.Infection
 {
     public class InfectionBar : UIState
     {
@@ -82,7 +82,7 @@ namespace Erilipah.UI
             float infectionMax = Main.LocalPlayer.I().infectionMax;
             float amount = Math.Max(0, infection);
 
-            Texture2D texture2D = GetTexture("Erilipah/UI/InfectionBar");
+            Texture2D texture2D = GetTexture("Erilipah/UI/Infection/InfectionBar");
             Color color = Color.Lerp(Color.White, Color.White * 0, alpha / 60f);
 
             counter++;

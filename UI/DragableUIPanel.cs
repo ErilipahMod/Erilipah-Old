@@ -45,7 +45,7 @@ namespace Erilipah.UI
         {
             base.Update(gameTime); // don't remove.
 
-            if (ContainsPoint(Main.MouseScreen))
+            if (IsMouseHovering)
             {
                 Main.LocalPlayer.mouseInterface = true;
             }

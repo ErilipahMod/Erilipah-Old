@@ -1,5 +1,7 @@
-﻿using Erilipah.UI;
+﻿using Erilipah.UI.Infection;
 using Erilipah.UI.Notes;
+using Erilipah.UI.ShieldBroken;
+using Erilipah.UI.VitalityBar;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;

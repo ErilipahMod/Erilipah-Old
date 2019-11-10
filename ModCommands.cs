@@ -1,8 +1,10 @@
 ﻿#if DEBUG
 using Microsoft.Xna.Framework;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace Erilipah
 {
@@ -87,17 +89,13 @@ namespace Erilipah
     }
     public class DownedBosses : ModCommand
     {
-        public override CommandType Type
-            => CommandType.Chat;
+        public override CommandType Type => CommandType.Chat;
 
-        public override string Command
-            => "downed";
+        public override string Command => "downed";
 
-        public override string Usage
-            => "/downed <eye|goblins|boss2|skeletron|wall|allMech|plant|golem|cultist|moonlord|all> <true|false>";
+        public override string Usage => "/downed <eye|goblins|boss2|skeletron|wall|allMech|plant|golem|cultist|moonlord|all> <true|false>";
 
-        public override string Description
-            => "Change whether a certain boss has been downed";
+        public override string Description => "Change whether a certain boss has been downed";
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
@@ -144,6 +142,27 @@ namespace Erilipah
 
             string color = yes ? "[c/00ff00:" : "[c/ff0000:";
             Main.NewText("[c/00ffff:" + args[0] + " boss downed] has been set to " + color + yes + "]");
+        }
+    }
+    public class UnlockNote : ModCommand
+    {
+        public override string Command => "unlocknote";
+
+        public override CommandType Type => CommandType.Chat;
+
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (caller.Player.whoAmI != Main.myPlayer) // Only for local player
+                return;
+
+            try
+            {
+                GetInstance<NoteHandler>().CollectNote(int.Parse(args[0]));
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Main.NewText("Not a valid note. 0-" + (UI.Notes.NoteUIPages.pageCount - 1));
+            }
         }
     }
     public class Set : ModCommand
